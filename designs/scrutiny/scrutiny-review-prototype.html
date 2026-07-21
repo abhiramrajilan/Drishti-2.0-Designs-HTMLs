@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrutiny review — CMP/1043/2026 · Pucar ON Court</title>
+<style>
+/* ── PUCAR tokens (light · slate neutral · values from lib/tokens) ── */
+:root{
+  --n1:#fcfcfd;--n2:#f9f9fb;--n3:#f0f0f3;--n4:#e8e8ec;--n5:#e0e1e6;--n6:#d9d9e0;
+  --n7:#cdced6;--n8:#b9bbc6;--n9:#8b8d98;--n10:#80838d;--n11:#60646c;--n12:#1c2024;
+  --brand:#007E7E;--brand-accent:#12a594;
+  --success:#217a3a;--success-m:#e9f6e9;--success-mf:#2a7e3b;
+  --info:#0d74ce;--info-m:#e6f4fe;--info-mf:#113264;
+  --warning:#ffc53d;--warning-m:#fff7c2;--warning-mf:#4f3422;
+  --destructive:#c1232a;--destructive-m:#feebec;
+  --bg:var(--n1);--fg:var(--n12);--card:var(--n1);--muted:var(--n2);--muted-fg:var(--n11);
+  --accent:var(--n4);--border:var(--n7);--input:var(--n9);--sidebar:var(--n2);--sunken:var(--n2);
+  --radius:10px;
+  --sh-raised:0 1px 2px 0 rgb(0 0 0 / .04),0 1px 3px 0 rgb(0 0 0 / .07);
+  --sh-overlay:0 4px 8px -2px rgb(0 0 0 / .10),0 2px 4px -2px rgb(0 0 0 / .06);
+  --sh-modal:0 16px 32px -8px rgb(0 0 0 / .18),0 6px 12px -6px rgb(0 0 0 / .12);
+  --sans:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--fg);font-size:16px;line-height:24px;overflow:hidden}
+button{font-family:var(--sans);cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+/* type */
+.t-title-s{font-size:20px;line-height:28px;font-weight:600}
+.t-body{font-size:16px;line-height:24px}
+.t-bc{font-size:14px;line-height:20px}
+.t-cap{font-size:12px;line-height:16px;font-weight:500}
+.muted{color:var(--muted-fg)}
+.mono{font-family:var(--mono)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;border-radius:var(--radius);
+  border:1px solid transparent;font-size:14px;font-weight:500;background:transparent;color:var(--fg);
+  transition:background .15s ease-out,border-color .15s ease-out}
+.btn.sm{min-height:32px;padding:0 12px}
+.btn.icon{width:40px;padding:0;justify-content:center}
+.btn.icon.sm{width:32px;min-height:32px}
+.btn-primary{background:var(--brand);color:#fff;font-weight:600}
+.btn-primary:hover{background:color-mix(in srgb,var(--brand) 88%,black)}
+.btn-secondary{background:var(--n3);color:var(--n11);font-weight:600}
+.btn-secondary:hover{background:var(--n4)}
+.btn-outline{border-color:var(--border);background:var(--card)}
+.btn-outline:hover{background:var(--accent)}
+.btn-ghost:hover{background:var(--accent)}
+.btn-ghost-destr{color:var(--destructive)}
+.btn-ghost-destr:hover{background:var(--destructive-m)}
+.btn-destr{background:var(--destructive);color:#fff;font-weight:600}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* pills */
+.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 10px;font-size:12px;line-height:16px;font-weight:500;white-space:nowrap}
+.pill.ready{background:var(--success-m);color:var(--success-mf)}
+.pill.waiting{background:var(--warning-m);color:var(--warning-mf)}
+.pill.urgent{background:color-mix(in srgb,var(--destructive) 10%,white);color:var(--destructive)}
+.pill.info{background:var(--info-m);color:var(--info-mf)}
+.pill.neutral{background:var(--n3);color:var(--n11)}
+
+/* ── header ── */
+#hdr{height:64px;display:flex;align-items:center;gap:16px;padding:0 20px;border-bottom:1px solid var(--border);background:var(--bg)}
+#hdr .idblock{display:flex;flex-direction:column;justify-content:center;min-width:0}
+#hdr .idrow{display:flex;align-items:center;gap:10px}
+#hdr .spacer{flex:1}
+.demo-chip{display:flex;align-items:center;gap:8px;border:1px dashed var(--n8);border-radius:999px;padding:6px 12px;color:var(--muted-fg);font-size:12px;line-height:16px;font-weight:500}
+.demo-chip input{accent-color:var(--brand);width:16px;height:16px}
+
+/* ── banner ── */
+#banner{display:none;background:var(--info-m);color:var(--info-mf);padding:10px 20px;font-size:14px;line-height:20px;border-bottom:1px solid var(--border)}
+body.ai-off #banner{display:block}
+
+/* ── workspace ── */
+#ws{display:flex;height:calc(100vh - 64px);}
+body.ai-off #ws{height:calc(100vh - 64px - 41px)}
+body.swapped #ws{flex-direction:row-reverse}
+
+#docside{display:flex;flex:1;min-width:0}
+body.swapped #docside{flex-direction:row-reverse}
+
+/* rail */
+#rail{width:240px;flex:none;background:var(--sidebar);border-right:1px solid var(--n5);overflow-y:auto;padding:12px 8px}
+body.swapped #rail{border-right:none;border-left:1px solid var(--n5)}
+.rail-h{padding:8px 10px 4px;color:var(--muted-fg);font-size:12px;line-height:16px;font-weight:500}
+.rail-sep{height:1px;background:var(--n5);margin:8px 6px}
+.doc{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;border-radius:8px;
+  padding:8px 10px;min-height:40px;color:var(--fg);font-size:14px;line-height:20px;position:relative;
+  transition:background .15s ease-out,opacity .2s ease-out}
+.doc:hover{background:var(--accent)}
+.doc.open{background:var(--accent)}
+.doc.open::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:2px;border-radius:2px;background:var(--brand)}
+.doc.dim{opacity:.6}
+.doc .dico{flex:none;width:28px;height:34px;border:1px solid var(--n7);border-radius:4px;background:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted-fg)}
+.doc .dmeta{min-width:0}
+.doc .dname{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc .dpages{font-size:12px;line-height:16px;color:var(--muted-fg)}
+
+/* viewer */
+#viewer{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--sunken)}
+#vtb{height:48px;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg);border-bottom:1px solid var(--border)}
+#vtb .vsep{width:1px;height:20px;background:var(--n5);margin:0 4px}
+#vtb .grow{flex:1}
+.tool-toggle.on{background:var(--accent);color:var(--brand)}
+#vcanvas{flex:1;overflow:auto;padding:32px;display:flex;justify-content:center;align-items:flex-start}
+#vcanvas.recting{cursor:crosshair}
+.page{background:#fff;box-shadow:var(--sh-raised);border:1px solid var(--n5);border-radius:4px;
+  width:640px;min-height:820px;padding:48px 56px;position:relative;transform-origin:top center;flex:none}
+.page,.page *{user-select:none}
+/* evidence highlight */
+.evid{background:color-mix(in srgb,var(--brand-accent) 14%,transparent);outline:2px solid var(--brand-accent);border-radius:2px;position:relative}
+.evid-tag{position:absolute;top:-22px;left:0;background:var(--card);border:1px solid var(--border);border-radius:6px;
+  padding:1px 7px;font-size:11px;line-height:16px;font-weight:500;color:var(--brand);white-space:nowrap;box-shadow:var(--sh-raised)}
+/* officer rects */
+.anno{position:absolute;border:2px solid var(--destructive);background:color-mix(in srgb,var(--destructive) 8%,transparent);border-radius:2px;cursor:pointer}
+.anno .adot{position:absolute;top:-9px;right:-9px;width:18px;height:18px;border-radius:50%;background:var(--destructive);color:#fff;
+  font-size:10px;display:flex;align-items:center;justify-content:center}
+.anno.temp{pointer-events:none}
+
+/* divider */
+#divider{width:12px;flex:none;cursor:col-resize;display:flex;justify-content:center;background:var(--bg)}
+#divider::after{content:"";width:4px;border-radius:2px;background:var(--n5);margin:8px 0;transition:background .15s ease-out}
+#divider:hover::after,#divider.drag::after{background:var(--accent);background:var(--n8)}
+
+/* fields panel */
+#fields{width:400px;flex:none;display:flex;flex-direction:column;background:var(--bg);min-width:0}
+#fhead{padding:12px 16px 0;flex:none}
+#ftabs{display:flex;gap:2px;border-bottom:1px solid var(--n5)}
+#ftabs .ftab{background:none;border:none;padding:8px 12px 10px;font-size:14px;line-height:20px;font-weight:500;color:var(--muted-fg);
+  border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;min-height:40px}
+#ftabs .ftab:hover{color:var(--fg)}
+#ftabs .ftab.on{color:var(--fg);border-bottom-color:var(--brand-accent)}
+#fselect{display:none;width:100%;min-height:40px;border:1px solid var(--input);border-radius:var(--radius);
+  padding:8px 12px;font-family:var(--sans);font-size:14px;background:var(--card);color:var(--fg);margin-bottom:4px}
+#fields.narrow #ftabs{display:none}
+#fields.narrow #fselect{display:block}
+#cards{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+
+/* field card */
+.fc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;
+  transition:border-color .15s ease-out,background .15s ease-out;cursor:pointer}
+.fc:hover{border-color:var(--n8)}
+.fc.sel{background:var(--accent)}
+.fc.sel::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--brand)}
+.fc .frow{display:flex;align-items:flex-start;gap:8px}
+.fc .flabel{font-size:12px;line-height:16px;font-weight:500;color:var(--muted-fg);flex:1;padding-top:2px}
+.fc .fval{font-size:16px;line-height:24px;margin-top:2px;display:flex;align-items:center;gap:6px}
+.fc .fold{font-size:12px;line-height:16px;color:var(--muted-fg);text-decoration:line-through;margin-top:2px}
+.fc .fnote{font-size:12px;line-height:16px;font-weight:500;color:var(--muted-fg);margin-top:6px}
+.fc .fedit{opacity:0;transition:opacity .15s ease-out;flex:none}
+.fc:hover .fedit,.fc.sel .fedit{opacity:1}
+.fc .factions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.well{background:var(--sunken);border:1px solid var(--n5);border-radius:var(--radius);padding:12px;margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.well .wrow .wk{font-size:12px;line-height:16px;font-weight:500;color:var(--muted-fg)}
+.well .wrow .wv{font-size:14px;line-height:20px;font-weight:500}
+.well .wsrc{font-size:12px;line-height:16px;color:var(--muted-fg)}
+.well .wsrc a{color:var(--brand);cursor:pointer;text-decoration:underline;font-weight:500}
+.flagchip{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:var(--destructive-m);color:var(--destructive);
+  border:none;border-radius:8px;padding:6px 10px;font-size:12px;line-height:16px;font-weight:500;max-width:100%;text-align:left}
+.flagchip .snip{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+.attach-hint{display:flex;align-items:center;gap:6px;margin-top:8px}
+.attach-hint a{font-size:12px;line-height:16px;font-weight:500;color:var(--brand);cursor:pointer;text-decoration:underline}
+.attach-hint button{background:none;border:none;color:var(--muted-fg);font-size:12px;min-height:auto;padding:2px}
+.fc input.inline{font-family:var(--sans);font-size:16px;line-height:24px;padding:6px 10px;border:1px solid var(--input);
+  border-radius:8px;width:100%;color:var(--fg)}
+.keptnote{display:flex;align-items:center;gap:8px;margin-top:6px}
+.keptnote span{font-size:12px;line-height:16px;font-weight:500;color:var(--muted-fg)}
+.keptnote a{font-size:12px;font-weight:500;color:var(--brand);cursor:pointer;text-decoration:underline}
+
+/* composer */
+#composer{position:fixed;z-index:60;width:320px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--sh-overlay);padding:16px;display:none;flex-direction:column;gap:10px}
+#composer.open{display:flex;animation:pop .15s ease-out}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+#composer .ctx{font-size:12px;line-height:16px;font-weight:500;color:var(--muted-fg)}
+#composer textarea{font-family:var(--sans);font-size:14px;line-height:20px;min-height:72px;resize:vertical;
+  border:1px solid var(--input);border-radius:8px;padding:8px 10px;color:var(--fg)}
+#composer .crow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#composer .cfoot{display:flex;gap:8px;align-items:center}
+#composer .cfoot .grow{flex:1}
+.recdot{width:10px;height:10px;border-radius:50%;background:var(--destructive);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.audiochip{display:inline-flex;align-items:center;gap:6px;background:var(--n3);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:500;color:var(--n11)}
+
+/* summary overlay */
+#overlay{position:fixed;inset:0;z-index:80;background:color-mix(in srgb,var(--n12) 32%,transparent);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:48px 24px}
+#overlay.open{display:flex}
+#sheet{background:var(--card);border-radius:12px;box-shadow:var(--sh-modal);width:720px;max-width:100%;padding:32px;display:flex;flex-direction:column;gap:20px}
+.sumgroup .sg-h{font-size:12px;line-height:16px;font-weight:500;color:var(--muted-fg);padding-bottom:6px;border-bottom:1px solid var(--n5);margin-bottom:4px}
+.sumrow{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--n3)}
+.sumrow:last-child{border-bottom:none}
+.sumrow .sr-main{flex:1;min-width:0}
+.sumrow .sr-t{font-size:14px;line-height:20px;font-weight:500}
+.sumrow .sr-d{font-size:14px;line-height:20px;color:var(--muted-fg);margin-top:2px}
+.sumrow .sr-d s{color:var(--n9)}
+.ackrow{display:flex;gap:10px;align-items:flex-start;background:var(--warning-m);color:var(--warning-mf);border-radius:var(--radius);padding:12px 14px;font-size:14px;line-height:20px}
+.ackrow input{margin-top:3px;accent-color:var(--brand);width:16px;height:16px}
+#confirm{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px 0}
+.okicon{width:48px;height:48px;border-radius:50%;background:var(--success-m);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:22px}
+
+/* doc mock styling */
+.mock-h{font-weight:600;font-size:15px;letter-spacing:.02em;margin-bottom:4px}
+.mock-sub{font-size:12px;color:var(--n11);margin-bottom:20px}
+.mock-line{font-size:14px;line-height:26px;color:#333}
+.mock-line b{font-weight:600}
+.mock-box{border:1px solid var(--n6);border-radius:6px;padding:14px 16px;margin:12px 0}
+.mock-sig{margin-top:36px;font-family:cursive;font-size:20px;color:#223}
+.smudge{filter:blur(.8px);letter-spacing:1px}
+.mock-photo{width:76px;height:92px;background:var(--n4);border:1px solid var(--n7);border-radius:4px;float:left;margin-right:18px;
+  display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--n10)}
+.mock-stamp{display:inline-block;border:2px solid var(--n8);color:var(--n9);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;transform:rotate(-4deg);margin-top:24px}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="idblock">
+    <div class="idrow">
+      <span class="t-title-s">CMP/1043/2026 · Om Kumar v. Rakesh Sharma</span>
+      <span class="pill waiting" id="routebadge">Flag skipped at filing</span>
+    </div>
+    <span class="t-cap muted">Complaint under S.138, Negotiable Instruments Act · Filed by Adv. Priya Nair</span>
+  </div>
+  <div class="spacer"></div>
+  <label class="demo-chip" title="Prototype control — simulates the AI-unavailable state">
+    <input type="checkbox" id="aitoggle"> Simulate AI unavailable
+  </label>
+  <button class="btn btn-primary" id="submitbtn">Submit review</button>
+</header>
+
+<div id="banner">AI assistance is unavailable for this file. All checks are manual — documents are grouped by filing section.</div>
+
+<div id="ws">
+  <div id="docside">
+    <nav id="rail" aria-label="Uploaded documents"></nav>
+    <div id="viewer">
+      <div id="vtb">
+        <span class="t-bc" style="font-weight:500" id="vdocname">—</span>
+        <span class="t-cap muted" id="vpages"></span>
+        <div class="grow"></div>
+        <button class="btn btn-ghost icon sm" id="zoomout" aria-label="Zoom out">−</button>
+        <span class="t-cap muted mono" id="zoomlvl">100%</span>
+        <button class="btn btn-ghost icon sm" id="zoomin" aria-label="Zoom in">+</button>
+        <div class="vsep"></div>
+        <button class="btn btn-ghost sm tool-toggle" id="recttool" aria-pressed="false" title="Draw a rectangle to flag part of the document">▭ Rectangle</button>
+        <div class="vsep"></div>
+        <button class="btn btn-ghost icon sm" id="swapbtn" title="Move documents to the other side" aria-label="Move documents to the other side">⇄</button>
+      </div>
+      <div id="vcanvas"><div class="page" id="page"></div></div>
+    </div>
+  </div>
+  <div id="divider" role="separator" aria-label="Resize panels" title="Drag to resize · double-click to reset"></div>
+  <div id="fields">
+    <div id="fhead">
+      <select id="fselect" aria-label="Section"></select>
+      <div id="ftabs" role="tablist"></div>
+    </div>
+    <div id="cards"></div>
+  </div>
+</div>
+
+<div id="composer" role="dialog" aria-label="Flag comment">
+  <span class="ctx" id="cctx"></span>
+  <textarea id="ctext" placeholder="Describe what needs to change…"></textarea>
+  <div class="crow" id="crecrow">
+    <button class="btn btn-outline sm" id="crec">🎙 Record instead</button>
+  </div>
+  <span class="t-cap muted" id="ctranshint" style="display:none">Transcript — review before sending</span>
+  <div class="cfoot">
+    <button class="btn btn-ghost-destr sm" id="cremove" style="display:none">Remove flag</button>
+    <div class="grow"></div>
+    <button class="btn btn-ghost sm" id="ccancel">Cancel</button>
+    <button class="btn btn-secondary sm" id="csave">Save flag</button>
+  </div>
+</div>
+
+<div id="overlay">
+  <div id="sheet">
+    <div id="sumbody">
+      <div>
+        <div class="t-title-s">Review summary</div>
+        <div class="t-cap muted" id="sumcount" style="margin-top:4px"></div>
+      </div>
+      <div id="sumgroups" style="display:flex;flex-direction:column;gap:16px;margin-top:8px"></div>
+      <div class="ackrow" id="ackrow" style="display:none;margin-top:8px">
+        <input type="checkbox" id="ackbox">
+        <label for="ackbox">I have seen the open flags and choose to proceed</label>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;align-items:center">
+        <button class="btn btn-ghost" id="backbtn">Back to review</button>
+        <div style="flex:1"></div>
+        <button class="btn btn-outline" id="approvebtn">Approve for cognizance</button>
+        <button class="btn btn-primary" id="sendbtn">Send back to advocate</button>
+      </div>
+    </div>
+    <div id="confirm">
+      <div class="okicon">✓</div>
+      <div class="t-title-s" id="conftitle">Sent back to Adv. Priya Nair</div>
+      <div class="t-bc muted" id="confsub">The advocate will see each flag with its comment, audio, and evidence.</div>
+      <button class="btn btn-outline" id="queuebtn" style="margin-top:8px">Back to queue</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ───────────────────────── seed data ───────────────────────── */
+const DOCS = [
+  {id:"aadhaar", name:"Aadhaar – complainant", pages:1, section:"Complainant documents"},
+  {id:"rental",  name:"Rental agreement",      pages:2, section:"Complainant documents"},
+  {id:"chqf",    name:"Cheque (front)",         pages:1, section:"Cheque documents"},
+  {id:"chqb",    name:"Cheque (back)",          pages:1, section:"Cheque documents"},
+  {id:"notice",  name:"Legal notice",           pages:2, section:"Notice documents"},
+  {id:"postal",  name:"Postal receipt",         pages:1, section:"Notice documents"},
+  {id:"vakala",  name:"Vakalatnama",            pages:1, section:"Other"},
+];
+
+const SECTIONS = [
+  {id:"complainant", label:"Complainant details"},
+  {id:"respondent",  label:"Respondent details"},
+  {id:"cheque",      label:"Cheque details"},
+];
+
+const FIELDS = [
+  {id:"name", section:"complainant", label:"Complainant name", value:"OM",
+   ai:{kind:"mismatch", extracted:"Om Kumar", srcDoc:"aadhaar", note:"Name in the document differs from the filed value"},
+   docIds:["aadhaar"]},
+  {id:"father", section:"complainant", label:"Father's name", value:"S/o Rajesh Kumar", verified:"aadhaar", docIds:["aadhaar"]},
+  {id:"aano", section:"complainant", label:"Aadhaar number", value:"XXXX-XXXX-4821", verified:"aadhaar", docIds:["aadhaar"]},
+  {id:"address", section:"complainant", label:"Address", value:"14/2 Gandhi Nagar, Bengaluru – 560032",
+   ai:{kind:"mismatch", extracted:"No. 21, 4th Cross, Jayanagar, Bengaluru – 560041", srcDoc:"rental", note:"Address differs across documents (Aadhaar vs rental agreement)"},
+   docIds:["aadhaar","rental"]},
+  {id:"mobile", section:"complainant", label:"Mobile number", value:"98XXXXXX21", nodoc:true, docIds:[]},
+
+  {id:"rname", section:"respondent", label:"Respondent name", value:"Rakesh Sharma", verified:"notice", docIds:["notice"]},
+  {id:"raddr", section:"respondent", label:"Address", value:"Shop 4, KR Market Road, Bengaluru – 560002", verified:"notice", docIds:["notice"]},
+  {id:"rocc", section:"respondent", label:"Occupation", value:"Trader", nodoc:true, docIds:[]},
+
+  {id:"chqno", section:"cheque", label:"Cheque number", value:"004512", verified:"chqf", docIds:["chqf"]},
+  {id:"amount", section:"cheque", label:"Amount", value:"₹2,40,000", verified:"chqf", docIds:["chqf"]},
+  {id:"chqdate", section:"cheque", label:"Cheque date", value:"12/03/2026",
+   ai:{kind:"lowconf", extracted:"1?/03/2026", srcDoc:"chqf", note:"Handwriting unclear — could not read the date confidently"},
+   docIds:["chqf"]},
+  {id:"bank", section:"cheque", label:"Bank and branch", value:"Canara Bank, Jayanagar branch", verified:"chqf", docIds:["chqf"]},
+  {id:"drawer", section:"cheque", label:"Drawer name", value:"Rakesh Sharma", verified:"chqf", docIds:["chqf"]},
+];
+
+const CANNED_TRANSCRIPT = "The address on the rental agreement does not match the Aadhaar — please confirm the complainant's current address and re-upload proof if it has changed.";
+
+/* per-field officer state: resolution:'accepted'|'kept'|null, correction:{old,new}|null, flag:{text,audio,dur}|null, attachHint:bool */
+const OFS = {}; FIELDS.forEach(f=>OFS[f.id]={resolution:null,correction:null,flag:null,attachHint:false,prevState:null});
+
+/* doc mock content — spans carry data-f for evidence highlighting */
+const DOCHTML = {
+  aadhaar:`<div class="mock-h">Government of India</div><div class="mock-sub">Unique Identification Authority of India</div>
+    <div class="mock-box"><div class="mock-photo">Photo</div>
+    <div class="mock-line">Name: <b><span data-f="name">OM KUMAR</span></b></div>
+    <div class="mock-line"><span data-f="father">S/O: RAJESH KUMAR</span></div>
+    <div class="mock-line">DOB: 14/06/1988 &nbsp;·&nbsp; Male</div>
+    <div class="mock-line">Address: <span data-f="address">14/2 Gandhi Nagar, Bengaluru, Karnataka – 560032</span></div>
+    <div class="mock-line" style="clear:both;margin-top:16px">Aadhaar no: <b class="mono"><span data-f="aano">XXXX XXXX 4821</span></b></div></div>
+    <div class="mock-stamp">Self-attested copy</div>`,
+  rental:`<div class="mock-h">Rental agreement</div><div class="mock-sub">Executed on 02/01/2026 · Bengaluru</div>
+    <div class="mock-line">This agreement is made between Sri Venkatesh Rao (lessor) and <b>Om Kumar</b> (lessee), residing at
+    <span data-f="address">No. 21, 4th Cross, Jayanagar, Bengaluru – 560041</span>, for the premises described herein…</div>
+    <div class="mock-line" style="margin-top:16px">2. The lessee shall pay a monthly rent of ₹18,000 on or before the 5th day of each month…</div>
+    <div class="mock-line" style="margin-top:16px">3. The term of this agreement is eleven months commencing 05/01/2026…</div>
+    <div class="mock-sig">Om Kumar</div>`,
+  chqf:`<div class="mock-box" style="padding:24px">
+    <div class="mock-line"><b><span data-f="bank">Canara Bank · Jayanagar branch</span></b> <span style="float:right">Date: <b class="mono smudge"><span data-f="chqdate">12/03/2026</span></b></span></div>
+    <div class="mock-line" style="margin-top:20px">Pay: <b>Om Kumar</b></div>
+    <div class="mock-line">Rupees: <span data-f="amount">Two lakh forty thousand only</span> <span style="float:right;border:1px solid var(--n7);padding:2px 10px;border-radius:4px">₹ <b class="mono"><span data-f="amount2">2,40,000</span></b></span></div>
+    <div class="mock-line" style="margin-top:28px">A/c no: <span class="mono">XXXXXX8890</span></div>
+    <div class="mock-sig"><span data-f="drawer">Rakesh Sharma</span></div>
+    <div class="mock-line mono" style="margin-top:20px;letter-spacing:4px">⑈ <span data-f="chqno">004512</span> ⑈ 560015002 ⑈</div></div>`,
+  chqb:`<div class="mock-h">Cheque (back)</div><div class="mock-sub">Bank endorsements</div>
+    <div class="mock-box"><div class="mock-line mono">RETURN MEMO · 16/03/2026</div>
+    <div class="mock-line">Reason: Funds insufficient</div></div><div class="mock-stamp">Canara Bank · Jayanagar</div>`,
+  notice:`<div class="mock-h">Legal notice</div><div class="mock-sub">Under section 138 of the Negotiable Instruments Act, 1881 · Dated 28/03/2026</div>
+    <div class="mock-line">To,<br><b><span data-f="rname">Rakesh Sharma</span></b><br><span data-f="raddr">Shop 4, KR Market Road, Bengaluru – 560002</span></div>
+    <div class="mock-line" style="margin-top:16px">Under instructions from my client, Om Kumar, I hereby call upon you to make payment of ₹2,40,000 being the amount of the dishonoured cheque no. 004512 dated 12/03/2026, within fifteen days of receipt of this notice…</div>
+    <div class="mock-sig">Priya Nair, Advocate</div>`,
+  postal:`<div class="mock-h">Postal receipt</div><div class="mock-sub">India Post · Registered</div>
+    <div class="mock-box"><div class="mock-line mono">RL 4471 2209 88 IN</div>
+    <div class="mock-line">Booked: 29/03/2026 · Jayanagar PO</div>
+    <div class="mock-line">To: Rakesh Sharma, Bengaluru 560002</div></div>`,
+  vakala:`<div class="mock-h">Vakalatnama</div><div class="mock-sub">Court of the Judicial Magistrate, Bengaluru</div>
+    <div class="mock-line">I, Om Kumar, do hereby appoint and retain Adv. Priya Nair to appear for me in the above matter and to conduct and prosecute the same…</div>
+    <div class="mock-sig">Om Kumar</div><div class="mock-sig" style="font-size:16px">Priya Nair</div>`,
+};
+
+/* ───────────────────────── state ───────────────────────── */
+const S = {
+  ai:true, selected:null, activeSection:"complainant", openDoc:"aadhaar", zoom:1,
+  rectTool:false, annos:[], nextAnno:1,
+  composer:null, editing:null, decided:false,
+};
+try{
+  if(localStorage.getItem("scrutiny.layout.swap")==="1") document.body.classList.add("swapped");
+  const w=parseInt(localStorage.getItem("scrutiny.layout.panelWidth"),10);
+  if(w>=320&&w<=560) document.getElementById("fields").style.width=w+"px";
+}catch(e){}
+
+const $=id=>document.getElementById(id);
+const fieldById=id=>FIELDS.find(f=>f.id===id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* derived card state */
+function cardState(f){
+  const o=OFS[f.id];
+  if(o.correction) return "corrected";
+  if(o.flag) return "flagged";
+  if(S.ai && f.ai && !o.resolution) return f.ai.kind==="lowconf"?"lowconf":"aiflag";
+  if(o.resolution==="kept") return "kept";
+  if(S.ai && f.verified) return "verified";
+  if(f.nodoc) return "nodoc";
+  return "default";
+}
+function openIssues(sec){
+  return FIELDS.filter(f=>f.section===sec).reduce((n,f)=>{
+    const st=cardState(f);
+    return n + ((st==="aiflag"||st==="lowconf"||st==="flagged")?1:0);
+  },0);
+}
+
+/* ───────────────────────── rail ───────────────────────── */
+function docItem(d,dim){
+  return `<button class="doc ${d.id===S.openDoc?"open":""} ${dim?"dim":""}" data-doc="${d.id}">
+    <span class="dico">PDF</span><span class="dmeta"><span class="dname">${esc(d.name)}</span>
+    <span class="dpages">${d.pages} page${d.pages>1?"s":""}</span></span></button>`;
+}
+function renderRail(){
+  const el=$("rail"); let html="";
+  const sel=S.selected?fieldById(S.selected):null;
+  if(S.ai && sel && sel.docIds.length){
+    html+=`<div class="rail-h">Related to selected field</div>`;
+    sel.docIds.forEach(id=>{ html+=docItem(DOCS.find(d=>d.id===id),false); });
+    html+=`<div class="rail-sep"></div><div class="rail-h">Other documents</div>`;
+    DOCS.filter(d=>!sel.docIds.includes(d.id)).forEach(d=>{ html+=docItem(d,true); });
+  }else{
+    let grp="";
+    DOCS.forEach(d=>{ if(d.section!==grp){grp=d.section;html+=`<div class="rail-h">${esc(grp)}</div>`;} html+=docItem(d,false); });
+  }
+  el.innerHTML=html;
+  el.querySelectorAll(".doc").forEach(b=>b.addEventListener("click",()=>openDoc(b.dataset.doc)));
+}
+
+/* ───────────────────────── viewer ───────────────────────── */
+function openDoc(id){
+  S.openDoc=id;
+  const d=DOCS.find(x=>x.id===id);
+  $("vdocname").textContent=d.name;
+  $("vpages").textContent=`1 / ${d.pages}`;
+  $("page").innerHTML=DOCHTML[id]||"";
+  renderAnnos(); decorateEvidence(); renderRail();
+}
+function decorateEvidence(){
+  document.querySelectorAll(".evid").forEach(s=>{s.classList.remove("evid"); const t=s.querySelector(".evid-tag"); if(t)t.remove();});
+  if(!S.ai||!S.selected) return;
+  const spans=$("page").querySelectorAll(`[data-f]`);
+  spans.forEach(sp=>{
+    const key=sp.dataset.f.replace(/2$/,"");
+    if(key===S.selected){
+      sp.classList.add("evid");
+      const tag=document.createElement("span"); tag.className="evid-tag"; tag.textContent="AI read this";
+      sp.appendChild(tag);
+      if(S._lastEvid!==S.selected+":"+S.openDoc){
+        S._lastEvid=S.selected+":"+S.openDoc;
+        sp.scrollIntoView({block:"center",behavior:"smooth"});
+      }
+    }
+  });
+}
+function setZoom(z){
+  S.zoom=Math.min(1.5,Math.max(.75,z));
+  $("page").style.transform=`scale(${S.zoom})`;
+  $("zoomlvl").textContent=Math.round(S.zoom*100)+"%";
+}
+$("zoomin").addEventListener("click",()=>setZoom(S.zoom+.25));
+$("zoomout").addEventListener("click",()=>setZoom(S.zoom-.25));
+
+/* rectangle tool + annotations */
+$("recttool").addEventListener("click",()=>{
+  S.rectTool=!S.rectTool;
+  $("recttool").classList.toggle("on",S.rectTool);
+  $("recttool").setAttribute("aria-pressed",String(S.rectTool));
+  $("vcanvas").classList.toggle("recting",S.rectTool);
+});
+let drawing=null;
+$("page").addEventListener("pointerdown",e=>{
+  if(!S.rectTool||e.button!==0) return;
+  const r=$("page").getBoundingClientRect();
+  drawing={x:(e.clientX-r.left)/r.width*100,y:(e.clientY-r.top)/r.height*100,el:document.createElement("div")};
+  drawing.el.className="anno temp"; $("page").appendChild(drawing.el);
+  e.preventDefault();
+});
+window.addEventListener("pointermove",e=>{
+  if(!drawing) return;
+  const r=$("page").getBoundingClientRect();
+  const cx=(e.clientX-r.left)/r.width*100, cy=(e.clientY-r.top)/r.height*100;
+  const x=Math.min(drawing.x,cx),y=Math.min(drawing.y,cy),w=Math.abs(cx-drawing.x),h=Math.abs(cy-drawing.y);
+  Object.assign(drawing.el.style,{left:x+"%",top:y+"%",width:w+"%",height:h+"%"});
+  drawing.box={x,y,w,h};
+});
+window.addEventListener("pointerup",()=>{
+  if(!drawing) return;
+  const box=drawing.box; drawing.el.remove();
+  const wasDrawing=drawing; drawing=null;
+  if(!box||box.w<1.5||box.h<1) return;
+  const a={id:"a"+(S.nextAnno++),docId:S.openDoc,...box,fieldId:S.selected,text:"",audio:false,dur:0,saved:false};
+  S.annos.push(a); renderAnnos();
+  openComposer({type:"anno",id:a.id});
+});
+function renderAnnos(){
+  $("page").querySelectorAll(".anno:not(.temp)").forEach(x=>x.remove());
+  S.annos.filter(a=>a.docId===S.openDoc).forEach(a=>{
+    const el=document.createElement("div"); el.className="anno";
+    el.dataset.anno=a.id;
+    Object.assign(el.style,{left:a.x+"%",top:a.y+"%",width:a.w+"%",height:a.h+"%"});
+    if(a.saved) el.innerHTML=`<span class="adot">⚑</span>`;
+    el.title=a.text||"Flag";
+    el.addEventListener("click",e=>{e.stopPropagation();openComposer({type:"anno",id:a.id});});
+    $("page").appendChild(el);
+  });
+}
+
+/* ───────────────────────── fields panel ───────────────────────── */
+function renderNav(){
+  $("ftabs").innerHTML=SECTIONS.map(s=>{
+    const n=openIssues(s.id);
+    return `<button class="ftab ${s.id===S.activeSection?"on":""}" role="tab" data-sec="${s.id}">
+      ${esc(s.label)}${n?` <span class="pill waiting">${n}</span>`:""}</button>`;
+  }).join("");
+  $("ftabs").querySelectorAll(".ftab").forEach(b=>b.addEventListener("click",()=>{S.activeSection=b.dataset.sec;renderAll();}));
+  $("fselect").innerHTML=SECTIONS.map(s=>{
+    const n=openIssues(s.id);
+    return `<option value="${s.id}" ${s.id===S.activeSection?"selected":""}>${esc(s.label)}${n?` (${n})`:""}</option>`;
+  }).join("");
+}
+$("fselect").addEventListener("change",e=>{S.activeSection=e.target.value;renderAll();});
+
+function pillFor(st){
+  switch(st){
+    case "verified": return `<span class="pill ready">Matches documents</span>`;
+    case "aiflag": return `<span class="pill waiting">Mismatch</span>`;
+    case "lowconf": return `<span class="pill waiting">Unclear in document</span>`;
+    case "corrected": return `<span class="pill info">Edited by you</span>`;
+    case "flagged": return `<span class="pill urgent">Flagged</span>`;
+    case "nodoc": return `<span class="pill neutral">No document to verify against</span>`;
+    default: return "";
+  }
+}
+function cardHTML(f){
+  const o=OFS[f.id], st=cardState(f), sel=S.selected===f.id;
+  let body="", value=esc(f.value), old="";
+  if(st==="corrected"){ old=`<div class="fold">${esc(o.correction.old)}</div>`; value=esc(o.correction.new); }
+  if(S.editing===f.id){
+    body=`<input class="inline" id="editinput" value="${esc(o.correction?o.correction.new:f.value)}" aria-label="Edit ${esc(f.label)}">
+      <div class="factions"><button class="btn btn-secondary sm" data-act="saveedit">Save</button>
+      <button class="btn btn-ghost sm" data-act="canceledit">Cancel</button></div>`;
+    return wrap(body);
+  }
+  body=`${old}<div class="fval"><span>${value}</span>
+    <button class="btn btn-ghost icon sm fedit" data-act="edit" aria-label="Edit value">✎</button></div>`;
+  if(st==="aiflag"||st==="lowconf"){
+    const src=DOCS.find(d=>d.id===f.ai.srcDoc);
+    body+=`<div class="well">
+      <div class="wrow"><div class="wk">Filed</div><div class="wv">${esc(f.value)}</div></div>
+      <div class="wrow"><div class="wk">In document</div><div class="wv">${esc(f.ai.extracted)}</div>
+        <div class="wsrc">From <a data-act="opensrc">${esc(src.name)}</a> · ${esc(f.ai.note)}</div></div>
+    </div>
+    <div class="factions">
+      ${st==="aiflag"?`<button class="btn btn-secondary sm" data-act="accept">Accept suggestion</button>`:""}
+      <button class="btn btn-ghost sm" data-act="keep">Keep filed value</button>
+      <button class="btn btn-ghost-destr sm" data-act="flag">⚑ Flag</button>
+    </div>`;
+  }
+  if(st==="kept"){
+    body+=`<div class="keptnote"><span>You kept the filed value</span><a data-act="unkeep">Undo</a></div>`;
+  }
+  if(st==="corrected"){
+    body+=`<div class="fnote">Will be sent to the advocate for consent</div>
+      <div class="factions"><button class="btn btn-ghost sm" data-act="undo">Undo</button>
+      <button class="btn btn-ghost-destr sm" data-act="flag">⚑ Flag</button></div>`;
+  }
+  if(st==="flagged"){
+    const snip=(o.flag.text||"").slice(0,60)+((o.flag.text||"").length>60?"…":"");
+    body+=`<button class="flagchip" data-act="reopenflag">⚑ <span class="snip">${esc(snip)}</span>${o.flag.audio?` <span class="audiochip">▶ 0:${String(o.flag.dur).padStart(2,"0")}</span>`:""}</button>`;
+    if(o.attachHint) body+=`<div class="attach-hint"><a data-act="attach">Attach evidence from the document?</a>
+      <button data-act="dismisshint" aria-label="Dismiss">✕</button></div>`;
+  }
+  if((st==="default"||st==="verified"||st==="nodoc"||st==="kept") && !S.ai && f.verified){ /* nothing extra in AI-off */ }
+  return wrap(body);
+  function wrap(inner){
+    return `<div class="fc ${sel?"sel":""}" data-fid="${f.id}" tabindex="0" role="button" aria-pressed="${sel}">
+      <div class="frow"><span class="flabel">${esc(f.label)}</span>${pillFor(st)}</div>${inner}</div>`;
+  }
+}
+function renderCards(){
+  $("cards").innerHTML=FIELDS.filter(f=>f.section===S.activeSection).map(cardHTML).join("");
+  $("cards").querySelectorAll(".fc").forEach(el=>{
+    el.addEventListener("click",e=>{
+      const act=e.target.closest("[data-act]");
+      if(act){handleAction(el.dataset.fid,act.dataset.act);e.stopPropagation();return;}
+      selectField(el.dataset.fid);
+    });
+    el.addEventListener("keydown",e=>{ if(e.key==="Enter"&&e.target===el) selectField(el.dataset.fid); });
+  });
+  const inp=$("editinput"); if(inp){inp.focus();inp.select();}
+}
+function selectField(fid){
+  S.selected = S.selected===fid?null:fid;
+  const f=S.selected?fieldById(fid):null;
+  if(f&&S.ai&&f.docIds.length&&!f.docIds.includes(S.openDoc)) openDoc(f.docIds[0]);
+  else { decorateEvidence(); renderRail(); }
+  renderCards();
+}
+function handleAction(fid,act){
+  const f=fieldById(fid),o=OFS[fid];
+  switch(act){
+    case "edit": S.editing=fid; break;
+    case "canceledit": S.editing=null; break;
+    case "saveedit":{
+      const v=$("editinput").value.trim(); S.editing=null;
+      if(v && v!==(o.correction?o.correction.new:f.value)){
+        o.prevState={correction:o.correction,resolution:o.resolution};
+        o.correction={old:f.value,new:v}; o.resolution="edited";
+      }
+      break;}
+    case "accept":
+      o.prevState={correction:o.correction,resolution:o.resolution};
+      o.correction={old:f.value,new:f.ai.extracted}; o.resolution="accepted"; break;
+    case "undo":
+      o.correction=o.prevState?o.prevState.correction:null;
+      o.resolution=o.prevState?o.prevState.resolution:null; o.prevState=null; break;
+    case "keep": o.resolution="kept"; break;
+    case "unkeep": o.resolution=null; break;
+    case "flag": if(S.selected!==fid) selectField(fid); openComposer({type:"field",id:fid}); return;
+    case "reopenflag": openComposer({type:"field",id:fid}); return;
+    case "opensrc": if(S.selected!==fid){S.selected=fid;renderCards();} openDoc(f.ai.srcDoc); return;
+    case "attach":
+      o.attachHint=false;
+      if(S.selected!==fid) selectField(fid);
+      if(!S.rectTool) $("recttool").click();
+      break;
+    case "dismisshint": o.attachHint=false; break;
+  }
+  renderAll();
+}
+
+/* ───────────────────────── composer ───────────────────────── */
+let recTimer=null,recSec=0;
+function composerTarget(){
+  if(!S.composer) return null;
+  if(S.composer.type==="field") return OFS[S.composer.id];
+  return S.annos.find(a=>a.id===S.composer.id);
+}
+function openComposer(target){
+  closeComposer(false);
+  S.composer=target;
+  const c=$("composer");
+  let ctx="",existing=null;
+  if(target.type==="field"){
+    const f=fieldById(target.id),sec=SECTIONS.find(s=>s.id===f.section);
+    ctx=`Flag on: ${f.label} — ${sec.label.toLowerCase()}`;
+    existing=OFS[target.id].flag;
+  }else{
+    const a=S.annos.find(x=>x.id===target.id),d=DOCS.find(x=>x.id===a.docId);
+    ctx=`Annotation on: ${d.name}`+(a.fieldId?` · Linked to: ${fieldById(a.fieldId).label}`:"");
+    if(a.saved) existing={text:a.text,audio:a.audio,dur:a.dur};
+  }
+  $("cctx").textContent=ctx;
+  if(existing&&existing.audio){S.composer.recAudio=true;S.composer.recDur=existing.dur;}
+  $("ctext").value=existing?existing.text:"";
+  $("ctranshint").style.display="none";
+  $("crecrow").innerHTML=`<button class="btn btn-outline sm" id="crec">🎙 Record instead</button>`+
+    (existing&&existing.audio?` <span class="audiochip">▶ 0:${String(existing.dur).padStart(2,"0")}</span>`:"");
+  bindRec();
+  $("cremove").style.display=existing?"":"none";
+  c.classList.add("open");
+  positionComposer(target);
+  $("ctext").focus();
+}
+function positionComposer(target){
+  const c=$("composer");
+  let anchor=null;
+  if(target.type==="field") anchor=$("cards").querySelector(`.fc[data-fid="${target.id}"]`);
+  else anchor=$("page").querySelector(`.anno[data-anno="${target.id}"]`)||$("page");
+  const r=anchor?anchor.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,bottom:innerHeight/2,width:0};
+  let left=target.type==="field"? r.left-332 : r.left+r.width+12;
+  if(left<8) left=r.left+8;
+  if(left+328>innerWidth) left=innerWidth-336;
+  let top=Math.min(Math.max(8,r.top),innerHeight-280);
+  c.style.left=left+"px"; c.style.top=top+"px";
+}
+function bindRec(){
+  const b=$("crec"); if(!b) return;
+  b.addEventListener("click",()=>{
+    if(recTimer) return;
+    recSec=0;
+    $("crecrow").innerHTML=`<span class="recdot"></span><span class="t-cap mono" id="rectime">0:00</span>
+      <button class="btn btn-destr sm" id="crecstop">Stop</button>`;
+    recTimer=setInterval(()=>{recSec++;$("rectime").textContent="0:"+String(recSec).padStart(2,"0");},1000);
+    $("crecstop").addEventListener("click",()=>{
+      clearInterval(recTimer);recTimer=null;
+      const dur=Math.max(recSec,1);
+      $("crecrow").innerHTML=`<span class="audiochip">▶ 0:${String(dur).padStart(2,"0")}</span>
+        <span class="t-cap muted">Recording attached (simulated)</span>`;
+      $("ctranshint").style.display="";
+      if(!$("ctext").value.trim()) $("ctext").value=CANNED_TRANSCRIPT;
+      S.composer.recAudio=true; S.composer.recDur=dur;
+    });
+  });
+}
+function closeComposer(discardTemp=true){
+  if(recTimer){clearInterval(recTimer);recTimer=null;}
+  if(discardTemp && S.composer && S.composer.type==="anno"){
+    const a=S.annos.find(x=>x.id===S.composer.id);
+    if(a&&!a.saved){S.annos=S.annos.filter(x=>x!==a);renderAnnos();}
+  }
+  S.composer=null; $("composer").classList.remove("open");
+}
+$("ccancel").addEventListener("click",()=>closeComposer());
+$("csave").addEventListener("click",()=>{
+  if(!S.composer) return;
+  const text=$("ctext").value.trim();
+  const audio=!!S.composer.recAudio, dur=S.composer.recDur||0;
+  if(!text&&!audio){$("ctext").focus();return;}
+  if(S.composer.type==="field"){
+    const o=OFS[S.composer.id],hadFlag=!!o.flag;
+    o.flag={text,audio,dur};
+    if(!hadFlag&&!audio) o.attachHint=true;
+  }else{
+    const a=S.annos.find(x=>x.id===S.composer.id);
+    a.text=text;a.audio=audio;a.dur=dur;a.saved=true;
+  }
+  closeComposer(false); renderAll();
+});
+$("cremove").addEventListener("click",()=>{
+  if(!S.composer) return;
+  if(S.composer.type==="field"){OFS[S.composer.id].flag=null;OFS[S.composer.id].attachHint=false;}
+  else S.annos=S.annos.filter(x=>x.id!==S.composer.id);
+  closeComposer(false); renderAll();
+});
+window.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    if(S.composer) closeComposer();
+    else if(S.editing){S.editing=null;renderAll();}
+    else if(S.rectTool) $("recttool").click();
+    else if(S.selected){S.selected=null;renderAll();}
+  }
+});
+
+/* ───────────────────────── divider / swap / adaptive nav ───────────────────────── */
+(function(){
+  const div=$("divider"),panel=$("fields");
+  let dragging=false;
+  div.addEventListener("pointerdown",e=>{dragging=true;div.classList.add("drag");div.setPointerCapture(e.pointerId);});
+  div.addEventListener("pointermove",e=>{
+    if(!dragging) return;
+    const sw=document.body.classList.contains("swapped");
+    let w=sw? e.clientX : innerWidth-e.clientX;
+    w=Math.min(560,Math.max(320,w));
+    panel.style.width=w+"px";
+  });
+  div.addEventListener("pointerup",()=>{dragging=false;div.classList.remove("drag");
+    try{localStorage.setItem("scrutiny.layout.panelWidth",parseInt(panel.style.width||"400",10));}catch(e){}});
+  div.addEventListener("dblclick",()=>{panel.style.width="400px";
+    try{localStorage.setItem("scrutiny.layout.panelWidth","400");}catch(e){}});
+  new ResizeObserver(en=>{
+    panel.classList.toggle("narrow",en[0].contentRect.width<400);
+  }).observe(panel);
+})();
+$("swapbtn").addEventListener("click",()=>{
+  document.body.classList.toggle("swapped");
+  try{localStorage.setItem("scrutiny.layout.swap",document.body.classList.contains("swapped")?"1":"0");}catch(e){}
+});
+
+/* ───────────────────────── AI toggle ───────────────────────── */
+$("aitoggle").addEventListener("change",e=>{
+  S.ai=!e.target.checked;
+  document.body.classList.toggle("ai-off",!S.ai);
+  renderAll();
+});
+
+/* ───────────────────────── summary ───────────────────────── */
+function collectSummary(){
+  const corr=[],flags=[],unrev=[];
+  FIELDS.forEach(f=>{
+    const o=OFS[f.id],sec=SECTIONS.find(s=>s.id===f.section).label;
+    if(o.correction) corr.push({t:`${f.label} — ${sec}`,d:`<s>${esc(o.correction.old)}</s> → ${esc(o.correction.new)}`,fid:f.id});
+    if(o.flag) flags.push({t:`${f.label} — ${sec}`,d:esc(o.flag.text),audio:o.flag.audio,dur:o.flag.dur,fid:f.id});
+    const st=cardState(f);
+    if(st==="aiflag"||st==="lowconf") unrev.push({t:`${f.label} — ${sec}`,d:esc(f.ai.note),fid:f.id});
+  });
+  S.annos.filter(a=>a.saved).forEach(a=>{
+    const d=DOCS.find(x=>x.id===a.docId);
+    flags.push({t:`${d.name}${a.fieldId?` · ${fieldById(a.fieldId).label}`:""}`,d:esc(a.text),audio:a.audio,dur:a.dur,anno:a.id});
+  });
+  return {corr,flags,unrev};
+}
+function renderSummary(){
+  const {corr,flags,unrev}=collectSummary();
+  $("sumcount").textContent=`CMP/1043/2026 · ${corr.length} correction${corr.length!==1?"s":""} · ${flags.length} flag${flags.length!==1?"s":""}`;
+  const g=[];
+  const rows=(items,badge)=>items.map(i=>`<div class="sumrow">
+    <div class="sr-main"><div class="sr-t">${esc(i.t)}</div><div class="sr-d">${i.d||"<span class='muted'>No comment</span>"}
+    ${i.audio?` <span class="audiochip">▶ 0:${String(i.dur).padStart(2,"0")}</span>`:""}</div></div>
+    ${badge||""}<button class="btn btn-ghost sm" data-edit="${i.fid||""}" data-anno="${i.anno||""}">Edit</button></div>`).join("");
+  if(corr.length) g.push(`<div class="sumgroup"><div class="sg-h">Corrections — sent to the advocate for consent</div>${rows(corr)}</div>`);
+  if(flags.length) g.push(`<div class="sumgroup"><div class="sg-h">Flags — returned to the advocate to resolve</div>${rows(flags)}</div>`);
+  if(unrev.length) g.push(`<div class="sumgroup"><div class="sg-h">Not reviewed — AI mismatches you took no action on</div>${rows(unrev,`<span class="pill waiting">Open</span>`)}</div>`);
+  if(!g.length) g.push(`<div class="t-bc muted">No corrections or flags. The file can be approved for cognizance.</div>`);
+  $("sumgroups").innerHTML=g.join("");
+  const anyIssue=corr.length+flags.length>0, anyOpen=unrev.length>0||flags.length>0;
+  $("sendbtn").style.display=anyIssue?"":"none";
+  $("ackrow").style.display=anyOpen?"":"none";
+  $("ackbox").checked=false;
+  $("approvebtn").disabled=anyOpen;
+  $("sumgroups").querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{
+    $("overlay").classList.remove("open");
+    if(b.dataset.edit){const f=fieldById(b.dataset.edit);S.activeSection=f.section;S.selected=b.dataset.edit;
+      if(S.ai&&f.docIds.length)openDoc(f.docIds[0]);renderAll();}
+    else if(b.dataset.anno){const a=S.annos.find(x=>x.id===b.dataset.anno);if(a){openDoc(a.docId);}}
+  }));
+}
+$("submitbtn").addEventListener("click",()=>{closeComposer();$("sumbody").style.display="";$("confirm").style.display="none";renderSummary();$("overlay").classList.add("open");});
+$("backbtn").addEventListener("click",()=>$("overlay").classList.remove("open"));
+$("ackbox").addEventListener("change",e=>{$("approvebtn").disabled=!e.target.checked && $("ackrow").style.display!=="none";});
+function decide(kind){
+  $("sumbody").style.display="none";$("confirm").style.display="flex";
+  if(kind==="send"){$("conftitle").textContent="Sent back to Adv. Priya Nair";
+    $("confsub").textContent="The advocate will see each flag with its comment, audio, and evidence.";}
+  else{$("conftitle").textContent="Approved for cognizance";
+    $("confsub").textContent="The file moves forward. Your review and any open flags are logged with it.";}
+}
+$("sendbtn").addEventListener("click",()=>decide("send"));
+$("approvebtn").addEventListener("click",()=>{if(!$("approvebtn").disabled)decide("approve");});
+$("queuebtn").addEventListener("click",()=>{$("overlay").classList.remove("open");});
+
+/* ───────────────────────── boot ───────────────────────── */
+function renderAll(){renderNav();renderCards();renderRail();decorateEvidence();}
+openDoc("aadhaar");
+renderAll();
+</script>
+</body>
+</html>

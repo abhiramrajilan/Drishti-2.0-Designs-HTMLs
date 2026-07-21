@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Editor / tooling
+.vscode/
+.idea/
+
+# Node (in case a flow folder ever includes a build setup)
+node_modules/
+dist/
+build/
+
+# Local Claude / remember state — never commit
+.remember/
