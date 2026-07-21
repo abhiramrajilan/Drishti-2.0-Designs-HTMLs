@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ON Courts — E-Filing (Cheque Bounce) · Prototype</title>
+<style>
+  :root{--teal:#007E7E;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f7f8f8}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{max-width:760px;margin:0 auto;padding:56px 24px 72px}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--teal);
+    background:#e6f2f2;border:1px solid #cfe6e6;border-radius:999px;padding:5px 12px;letter-spacing:.02em}
+  h1{font-size:26px;margin:18px 0 6px;letter-spacing:-.01em}
+  p.lead{color:var(--muted);font-size:15px;line-height:1.6;margin:0 0 28px;max-width:60ch}
+  a.cta{display:inline-block;background:var(--teal);color:#fff;text-decoration:none;font-weight:600;
+    padding:12px 20px;border-radius:10px;font-size:15px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  a.cta:hover{filter:brightness(1.05)}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:40px 0 12px}
+  ol{list-style:none;counter-reset:s;padding:0;margin:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  ol li{counter-increment:s}
+  ol li a{display:flex;align-items:center;gap:14px;padding:13px 16px;text-decoration:none;color:var(--ink);border-top:1px solid var(--line)}
+  ol li:first-child a{border-top:none}
+  ol li a:hover{background:#f2faf9}
+  ol li a::before{content:counter(s,decimal-leading-zero);font-variant-numeric:tabular-nums;
+    color:var(--teal);font-weight:700;font-size:13px;min-width:22px}
+  .foot{margin-top:32px;font-size:13px;color:var(--muted);line-height:1.6}
+  code{background:#eef1f1;padding:2px 6px;border-radius:5px;font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">ON Courts · Drishti 2.0</span>
+  <h1>E-Filing flow — Cheque Bounce case</h1>
+  <p class="lead">Interactive prototype of the single-case e-filing wizard, from document
+  upload through signing. Start at the beginning, or jump to any step below.</p>
+  <a class="cta" href="screens/01-case-documents-upload.html">Start the flow →</a>
+
+  <h2>All screens</h2>
+  <ol>
+    <li><a href="screens/01-case-documents-upload.html">Case Documents Upload</a></li>
+    <li><a href="screens/02-case-filing-form.html">Case Filing Form</a></li>
+    <li><a href="screens/03-advocate-details.html">Advocate Details</a></li>
+    <li><a href="screens/04-accused-details.html">Accused Details</a></li>
+    <li><a href="screens/05-cheque-and-return-memo.html">Cheque &amp; Return Memo</a></li>
+    <li><a href="screens/06-demand-notice-and-debt.html">Demand Notice &amp; Debt</a></li>
+    <li><a href="screens/07-jurisdiction-and-limitation.html">Jurisdiction &amp; Limitation</a></li>
+    <li><a href="screens/08-adr-other-details-and-prayer.html">ADR, Other details &amp; Prayer</a></li>
+    <li><a href="screens/09-witnesses.html">Witnesses</a></li>
+    <li><a href="screens/10-documents.html">Documents</a></li>
+    <li><a href="screens/11-preview.html">Preview</a></li>
+    <li><a href="screens/12-sign.html">Sign</a></li>
+  </ol>
+
+  <p class="foot">This is a served project — open it through a local web server, not by
+  double-clicking. See <code>README.md</code> for how to run and hand it off.</p>
+</div>
+</body>
+</html>

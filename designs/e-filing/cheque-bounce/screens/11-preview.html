@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="../css/app.css">
+<script src="../js/runtime.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<script>(function(){try{var n=performance.getEntriesByType('navigation')[0];var t=n?n.type:(performance.navigation&&performance.navigation.type===1?'reload':'navigate');if(t==='reload'){void 0;return;}}catch(e){}var F=340;function init(){var s=document.createElement('style');s.textContent='@keyframes pgIn{from{opacity:0}to{opacity:1}}body{animation:pgIn '+F+'ms cubic-bezier(.22,.61,.36,1) both}body.pg-leave{opacity:0 !important;transition:opacity 200ms ease}';document.head.appendChild(s);}if(document.head){init();}else{document.addEventListener('DOMContentLoaded',init);}document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var href=a.getAttribute('href');if(!href||href.charAt(0)==='#'||/^(https?:|mailto:|tel:|javascript:)/i.test(href)||a.target==='_blank')return;e.preventDefault();document.body.classList.add('pg-leave');setTimeout(function(){location.href=href;},F-30);},true);})();</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: #ffffff; font-family: var(--font-sans); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+  .navitem { display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:8px; font-size:14px; font-weight:500; color:color-mix(in oklch, var(--foreground) 78%, var(--background)); text-decoration:none; cursor:pointer; transition:background 150ms, color 150ms; }
+  .navitem:not(.navitem--on) > svg:first-of-type { color:color-mix(in oklch, var(--foreground) 58%, var(--background)); }
+  .navitem:hover { background:var(--secondary); color:var(--foreground); }
+  .navitem--on { background:var(--sidebar-accent); color:var(--sidebar-accent-foreground); }
+  .ocrtip { position:relative; display:inline-flex; margin-left:auto; }
+  .ocrtipbox { position:absolute; top:calc(100% + 8px); right:0; width:222px; background:var(--foreground); color:var(--background); font-size:12px; font-weight:400; line-height:1.5; padding:9px 12px; border-radius:8px; opacity:0; visibility:hidden; transition:opacity 120ms ease; z-index:60; box-shadow:var(--shadow-lg); pointer-events:none; text-align:left; }
+  .ocrtip:hover .ocrtipbox { opacity:1; visibility:visible; }
+
+  .formcol { transition:margin 180ms ease; }
+  .formcol--open { margin-right:440px; }
+  .editpanel { position:fixed; top:54px; right:0; width:440px; height:calc(100vh - 54px); overflow-y:auto; background:var(--card); border-left:1px solid var(--border); z-index:30; }
+  .ep-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:20px 24px 16px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--card); z-index:2; }
+  .ep-body { padding:20px 24px 28px; }
+  .ep-label { font-size:12px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.02em; margin-bottom:10px; }
+  .ep-fld { display:flex; flex-direction:column; gap:6px; margin-bottom:13px; }
+  .ep-fld > label { font-size:13px; color:var(--muted-foreground); }
+  .ep-doc { border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-md); }
+  .ep-doc-h { background:color-mix(in oklch, var(--info) 6%, var(--card)); padding:13px 16px; border-bottom:1px solid var(--border); }
+  .ep-row { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:9px 16px; }
+  .ep-row + .ep-row { border-top:1px solid color-mix(in oklch,var(--border) 60%,transparent); }
+  .ep-hl { background:color-mix(in oklch,var(--primary) 16%,transparent); box-shadow:0 0 0 2px color-mix(in oklch,var(--primary) 40%,transparent); border-radius:5px; padding:1px 6px; }
+  .fcard { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:22px 26px; display:flex; flex-direction:column; gap:6px; }
+  .cardhead { display:flex; align-items:center; justify-content:space-between; gap:16px; padding-bottom:14px; margin-bottom:6px; border-bottom:1px solid var(--border); }
+  .ctitle { font-size:16px; font-weight:600; letter-spacing:-0.005em; }
+  .editlink { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--primary); text-decoration:none; cursor:pointer; padding:6px 12px; border-radius:8px; border:1px solid var(--border); background:var(--card); font-family:var(--font-sans); transition:background 150ms, border-color 150ms; }
+  .editlink:hover { background:color-mix(in oklch, var(--primary) 9%, transparent); border-color:color-mix(in oklch, var(--primary) 35%, var(--border)); }
+  .kv { display:grid; grid-template-columns:210px 1fr; gap:4px 20px; padding:9px 0; font-size:14px; align-items:start; }
+  .kv + .kv { border-top:1px solid color-mix(in oklch, var(--border) 60%, transparent); }
+  .kl { color:var(--muted-foreground); }
+  .kvv { color:var(--foreground); font-weight:500; line-height:1.5; }
+  .subblock { border:1px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; flex-direction:column; }
+  .subtitle { font-size:13px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; margin-bottom:4px; }
+  .pill { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:9999px; font-size:12px; font-weight:600; }
+  .pill-good { background:var(--success-muted); color:var(--success-muted-foreground); }
+  .pill-warn { background:var(--warning-muted); color:var(--warning-muted-foreground); }
+  .doclist { display:flex; flex-direction:column; gap:2px; }
+  .docitem { display:flex; align-items:center; gap:10px; padding:8px 0; font-size:14px; }
+  .docitem + .docitem { border-top:1px solid color-mix(in oklch, var(--border) 60%, transparent); }
+  .vseg { display:inline-flex; background:var(--secondary); border-radius:9999px; padding:4px; gap:2px; flex-shrink:0; }
+  .vseg button { padding:7px 15px; border:none; background:none; border-radius:9999px; font-size:13px; font-weight:600; color:var(--muted-foreground); cursor:pointer; font-family:var(--font-sans); transition:background 120ms,color 120ms; white-space:nowrap; }
+  .vseg button.on { background:var(--card); color:var(--foreground); box-shadow:var(--shadow-sm); }
+  .tabstrip { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; border-bottom:1px solid var(--border); margin-bottom:24px; }
+  .ptab { display:inline-flex; align-items:center; gap:8px; padding:11px 14px; margin-bottom:-1px; border:none; border-bottom:2px solid transparent; background:transparent; color:var(--muted-foreground); font-size:14px; font-weight:500; cursor:pointer; font-family:var(--font-sans); transition:color 120ms; white-space:nowrap; }
+  .ptab:hover { color:var(--foreground); }
+  .ptab--on { color:var(--foreground); font-weight:600; border-bottom-color:var(--primary); }
+  .doc-sheet { background:var(--card); border:1px solid var(--border); border-radius:6px; box-shadow:var(--shadow-md); padding:56px 64px; }
+  .doc-h1 { font-size:20px; font-weight:700; letter-spacing:-0.01em; line-height:1.35; }
+  .doc-sec { font-size:17px; font-weight:700; margin:34px 0 10px; }
+  .dgrid { width:100%; border-collapse:collapse; margin:8px 0 4px; table-layout:fixed; }
+  .dgrid td { border:1px solid color-mix(in oklch, var(--foreground) 24%, var(--background)); padding:8px 12px; vertical-align:top; font-size:13.5px; line-height:1.5; }
+  .dgrid .dhead { background:var(--secondary); font-weight:700; font-size:13.5px; }
+  .dlbl { display:block; font-size:11.5px; color:var(--muted-foreground); margin-bottom:2px; }
+  .doc-sub2 { font-size:14px; font-weight:700; margin:22px 0 2px; }
+  .doc-block-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted-foreground); margin:18px 0 4px; }
+  .doc-p { font-size:14px; line-height:1.65; margin:10px 0; color:var(--foreground); }
+  .dtable { width:100%; border-collapse:collapse; font-size:13.5px; margin-top:10px; }
+  .dtable th, .dtable td { border:1px solid var(--border); padding:8px 12px; text-align:left; vertical-align:top; }
+  .dtable th { background:var(--secondary); font-weight:600; font-size:12px; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; flex-direction:column;">
+
+  <!-- ░░ TOP BAR ░░ -->
+  <header style="position:sticky; top:0; z-index:30;">
+  <div style="background:var(--card); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:16px; height:54px; padding:0 24px;">
+    <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+      <div style="width:30px; height:30px; border-radius:8px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:var(--primary-foreground);">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+      </div>
+      <div style="display:flex; flex-direction:column; line-height:1.15;">
+        <span style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:var(--foreground);">24x7 ON Courts</span>
+        <span style="font-size:11px; color:var(--muted-foreground);">Kollam, Kerala</span>
+      </div>
+    </div>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:22px;">
+      <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>EN</span>
+      <span style="font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;">Support</span>
+      <div style="width:32px; height:32px; border-radius:9999px; background:var(--secondary); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--muted-foreground);">RK</div>
+    </div>
+  </div>
+  <div style="display:none;">
+    <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:9999px; background:var(--secondary); color:var(--muted-foreground); font-size:13px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"></path><path d="M12 6v14"></path><path d="M8 8v12"></path><path d="M4 4v16"></path></svg>
+      Filing under <strong style="color:var(--foreground); font-weight:600;">S-138, NI Act</strong> · 24×7 ON Court, Kollam
+    </div>
+    <div style="display:none;">
+      <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted-foreground);">
+        <span style="font-weight:600; color:var(--foreground);">Preview</span>
+        <span>Section 11 of 13</span>
+      </div>
+      <div style="height:5px; border-radius:9999px; background:var(--secondary); overflow:hidden;">
+        <div style="height:100%; width:85%; background:var(--primary); border-radius:9999px;"></div>
+      </div>
+    </div>
+  </div>
+  </header>
+
+  <div style="flex:1; display:flex; align-items:flex-start;">
+
+    <!-- ── SIDEBAR ── -->
+    <aside style="width:296px; flex-shrink:0; background:var(--card); border-right:1px solid var(--border); position:sticky; top:54px; height:calc(100vh - 54px); overflow:hidden; padding:18px 16px; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; padding:0 4px 16px;">
+        <span style="font-size:15px; font-weight:700; flex-shrink:0;">Sections</span>
+        <div style="flex:1; min-width:0; display:flex; align-items:center; gap:9px;">
+          <div style="flex:1; height:6px; border-radius:9999px; background:var(--secondary); overflow:hidden;">
+            <div style="height:100%; width:{{ progressPct }}; background:var(--primary); border-radius:9999px;"></div>
+          </div>
+          <span style="font-size:12px; font-weight:600; color:var(--muted-foreground); flex-shrink:0;">{{ progressPct }}</span>
+        </div>
+      </div>
+
+      <a href="Case Documents Upload.dc.html" style="display:flex; align-items:center; gap:8px; padding:10px 14px; margin:2px 0 16px; border:1px solid var(--border); background:var(--secondary); color:var(--foreground); border-radius:10px; font-size:13.5px; font-weight:600; text-decoration:none; cursor:pointer;">
+        View uploaded documents
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        <span style="margin-left:auto; font-size:11px; font-weight:700; background:var(--primary); color:var(--primary-foreground); border-radius:9999px; padding:2px 8px;">5</span>
+      </a>
+      <div style="flex:1; min-height:0; overflow-y:auto; margin:0 -6px; padding:0 6px;">
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:8px 8px 6px;">Parties</div>
+      <a class="navitem" href="Case Filing Form.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
+        Complainant <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="Advocate Details.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+        Advocate <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="Accused Details.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21a8 8 0 0 1 11.873-7"></path><circle cx="10" cy="8" r="5"></circle><path d="m17 17 5 5"></path><path d="m22 17-5 5"></path></svg>
+        Accused <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Case details</div>
+      <a class="navitem" href="Cheque &amp; Return Memo.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+        Cheque &amp; return memo <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="Demand Notice &amp; Debt.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        Demand notice &amp; debt <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="Jurisdiction &amp; Limitation.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Jurisdiction &amp; limitation <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="ADR, Other details &amp; Prayer.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        ADR, other &amp; prayer <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Evidence</div>
+      <a class="navitem" href="Witnesses.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+        Witnesses <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="Documents.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path></svg>
+        Documents <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Affidavit</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path><path d="m9 15 2 2 4-4"></path></svg>
+        Affidavit <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Preview</div>
+      <a class="navitem navitem--on">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        Preview
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Sign</div>
+      <a class="navitem" href="Sign.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="m2 2 7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+        Sign
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Pay fees</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+        Pay fees
+      </a>
+    </div>
+    </aside>
+
+    <!-- ── FORM COLUMN ── -->
+    <main class="{{ mainCls }}" style="flex:1; min-width:0; padding:34px 48px 120px;">
+      <div style="max-width:860px;">
+
+        <!-- breadcrumb -->
+        <nav style="display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted-foreground); margin-bottom:28px; flex-wrap:wrap;">
+          <a href="Dashboard.dc.html" style="color:var(--muted-foreground); text-decoration:none;">Dashboard</a>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="m9 18 6-6-6-6"></path></svg>
+          <span>Case filing under <span style="color:var(--foreground); font-weight:500;">S-138, NI Act</span></span>
+        </nav>
+
+        <!-- heading -->
+        <div style="margin-bottom:16px;">
+          <h1 style="font-size:24px; font-weight:600; letter-spacing:-0.02em; margin:0;">Preview</h1>
+          <p style="font-size:14px; color:var(--muted-foreground); margin:8px 0 0; line-height:1.5;">Review everything you have filed. Use <strong style="color:var(--foreground); font-weight:600;">Edit</strong> on any section to make changes before you sign.</p>
+        </div>
+        <div class="tabstrip">
+          <div style="display:flex; align-items:center; gap:2px;">
+            <button class="{{ cardBtnCls }}" onClick="{{ showCard }}">Synopsis</button>
+            <button class="{{ docBtnCls }}" onClick="{{ showDoc }}">Court document</button>
+          </div>
+          <button class="btn btn-outline btn-sm" onClick="{{ onDownload }}" style="gap:7px; margin-bottom:7px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+            Download
+          </button>
+        </div>
+
+        <sc-if value="{{ cardMode }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; gap:18px;">
+
+          <!-- ═══ Filing summary ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">Filing summary</div>
+              <span class="pill pill-good"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Ready to sign</span>
+            </div>
+            <div class="kv"><span class="kl">Offence</span><span class="kvv">Section 138, Negotiable Instruments Act, 1881</span></div>
+            <div class="kv"><span class="kl">Court</span><span class="kvv">24×7 ON Court, Kollam</span></div>
+            <div class="kv"><span class="kl">Total cheque amount</span><span class="kvv">₹52,05,000 (2 cheques)</span></div>
+            <div class="kv"><span class="kl">Amount claimed</span><span class="kvv">₹52,05,000 + interest @ 6% p.a.</span></div>
+          </div>
+
+          <!-- ═══ Complainant ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">Complainant</div>
+              <button type="button" class="editlink" onClick="{{ onEditComplainant }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg> Edit</button>
+            </div>
+            <div class="kv"><span class="kl">Name</span><span class="kvv">{{ cpName }}</span></div>
+            <div class="kv"><span class="kl">Type</span><span class="kvv">{{ cpType }}</span></div>
+            <div class="kv"><span class="kl">Mobile</span><span class="kvv">{{ cpMobile }}</span></div>
+            <div class="kv"><span class="kl">Email</span><span class="kvv">{{ cpEmail }}</span></div>
+            <div class="kv"><span class="kl">Permanent address</span><span class="kvv">{{ cpAddr }}</span></div>
+            <div class="kv"><span class="kl">Power of attorney</span><span class="kvv">{{ cpPoa }}</span></div>
+          </div>
+
+          <!-- ═══ Advocate ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">Advocates</div>
+              <button type="button" class="editlink" onClick="{{ onEditAdvocate }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg> Edit</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px; padding-top:6px;">
+              <div class="subblock">
+                <span class="subtitle">Advocate 1</span>
+                <div class="kv"><span class="kl">Name</span><span class="kvv">Bijini Rejen</span></div>
+                <div class="kv"><span class="kl">Bar registration</span><span class="kvv">P/60/1992</span></div>
+                <div class="kv"><span class="kl">Appearing for</span><span class="kvv">All complainants</span></div>
+              </div>
+              <div class="subblock">
+                <span class="subtitle">Advocate 2</span>
+                <div class="kv"><span class="kl">Name</span><span class="kvv">Aparna Nair</span></div>
+                <div class="kv"><span class="kl">Bar registration</span><span class="kvv">P/61/1992</span></div>
+                <div class="kv"><span class="kl">Appearing for</span><span class="kvv">Complainant 1</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ═══ Accused ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">Accused</div>
+              <button type="button" class="editlink" onClick="{{ onEditAccused }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg> Edit</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px; padding-top:6px;">
+              <div class="subblock">
+                <span class="subtitle">Accused 1</span>
+                <div class="kv"><span class="kl">Name</span><span class="kvv">Suresh Menon</span></div>
+                <div class="kv"><span class="kl">Type</span><span class="kvv">Individual</span></div>
+                <div class="kv"><span class="kl">Address</span><span class="kvv">#88, Sector 34, Chandigarh — 160034 · Sector 34 PS</span></div>
+              </div>
+              <div class="subblock">
+                <span class="subtitle">Accused 2</span>
+                <div class="kv"><span class="kl">Name</span><span class="kvv">Menon Traders (Proprietorship)</span></div>
+                <div class="kv"><span class="kl">Address</span><span class="kvv">Booth 12, Industrial Area Phase 1, Chandigarh — 160002</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ═══ Cheque & return memo ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">Cheque &amp; return memo</div>
+              <button type="button" class="editlink" onClick="{{ onEditCheque }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg> Edit</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px; padding-top:6px;">
+              <div class="subblock">
+                <span class="subtitle">Cheque 1</span>
+                <div class="kv"><span class="kl">Amount</span><span class="kvv">₹50,25,000</span></div>
+                <div class="kv"><span class="kl">Cheque no. / date</span><span class="kvv">004821 · 15/03/2026</span></div>
+                <div class="kv"><span class="kl">Drawer's bank</span><span class="kvv">State Bank of India, Sector 17, Chandigarh</span></div>
+                <div class="kv"><span class="kl">Returned</span><span class="kvv">05/04/2026 — Funds insufficient</span></div>
+              </div>
+              <div class="subblock">
+                <span class="subtitle">Cheque 2</span>
+                <div class="kv"><span class="kl">Amount</span><span class="kvv">₹1,80,000</span></div>
+                <div class="kv"><span class="kl">Cheque no. / date</span><span class="kvv">004822 · 02/04/2026</span></div>
+                <div class="kv"><span class="kl">Returned</span><span class="kvv">18/04/2026 — Funds insufficient</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ═══ Demand notice & debt ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">Demand notice &amp; debt</div>
+              <button type="button" class="editlink" onClick="{{ onEditDemand }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg> Edit</button>
+            </div>
+            <div class="kv"><span class="kl">Nature of debt</span><span class="kvv">Repayment of borrowed money</span></div>
+            <div class="kv"><span class="kl">Notice dispatched</span><span class="kvv">20/04/2026 · Registered post (RPAD)</span></div>
+            <div class="kv"><span class="kl">Delivered</span><span class="kvv">Yes — 24/04/2026</span></div>
+            <div class="kv"><span class="kl">Reply received</span><span class="kvv">No</span></div>
+            <div class="kv"><span class="kl">Payment received</span><span class="kvv">No payment made</span></div>
+          </div>
+
+          <!-- ═══ Jurisdiction & limitation ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">Jurisdiction &amp; limitation</div>
+              <button type="button" class="editlink" onClick="{{ onEditJurisdiction }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg> Edit</button>
+            </div>
+            <div class="kv"><span class="kl">Cheque presented by</span><span class="kvv">Complainant — HDFC Bank, Sector 22, Chandigarh</span></div>
+            <div class="kv"><span class="kl">Police station</span><span class="kvv">Sector 17 PS, Chandigarh</span></div>
+            <div class="kv"><span class="kl">Cause of action</span><span class="kvv">10/05/2026</span></div>
+            <div class="kv"><span class="kl">Complaint filing date</span><span class="kvv">28/05/2026</span></div>
+            <div class="kv"><span class="kl">Within limitation</span><span class="kvv"><span class="pill pill-good"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Yes, in time</span></span></div>
+          </div>
+
+          <!-- ═══ ADR & prayer ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">ADR, other details &amp; prayer</div>
+              <button type="button" class="editlink" onClick="{{ onEditAdr }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg> Edit</button>
+            </div>
+            <div class="kv"><span class="kl">Open to settlement (ADR)</span><span class="kvv">Yes</span></div>
+            <div class="kv"><span class="kl">Interim relief</span><span class="kvv">Interim compensation up to 20% of cheque amount (S-143A)</span></div>
+            <div class="kv"><span class="kl">Final relief</span><span class="kvv">Conviction under S-138, compensation with 6% interest, and process/summons</span></div>
+          </div>
+
+          <!-- ═══ Witnesses ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">Witnesses</div>
+              <button type="button" class="editlink" onClick="{{ onEditWitnesses }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg> Edit</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px; padding-top:6px;">
+              <div class="subblock">
+                <span class="subtitle">Witness 1</span>
+                <div class="kv"><span class="kl">Name</span><span class="kvv">Anil Verma</span></div>
+                <div class="kv"><span class="kl">Will prove</span><span class="kvv">Presence at the handing over of the cheque</span></div>
+              </div>
+              <div class="subblock">
+                <span class="subtitle">Witness 2</span>
+                <div class="kv"><span class="kl">Designation</span><span class="kvv">Bank Manager, SBI Sector 17</span></div>
+                <div class="kv"><span class="kl">Will prove</span><span class="kvv">Dishonour of the cheque and issue of the return memo</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ═══ Documents ═══ -->
+          <div class="fcard">
+            <div class="cardhead">
+              <div class="ctitle">Documents</div>
+              <button type="button" class="editlink" onClick="{{ onEditDocuments }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg> Edit</button>
+            </div>
+            <div class="doclist" style="padding-top:2px;">
+              <div class="docitem"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success-muted-foreground)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Cheque 1 · Cheque 2 · Cheque return memo</div>
+              <div class="docitem"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success-muted-foreground)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Demand notice 1 · Aadhaar (Complainant)</div>
+              <div class="docitem"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--warning-muted-foreground)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path></svg> 3 required documents still to upload</div>
+            </div>
+          </div>
+
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ docMode }}" hint-placeholder-val="{{ false }}">
+        <div class="doc-sheet">
+          <div style="text-align:center; display:flex; flex-direction:column; gap:5px; margin-bottom:16px;">
+            <div style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted-foreground);">In the 24×7 ON Court, Kollam</div>
+            <div style="font-size:14px; font-weight:700; margin-top:4px;">Criminal Complaint (CMP) No. ______ of 2026</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding:6px 0; font-size:14px;">
+            <div><div style="font-weight:700;">{{ cpName }}</div><div style="font-size:12.5px; color:var(--muted-foreground); margin-top:3px; line-height:1.5;">S/o G Balakrishna Pillai, aged about 56 years,<br>R/o Vijaya Bhavan, Manakkattu, Mavoor, Kozhikode, Kerala — 673661</div></div>
+            <div style="white-space:nowrap; font-style:italic;">… Complainant</div>
+          </div>
+          <div style="text-align:center; font-style:italic; padding:6px 0; font-size:14px;">Versus</div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding:6px 0; font-size:14px;">
+            <div><div style="font-weight:700;">Suresh Menon</div><div style="font-size:12.5px; color:var(--muted-foreground); margin-top:3px; line-height:1.5;">S/o [father's name], aged about — years,<br>R/o #88, Sector 34, Chandigarh — 160034</div></div>
+            <div style="white-space:nowrap; font-style:italic;">… Accused</div>
+          </div>
+          <div style="text-align:center; font-size:14px; font-weight:700; letter-spacing:0.01em; margin:16px 0 4px;">COMPLAINT UNDER SECTION 138 OF THE NEGOTIABLE INSTRUMENTS ACT, 1881</div>
+
+          <div class="doc-sec">Synopsis</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Parties</td></tr>
+              <tr>
+                <td><span class="dlbl">Complainant Name</span>{{ cpName }}</td>
+                <td><span class="dlbl">Accused Name</span>Suresh Menon</td>
+                <td><span class="dlbl">Complainant’s Advocate Name</span>Bijini Rejen</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Cheque details</td></tr>
+              <tr>
+                <td><span class="dlbl">Date on cheque</span>15 March 2026</td>
+                <td><span class="dlbl">Amount</span>₹50,25,000</td>
+                <td><span class="dlbl">Cheque number</span>004821</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Bank Name</span>State Bank of India</td>
+                <td colspan="2"><span class="dlbl">Bank Branch</span>Sector 17, Chandigarh</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Dishonour</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of presentation</span>02 April 2026</td>
+                <td><span class="dlbl">Date on return memo</span>05 April 2026</td>
+                <td><span class="dlbl">Return reason</span>Funds insufficient</td>
+              </tr>
+              <tr><td colspan="3"><span class="dlbl">Bank Branch (Complainant)</span>HDFC Bank, Sector 22, Chandigarh</td></tr>
+              <tr><td class="dhead" colspan="3">Demand Notice</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of dispatch of demand notice</span>20 April 2026</td>
+                <td><span class="dlbl">Mode of service</span>Registered post (RPAD)</td>
+                <td><span class="dlbl">Whether delivered?</span>Yes</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Date of delivery</span>24 April 2026</td>
+                <td colspan="2"><span class="dlbl">Has the accused replied to the demand notice?</span>No</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Cause of Action</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of cause of action</span>10 May 2026</td>
+                <td><span class="dlbl">Jurisdiction invoked under Section 142(2)</span>Sector 22, Chandigarh — complainant's bank branch</td>
+                <td><span class="dlbl">Any other complaint pending between the same parties?</span>No</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Prayer/ Relief sought</td></tr>
+              <tr><td colspan="3">Punishment under S.138 NI Act; compensation of ₹1,04,10,000 (twice the total cheque amount); interim compensation of ₹10,41,000 under S.143A NI Act</td></tr>
+            </tbody>
+          </table>
+
+          <div class="doc-sec">1. Party details</div>
+          <div class="doc-sub2">1.1. Complainant</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Complainant 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Complainant Type</span>{{ cpType }}</td>
+                <td><span class="dlbl">Full Name</span>{{ cpName }}</td>
+                <td><span class="dlbl">Mobile Number</span>{{ cpMobile }}</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Email Address</span>{{ cpEmail }}</td>
+                <td><span class="dlbl">Permanent address</span>{{ cpAddr }}</td>
+                <td><span class="dlbl">Present Address</span>{{ cpAddr }}</td>
+              </tr>
+              <tr><td colspan="3"><span class="dlbl">POA for Complainant 1</span>Not appointed</td></tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">1.2. Advocate (Complainant)</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="2">Advocate for all Complainants</td></tr>
+              <tr>
+                <td><span class="dlbl">Full Name</span>Bijini Rejen</td>
+                <td><span class="dlbl">Bar Registration</span>P/60/1992</td>
+              </tr>
+              <tr><td class="dhead" colspan="2">Advocate for Complainant 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Full Name</span>Aparna Nair</td>
+                <td><span class="dlbl">Bar Registration</span>P/61/1992</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">1.3. Accused</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Accused 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Type</span>Individual</td>
+                <td><span class="dlbl">Full Name</span>Suresh Menon</td>
+                <td><span class="dlbl">Address</span>#88, Sector 34, Chandigarh 160034</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Accused 2</td></tr>
+              <tr>
+                <td><span class="dlbl">Type of Entity</span>Proprietorship</td>
+                <td><span class="dlbl">Full Name</span>Menon Traders</td>
+                <td><span class="dlbl">Address</span>Booth 12, Industrial Area Phase 1, Chandigarh 160002</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="doc-sec">2. Case details</div>
+          <div class="doc-sub2">2.1. Cheque details</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Cheque 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Date on cheque</span>15 March 2026</td>
+                <td><span class="dlbl">Amount</span>₹50,25,000</td>
+                <td><span class="dlbl">Cheque number</span>004821</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Bank Name</span>State Bank of India</td>
+                <td colspan="2"><span class="dlbl">Bank Branch</span>Sector 17, Chandigarh</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Cheque 2</td></tr>
+              <tr>
+                <td><span class="dlbl">Date on cheque</span>02 April 2026</td>
+                <td><span class="dlbl">Amount</span>₹1,80,000</td>
+                <td><span class="dlbl">Cheque number</span>004822</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.2. Cheque return memo details</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Cheque return memo 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of presentation</span>02 April 2026</td>
+                <td><span class="dlbl">Date of return</span>05 April 2026</td>
+                <td><span class="dlbl">Return reason</span>Funds insufficient</td>
+              </tr>
+              <tr><td colspan="3"><span class="dlbl">Date of receipt of information about return</span>07 April 2026</td></tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.3. Demand notice details</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Demand Notice 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of dispatch of demand notice</span>20 April 2026</td>
+                <td><span class="dlbl">Mode of service</span>Registered post (RPAD)</td>
+                <td><span class="dlbl">Whether delivered?</span>Yes</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Date of delivery</span>24 April 2026</td>
+                <td><span class="dlbl">Has the accused replied to the demand notice?</span>No</td>
+                <td><span class="dlbl">Has the Drawer made full or part payment due under the cheque?</span>No</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.4. Nature of debt or liability</div>
+          <table class="dgrid"><tbody>
+            <tr><td><span class="dlbl">Nature of debt or other liability</span>Repayment of borrowed money</td></tr>
+          </tbody></table>
+          <div class="doc-sub2">2.5. Jurisdiction</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td colspan="3"><span class="dlbl">Was the cheque delivered for collection at a bank account?</span>Yes</td></tr>
+              <tr><td class="dhead" colspan="3">Payee (Complainant) Bank Details</td></tr>
+              <tr>
+                <td><span class="dlbl">IFSC Code</span>HDFC0000512</td>
+                <td><span class="dlbl">Bank Name</span>HDFC Bank</td>
+                <td><span class="dlbl">Bank Branch</span>Sector 22, Chandigarh</td>
+              </tr>
+              <tr><td colspan="3"><span class="dlbl">Police Station</span>Sector 17 PS, Chandigarh</td></tr>
+              <tr><td class="dhead" colspan="3">Other cheque dishonour complaints between the same parties</td></tr>
+              <tr><td colspan="3"><span class="dlbl">Is there any other cheque dishonour complaint pending between the same parties?</span>No</td></tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.6. Limitation Period</div>
+          <table class="dgrid">
+            <tbody>
+              <tr>
+                <td><span class="dlbl">Date of cause of action</span>10 May 2026</td>
+                <td><span class="dlbl">Date of complaint filing</span>28 May 2026</td>
+                <td><span class="dlbl">Duration of delay</span>None — within limitation</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.7. ADR</div>
+          <table class="dgrid"><tbody>
+            <tr><td><span class="dlbl">Would you like to settle the case outside the court through alternative methods of dispute resolution?</span>Yes</td></tr>
+          </tbody></table>
+          <div class="doc-sub2">2.8. Other details</div>
+          <table class="dgrid"><tbody>
+            <tr><td><span class="dlbl">Any additional details</span>The complainant has an ongoing business relationship with the accused. The cheques issued towards repayment of borrowed money were dishonoured for insufficiency of funds.</td></tr>
+          </tbody></table>
+          <div class="doc-sub2">2.9. Prayer/ Relief Sought</div>
+          <div style="font-size:13px; font-weight:700; margin:10px 0 2px;">Interim Relief</div>
+          <div class="doc-p">It is, therefore, most respectfully prayed that this Hon'ble Court may be pleased to: Direct the Accused to pay interim compensation to the Complainant under Section 143A of the Negotiable Instruments Act, 1881, during the pendency of the trial, of a sum not exceeding 20% of the cheque amount i.e. Rs. 10,41,000, within 60 days of the order or such further period not exceeding 30 days as this Hon'ble Court may allow for sufficient cause shown.</div>
+          <div style="font-size:13px; font-weight:700; margin:14px 0 2px;">Final Relief</div>
+          <div class="doc-p">It is most respectfully prayed that this Hon'ble Court may be pleased to:</div>
+          <div class="doc-p" style="margin-left:18px;">(a) Take cognizance of the offence committed by the Accused under Section 138 of the Negotiable Instruments Act, 1881;<br>(b) Issue process/summons against the Accused and direct him/her to appear before this Hon'ble Court;<br>(c) Upon trial, convict and sentence the Accused under Section 138 of the Negotiable Instruments Act, 1881, to imprisonment for a term which may extend to two years, or with fine which may extend to twice the amount of the cheque, or with both;<br>(d) Direct the Accused to pay compensation to the Complainant under Section 395 of the Bharatiya Nagarik Suraksha Sanhita, 2023, equivalent to the cheque amount along with interest @ 6% per annum from the date of dishonour;<br>(e) Grant such other and further relief(s) as this Hon'ble Court may deem fit and proper in the facts and circumstances of the case.</div>
+
+          <div class="doc-sec">3. Evidence</div>
+          <div class="doc-sub2">3.1. List of witnesses</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Witness 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Full Name</span>Anil Verma</td>
+                <td colspan="2"><span class="dlbl">What will this witness prove?</span>Handing over of the cheque</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Mobile Number</span>+91 98220 11004</td>
+                <td><span class="dlbl">Email id</span>anil.verma@gmail.com</td>
+                <td><span class="dlbl">Address</span>#12, Sector 19, Chandigarh 160019</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Witness 2</td></tr>
+              <tr>
+                <td><span class="dlbl">Full Name</span>Bank Manager, SBI Sector 17</td>
+                <td colspan="2"><span class="dlbl">What will this witness prove?</span>Dishonour of the cheque and issue of the return memo</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">3.2. List of documents</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" style="width:52px;">S. No.</td><td class="dhead">Document Name</td><td class="dhead" style="width:120px;">Natively Digital</td></tr>
+              <tr><td>1.</td><td>Cheque 1</td><td>Yes</td></tr>
+              <tr><td>2.</td><td>Cheque 2</td><td>Yes</td></tr>
+              <tr><td>3.</td><td>Cheque return memo</td><td>Yes</td></tr>
+              <tr><td>4.</td><td>Demand notice</td><td>Yes</td></tr>
+              <tr><td>5.</td><td>Complainant ID Card (Aadhaar)</td><td>No</td></tr>
+            </tbody>
+          </table>
+          <div class="doc-p" style="margin-top:14px;">Signed on 28.05.2026. Please see Page __ for the signatures.</div>
+
+          <div class="doc-sec">4. Affidavit</div>
+          <div class="doc-p">I am the complainant / authorised representative of the complainant in the above case and am fully acquainted with the facts and circumstances of the case. I am competent and authorised to swear to this affidavit.</div>
+          <div class="doc-p">The accused issued the above cheque in discharge of a legally enforceable debt or liability. It has been dishonoured due to insufficiency of funds. A demand notice has been issued to the accused, but she/ he has failed to make the payment due under the cheque. All other requirements under Section 138 of the Negotiable Instruments Act, 1881 have been complied with.</div>
+          <div class="doc-p">I confirm that the demand notice was served on the last known correct address of the accused(s).</div>
+          <div class="doc-p">In accordance with Section 225 of the Bharatiya Nagarik Suraksha Sanhita, 2023, I confirm that there is sufficient ground for proceeding against the accused.</div>
+          <div class="doc-p">In accordance with Section 223 and other relevant provisions of the Bharatiya Nagarik Suraksha Sanhita, 2023, I confirm that the contents of this complaint are true and correct to the best of my knowledge, belief and information.</div>
+          <div class="doc-p">The physical or electronic records of the documents etc. produced by me with this complaint are in my lawful and proper custody and possession.</div>
+          <div class="doc-p">It is therefore humbly prayed that this Hon’ble Court may be pleased to take cognizance of the offence committed by the accused, and issue process to the accused.</div>
+
+          <div class="doc-sub2" style="margin-top:26px;">Complainant</div>
+          <div class="doc-p">I confirm that I have read and understood all the documents I am submitting through this filing, including the:<br>1. Complaint<br>2. Affidavit of fact</div>
+          <div class="doc-sub2">Advocate</div>
+          <div class="doc-p">I confirm the identity of the party, and that the party has read and fully understood the contents of the affidavit.</div>
+          <div class="doc-p">I confirm that the complaint has been properly drafted and presented in accordance with legal requirements.</div>
+          <div class="doc-p" style="text-align:center; margin-top:20px;">***</div>
+          <div class="doc-p" style="color:var(--muted-foreground);">Please turn over the page to see the documents uploaded by the Complainant.</div>
+        </div>
+        </sc-if>
+      </div>
+    </main>
+  </div>
+
+  <!-- ░░ FOOTER ░░ -->
+  <footer style="position:sticky; bottom:0; z-index:30; background:var(--card); border-top:1px solid var(--border); padding:14px 24px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <a class="btn btn-outline btn-lg" href="Documents.dc.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+        Back
+      </a>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--success-muted-foreground);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+          Reviewed
+        </span>
+        <a class="btn btn-default btn-lg" href="Sign.dc.html">Continue to sign
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+  <!-- ░░ EDIT PANEL (right, section + source) ░░ -->
+  <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ false }}">
+    <aside class="editpanel">
+      <div class="ep-head">
+        <div>
+          <div style="font-size:12px; font-weight:600; color:var(--primary);">Edit section</div>
+          <div style="font-size:18px; font-weight:600; letter-spacing:-0.01em;">{{ panel.title }}</div>
+        </div>
+        <button class="dialog-close" style="position:static;" onClick="{{ onClose }}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
+      </div>
+      <div class="ep-body">
+        <div class="ep-label">Details</div>
+        <sc-for list="{{ panel.fields }}" as="f" hint-placeholder-count="4">
+          <div class="ep-fld"><label>{{ f.label }}</label><input class="input" value="{{ f.value }}"></div>
+        </sc-for>
+
+        <sc-if value="{{ panel.hasDoc }}" hint-placeholder-val="{{ true }}">
+          <div class="ep-label" style="margin-top:20px;">Source document</div>
+          <div class="ep-doc">
+            <div class="ep-doc-h">
+              <div style="font-size:13px; font-weight:700; color:var(--info-muted-foreground); letter-spacing:0.03em;">{{ panel.docTitle }}</div>
+              <div style="font-size:12px; color:var(--muted-foreground); margin-top:3px;">{{ panel.docSubtitle }}</div>
+            </div>
+            <div style="padding:5px 0;">
+              <sc-for list="{{ panel.docRows }}" as="r" hint-placeholder-count="3">
+                <div class="ep-row"><span style="font-size:12px; color:var(--muted-foreground);">{{ r.label }}</span><span class="{{ r.cls }}" style="font-size:14px; font-weight:500; text-align:right;">{{ r.value }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ panel.noDoc }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; gap:9px; align-items:flex-start; font-size:13px; color:var(--muted-foreground); margin-top:16px; line-height:1.5; padding:13px 15px; background:var(--secondary); border-radius:10px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+            <span>{{ panel.noDocText }}</span>
+          </div>
+        </sc-if>
+
+        <div style="display:flex; gap:10px; margin-top:22px;">
+          <a class="btn btn-outline" style="flex:1;" href="{{ panel.href }}">Open full section</a>
+          <button class="btn btn-default" onClick="{{ onClose }}">Done</button>
+        </div>
+      </div>
+    </aside>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { editKey: null, viewMode: 'card' };
+  open(k) { this.setState({ editKey: k }); }
+  close() { this.setState({ editKey: null }); }
+  showView(m) { this.setState({ viewMode: m }); }
+  data() {
+    return {
+      complainant: { title: 'Complainant', href: 'Case Filing Form.dc.html',
+        fields: [ { label: 'Name', value: 'Prateek Agrawal' }, { label: 'Type', value: 'Individual' }, { label: 'Mobile', value: 'Not provided' }, { label: 'Email', value: 'Not provided' }, { label: 'Permanent address', value: 'Vijaya Bhavan, Manakkattu, Mavoor, Kozhikode, Kerala, 673661' } ],
+        hasDoc: true, docTitle: 'CHEQUE \u00b7 State Bank of India', docSubtitle: 'Sector 17 Branch, Chandigarh',
+        rows: [ { label: 'Pay to', value: 'Prateek Agrawal', hl: true }, { label: 'Amount', value: '\u20b950,25,000' }, { label: 'Cheque no.', value: '004821' }, { label: 'Date', value: '15/03/2026' } ] },
+      advocate: { title: 'Advocates', href: 'Advocate Details.dc.html',
+        fields: [ { label: 'Advocate 1', value: 'Bijini Rejen \u00b7 P/60/1992' }, { label: 'Appearing for', value: 'All complainants' }, { label: 'Advocate 2', value: 'Aparna Nair \u00b7 P/61/1992' } ],
+        hasDoc: true, docTitle: 'VAKALATNAMA', docSubtitle: 'S-138 NI Act \u00b7 Kollam',
+        rows: [ { label: 'Advocate', value: 'Bijini Rejen', hl: true }, { label: 'Bar registration', value: 'P/60/1992', hl: true }, { label: 'Enrolled with', value: 'Bar Council of Kerala' } ] },
+      accused: { title: 'Accused', href: 'Accused Details.dc.html',
+        fields: [ { label: 'Accused 1', value: 'Suresh Menon \u00b7 Individual' }, { label: 'Address', value: '#88, Sector 34, Chandigarh' }, { label: 'Accused 2', value: 'Menon Traders (Proprietorship)' } ],
+        hasDoc: true, docTitle: 'CHEQUE \u00b7 State Bank of India', docSubtitle: 'Sector 17 Branch, Chandigarh',
+        rows: [ { label: 'Account holder (drawer)', value: 'Suresh Menon', hl: true }, { label: 'Amount', value: '\u20b950,25,000' }, { label: 'Cheque no.', value: '004821' } ] },
+      cheque: { title: 'Cheque & return memo', href: 'Cheque & Return Memo.dc.html',
+        fields: [ { label: 'Cheque 1', value: '\u20b950,25,000 \u00b7 004821' }, { label: 'Drawer bank', value: 'State Bank of India, Sector 17' }, { label: 'Returned', value: '05/04/2026 - Funds insufficient' }, { label: 'Cheque 2', value: '\u20b91,80,000 \u00b7 004822' } ],
+        hasDoc: true, docTitle: 'CHEQUE RETURN MEMO \u00b7 HDFC Bank', docSubtitle: 'Collecting bank',
+        rows: [ { label: 'Cheque no.', value: '004821' }, { label: 'Amount', value: '\u20b950,25,000' }, { label: 'Date of return', value: '05/04/2026', hl: true }, { label: 'Reason', value: 'Funds insufficient', hl: true } ] },
+      demand: { title: 'Demand notice & debt', href: 'Demand Notice & Debt.dc.html',
+        fields: [ { label: 'Nature of debt', value: 'Repayment of borrowed money' }, { label: 'Dispatched', value: '20/04/2026 \u00b7 RPAD' }, { label: 'Delivered', value: 'Yes - 24/04/2026' }, { label: 'Payment received', value: 'No payment made' } ],
+        hasDoc: true, docTitle: 'LEGAL DEMAND NOTICE', docSubtitle: 'Under S-138 NI Act',
+        rows: [ { label: 'Dispatched on', value: '20/04/2026', hl: true }, { label: 'Mode of service', value: 'Registered post (RPAD)', hl: true }, { label: 'Demand', value: 'Pay within 15 days' } ] },
+      jurisdiction: { title: 'Jurisdiction & limitation', href: 'Jurisdiction & Limitation.dc.html',
+        fields: [ { label: 'Cheque presented by', value: 'Complainant - HDFC, Sector 22' }, { label: 'Police station', value: 'Sector 17 PS, Chandigarh' }, { label: 'Cause of action', value: '10/05/2026' }, { label: 'Complaint filing', value: '28/05/2026' } ],
+        hasDoc: true, docTitle: 'BANK PROOF \u00b7 HDFC Bank', docSubtitle: 'Sector 22 Branch, Chandigarh',
+        rows: [ { label: 'IFSC', value: 'HDFC0000512', hl: true }, { label: 'Branch', value: 'Sector 22, Chandigarh', hl: true }, { label: 'Account maintained by', value: 'Prateek Agrawal' } ] },
+      adr: { title: 'ADR, other details & prayer', href: 'ADR, Other details & Prayer.dc.html',
+        fields: [ { label: 'Open to settlement (ADR)', value: 'Yes' }, { label: 'Interim relief', value: 'S-143A - up to 20% of cheque amount' }, { label: 'Final relief', value: 'Conviction + compensation @ 6%' } ],
+        hasDoc: false, noDocText: 'Drafted from your case - there is no uploaded source document for this section.' },
+      witnesses: { title: 'Witnesses', href: 'Witnesses.dc.html',
+        fields: [ { label: 'Witness 1', value: 'Anil Verma' }, { label: 'Will prove', value: 'Handing over of the cheque' }, { label: 'Witness 2', value: 'Bank Manager, SBI Sector 17' }, { label: 'Will prove', value: 'Dishonour of the cheque' } ],
+        hasDoc: false, noDocText: 'Witness details are entered manually - no source document.' },
+      documents: { title: 'Documents', href: 'Documents.dc.html',
+        fields: [ { label: 'Uploaded', value: 'Cheques, return memo, demand notice, Aadhaar' }, { label: 'Pending', value: '3 required documents still to upload' } ],
+        hasDoc: false, noDocText: 'Manage files in the Documents section.' },
+    };
+  }
+  renderVals() {
+    const self = this;
+    let cp = {}; try { cp = JSON.parse(localStorage.getItem('oncourt_complainant') || '{}'); } catch (e) {}
+    const g = (v, fb) => (v && String(v).trim()) ? v : (fb || 'Not provided');
+    const addr = (a) => (a && (a.line1 || a.city)) ? [a.line1, a.city, a.district, a.state, a.pin].filter(Boolean).join(', ') : 'Not provided';
+    const cpName = g(cp.name, 'Prateek Agrawal');
+    const cpType = cp.type === 'institution' ? 'Institution' : 'Individual';
+    const cpMobile = g(cp.mobile);
+    const cpEmail = g(cp.email);
+    const cpAddr = addr(cp.res);
+    const cpPoa = (cp.poa === 'yes') ? 'Appointed' : 'Not appointed';
+    const S = this.data();
+    const key = this.state.editKey;
+    const s = key ? S[key] : null;
+    const panel = s ? {
+      title: s.title, href: s.href, fields: s.fields,
+      hasDoc: !!s.hasDoc, noDoc: !s.hasDoc, noDocText: s.noDocText || '',
+      docTitle: s.docTitle || '', docSubtitle: s.docSubtitle || '',
+      docRows: (s.rows || []).map(r => ({ label: r.label, value: r.value, cls: r.hl ? 'ep-hl' : '' })),
+    } : { title: '', href: '#', fields: [], hasDoc: false, noDoc: false, noDocText: '', docTitle: '', docSubtitle: '', docRows: [] };
+    const mk = (k) => () => self.open(k);
+    return {
+      progressPct: '85%',
+      cardMode: this.state.viewMode === 'card',
+      docMode: this.state.viewMode === 'doc',
+      cardBtnCls: this.state.viewMode === 'card' ? 'ptab ptab--on' : 'ptab',
+      docBtnCls: this.state.viewMode === 'doc' ? 'ptab ptab--on' : 'ptab',
+      showCard: () => self.showView('card'),
+      showDoc: () => self.showView('doc'),
+      onDownload: () => { try { window.print(); } catch (e) {} },
+      panelOpen: !!s,
+      panel,
+      mainCls: s ? 'formcol formcol--open' : 'formcol',
+      onClose: () => self.close(),
+      cpName, cpType, cpMobile, cpEmail, cpAddr, cpPoa,
+      onEditComplainant: mk('complainant'),
+      onEditAdvocate: mk('advocate'),
+      onEditAccused: mk('accused'),
+      onEditCheque: mk('cheque'),
+      onEditDemand: mk('demand'),
+      onEditJurisdiction: mk('jurisdiction'),
+      onEditAdr: mk('adr'),
+      onEditWitnesses: mk('witnesses'),
+      onEditDocuments: mk('documents'),
+    };
+  }
+}
+</script>
+</body>
+</html>

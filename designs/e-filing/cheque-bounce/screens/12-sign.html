@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="../css/app.css">
+<script src="../js/runtime.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<script>(function(){try{var n=performance.getEntriesByType('navigation')[0];var t=n?n.type:(performance.navigation&&performance.navigation.type===1?'reload':'navigate');if(t==='reload'){void 0;return;}}catch(e){}var F=340;function init(){var s=document.createElement('style');s.textContent='@keyframes pgIn{from{opacity:0}to{opacity:1}}body{animation:pgIn '+F+'ms cubic-bezier(.22,.61,.36,1) both}body.pg-leave{opacity:0 !important;transition:opacity 200ms ease}';document.head.appendChild(s);}if(document.head){init();}else{document.addEventListener('DOMContentLoaded',init);}document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var href=a.getAttribute('href');if(!href||href.charAt(0)==='#'||/^(https?:|mailto:|tel:|javascript:)/i.test(href)||a.target==='_blank')return;e.preventDefault();document.body.classList.add('pg-leave');setTimeout(function(){location.href=href;},F-30);},true);})();</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: #ffffff; font-family: var(--font-sans); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+  .sigrow { display:flex; align-items:center; gap:11px; padding:13px 4px; }
+  .sigrow + .sigrow { border-top:1px solid color-mix(in oklch, var(--border) 60%, transparent); }
+  .signum { flex-shrink:0; width:24px; height:24px; border-radius:9999px; background:var(--secondary); color:var(--muted-foreground); font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  .signame { font-size:14px; font-weight:600; color:var(--foreground); line-height:1.3; }
+  .sigrole { font-size:12px; color:var(--muted-foreground); margin-top:1px; }
+  .sigpill { flex-shrink:0; display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:9999px; font-size:12px; font-weight:600; }
+  .sig-signed { background:var(--success-muted); color:var(--success-muted-foreground); }
+  .sig-pending { background:var(--warning-muted); color:var(--warning-muted-foreground); }
+  .modalwrap { position:fixed; inset:0; z-index:80; background:color-mix(in oklch, var(--foreground) 42%, transparent); display:flex; align-items:center; justify-content:center; padding:24px; animation:fadein 140ms ease; }
+  .modalcard { width:100%; background:var(--card); border-radius:16px; box-shadow:var(--shadow-xl); overflow:hidden; animation:slidein-up 200ms cubic-bezier(0.22,1,0.36,1); }
+  .modalhead { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:22px 26px 18px; border-bottom:1px solid var(--border); }
+  .modaltitle { font-size:19px; font-weight:700; letter-spacing:-0.01em; }
+  .modalx { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; border:none; background:transparent; color:var(--muted-foreground); cursor:pointer; }
+  .modalx:hover { background:var(--secondary); color:var(--foreground); }
+  .drop { border:1.5px dashed color-mix(in oklch, var(--primary) 40%, var(--border)); border-radius:12px; background:color-mix(in oklch, var(--secondary) 55%, transparent); padding:34px 24px; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; cursor:pointer; transition:background 150ms, border-color 150ms; }
+  .drop:hover { background:color-mix(in oklch, var(--primary) 6%, transparent); border-color:color-mix(in oklch, var(--primary) 60%, var(--border)); }
+  .otpbox { width:100%; text-align:center; letter-spacing:0.4em; font-size:20px; font-weight:600; font-family:var(--font-mono); }
+  .linkbtn { background:none; border:none; padding:0; font:inherit; color:var(--primary); font-weight:600; text-decoration:underline; text-underline-offset:2px; cursor:pointer; }
+  .doc-sheet { background:var(--card); border:1px solid var(--border); border-radius:6px; box-shadow:var(--shadow-md); padding:52px 58px; max-width:720px; margin:0 auto; }
+  .doc-sec { font-size:17px; font-weight:700; margin:30px 0 10px; }
+  .doc-sub2 { font-size:14px; font-weight:700; margin:22px 0 2px; }
+  .doc-p { font-size:13.5px; line-height:1.65; margin:10px 0; color:var(--foreground); }
+  .dgrid { width:100%; border-collapse:collapse; margin:8px 0 4px; table-layout:fixed; }
+  .dgrid td { border:1px solid color-mix(in oklch, var(--foreground) 24%, var(--background)); padding:8px 12px; vertical-align:top; font-size:13px; line-height:1.5; word-break:break-word; }
+  .dgrid .dhead { background:var(--secondary); font-weight:700; font-size:13px; }
+  .dlbl { display:block; font-size:11px; color:var(--muted-foreground); margin-bottom:2px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  @keyframes pop-in { 0% { transform:scale(0.4); opacity:0; } 60% { transform:scale(1.08); } 100% { transform:scale(1); opacity:1; } }
+  .spinner { width:48px; height:48px; border-radius:9999px; border:4px solid color-mix(in oklch,var(--primary) 18%,transparent); border-top-color:var(--primary); animation:spin 800ms linear infinite; }
+  .feerow { display:flex; align-items:center; justify-content:space-between; padding:9px 15px; font-size:13.5px; }
+  .feerow + .feerow { border-top:1px solid color-mix(in oklch,var(--border) 60%,transparent); }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; flex-direction:column;">
+
+  <!-- ░░ TOP BAR ░░ -->
+  <header style="position:sticky; top:0; z-index:30;">
+  <div style="background:var(--card); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:16px; height:54px; padding:0 24px;">
+    <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+      <div style="width:30px; height:30px; border-radius:8px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:var(--primary-foreground);">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+      </div>
+      <div style="display:flex; flex-direction:column; line-height:1.15;">
+        <span style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:var(--foreground);">24x7 ON Courts</span>
+        <span style="font-size:11px; color:var(--muted-foreground);">Kollam, Kerala</span>
+      </div>
+    </div>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:22px;">
+      <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>EN</span>
+      <span style="font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;">Support</span>
+      <div style="width:32px; height:32px; border-radius:9999px; background:var(--secondary); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--muted-foreground);">RK</div>
+    </div>
+  </div>
+  </header>
+
+  <div style="flex:1; display:flex; align-items:flex-start;" data-screen-label="Sign">
+
+    <!-- ── SIGNATURE SIDEBAR ── -->
+    <aside style="width:320px; flex-shrink:0; background:var(--card); border-right:1px solid var(--border); position:sticky; top:54px; height:calc(100vh - 54px); overflow-y:auto; padding:22px 20px;">
+
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px;">
+        <span style="font-size:15px; font-weight:700;">Signatures</span>
+        <span style="font-size:12px; font-weight:600; color:var(--muted-foreground);">{{ signedCount }} of {{ totalCount }} signed</span>
+      </div>
+      <div style="height:6px; border-radius:9999px; background:var(--secondary); overflow:hidden; margin-bottom:22px;">
+        <div style="height:100%; width:{{ progressPct }}; background:var(--primary); border-radius:9999px; transition:width 220ms ease;"></div>
+      </div>
+
+      <div style="font-size:12px; font-weight:700; color:var(--muted-foreground); letter-spacing:0.02em; margin-bottom:2px;">Complainant signature</div>
+      <sc-for list="{{ compSigs }}" as="s" hint-placeholder-count="2">
+        <div class="sigrow">
+          <span class="signum">{{ s.num }}</span>
+          <div style="flex:1; min-width:0;">
+            <div class="signame">{{ s.name }} <sc-if value="{{ s.you }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px; font-weight:600; color:var(--primary); background:color-mix(in oklch,var(--primary) 12%,transparent); border-radius:9999px; padding:1px 7px; margin-left:4px;">You</span></sc-if></div>
+            <div class="sigrole">{{ s.role }}</div>
+          </div>
+          <span class="{{ s.pillCls }}"><sc-if value="{{ s.signed }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>{{ s.statusLabel }}</span>
+        </div>
+      </sc-for>
+
+      <div style="font-size:12px; font-weight:700; color:var(--muted-foreground); letter-spacing:0.02em; margin:22px 0 2px;">Advocate signature</div>
+      <sc-for list="{{ advSigs }}" as="s" hint-placeholder-count="2">
+        <div class="sigrow">
+          <span class="signum">{{ s.num }}</span>
+          <div style="flex:1; min-width:0;">
+            <div class="signame">{{ s.name }}</div>
+            <div class="sigrole">{{ s.role }}</div>
+          </div>
+          <span class="{{ s.pillCls }}"><sc-if value="{{ s.signed }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>{{ s.statusLabel }}</span>
+        </div>
+      </sc-for>
+    </aside>
+
+    <!-- ── DOCUMENT COLUMN ── -->
+    <main style="flex:1; min-width:0; padding:30px 40px 40px;">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:6px;">
+        <div>
+          <h1 style="font-size:24px; font-weight:600; letter-spacing:-0.02em; margin:0;">Sign the complaint</h1>
+          <p style="font-size:14px; color:var(--muted-foreground); margin:8px 0 0; line-height:1.5;">You are filing a criminal complaint under S-138, Negotiable Instruments Act in the 24×7 ON Court, Kollam.</p>
+        </div>
+        <button class="btn btn-outline btn-sm" onClick="{{ onDownloadPdf }}" style="gap:7px; flex-shrink:0; margin-top:4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+          Download case PDF
+        </button>
+      </div>
+
+      <!-- document preview sheet -->
+      <div style="margin-top:18px; height:calc(100vh - 280px); min-height:420px; overflow-y:auto; border:1px solid var(--border); border-radius:10px; background:var(--secondary); padding:26px;">
+        <div class="doc-sheet">
+          <div style="text-align:center; display:flex; flex-direction:column; gap:5px; margin-bottom:16px;">
+            <div style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted-foreground);">In the 24×7 ON Court, Kollam</div>
+            <div style="font-size:14px; font-weight:700; margin-top:4px;">Criminal Complaint (CMP) No. ______ of 2026</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding:6px 0; font-size:14px;">
+            <div><div style="font-weight:700;">Prateek Agrawal</div><div style="font-size:12.5px; color:var(--muted-foreground); margin-top:3px; line-height:1.5;">S/o G Balakrishna Pillai, aged about 56 years,<br>R/o Vijaya Bhavan, Manakkattu, Mavoor, Kozhikode, Kerala — 673661</div></div>
+            <div style="white-space:nowrap; font-style:italic;">… Complainant</div>
+          </div>
+          <div style="text-align:center; font-style:italic; padding:6px 0; font-size:14px;">Versus</div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding:6px 0; font-size:14px;">
+            <div><div style="font-weight:700;">Suresh Menon</div><div style="font-size:12.5px; color:var(--muted-foreground); margin-top:3px; line-height:1.5;">S/o [father's name], aged about — years,<br>R/o #88, Sector 34, Chandigarh — 160034</div></div>
+            <div style="white-space:nowrap; font-style:italic;">… Accused</div>
+          </div>
+          <div style="text-align:center; font-size:14px; font-weight:700; letter-spacing:0.01em; margin:16px 0 4px;">COMPLAINT UNDER SECTION 138 OF THE NEGOTIABLE INSTRUMENTS ACT, 1881</div>
+
+          <div class="doc-sec">Synopsis</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Parties</td></tr>
+              <tr>
+                <td><span class="dlbl">Complainant Name</span>Prateek Agrawal</td>
+                <td><span class="dlbl">Accused Name</span>Suresh Menon</td>
+                <td><span class="dlbl">Complainant’s Advocate Name</span>Bijini Rejen</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Cheque details</td></tr>
+              <tr>
+                <td><span class="dlbl">Date on cheque</span>15 March 2026</td>
+                <td><span class="dlbl">Amount</span>₹50,25,000</td>
+                <td><span class="dlbl">Cheque number</span>004821</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Bank Name</span>State Bank of India</td>
+                <td colspan="2"><span class="dlbl">Bank Branch</span>Sector 17, Chandigarh</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Dishonour</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of presentation</span>02 April 2026</td>
+                <td><span class="dlbl">Date on return memo</span>05 April 2026</td>
+                <td><span class="dlbl">Return reason</span>Funds insufficient</td>
+              </tr>
+              <tr><td colspan="3"><span class="dlbl">Bank Branch (Complainant)</span>HDFC Bank, Sector 22, Chandigarh</td></tr>
+              <tr><td class="dhead" colspan="3">Demand Notice</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of dispatch of demand notice</span>20 April 2026</td>
+                <td><span class="dlbl">Mode of service</span>Registered post (RPAD)</td>
+                <td><span class="dlbl">Whether delivered?</span>Yes</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Date of delivery</span>24 April 2026</td>
+                <td colspan="2"><span class="dlbl">Has the accused replied to the demand notice?</span>No</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Cause of Action</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of cause of action</span>10 May 2026</td>
+                <td><span class="dlbl">Jurisdiction invoked under Section 142(2)</span>Sector 22, Chandigarh — complainant's bank branch</td>
+                <td><span class="dlbl">Any other complaint pending between the same parties?</span>No</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Prayer/ Relief sought</td></tr>
+              <tr><td colspan="3">Punishment under S.138 NI Act; compensation of ₹1,04,10,000 (twice the total cheque amount); interim compensation of ₹10,41,000 under S.143A NI Act</td></tr>
+            </tbody>
+          </table>
+
+          <div class="doc-sec">1. Party details</div>
+          <div class="doc-sub2">1.1. Complainant</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Complainant 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Complainant Type</span>Individual</td>
+                <td><span class="dlbl">Full Name</span>Prateek Agrawal</td>
+                <td><span class="dlbl">Mobile Number</span>+91 98765 43210</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Email Address</span>prateek.agrawal@gmail.com</td>
+                <td><span class="dlbl">Permanent address</span>Vijaya Bhavan, Manakkattu, Mavoor, Kozhikode, Kerala — 673661</td>
+                <td><span class="dlbl">Present Address</span>Vijaya Bhavan, Manakkattu, Mavoor, Kozhikode, Kerala — 673661</td>
+              </tr>
+              <tr><td colspan="3"><span class="dlbl">POA for Complainant 1</span>Not appointed</td></tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">1.2. Advocate (Complainant)</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="2">Advocate for all Complainants</td></tr>
+              <tr>
+                <td><span class="dlbl">Full Name</span>Bijini Rejen</td>
+                <td><span class="dlbl">Bar Registration</span>P/60/1992</td>
+              </tr>
+              <tr><td class="dhead" colspan="2">Advocate for Complainant 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Full Name</span>Aparna Nair</td>
+                <td><span class="dlbl">Bar Registration</span>P/61/1992</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">1.3. Accused</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Accused 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Type</span>Individual</td>
+                <td><span class="dlbl">Full Name</span>Suresh Menon</td>
+                <td><span class="dlbl">Address</span>#88, Sector 34, Chandigarh 160034</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Accused 2</td></tr>
+              <tr>
+                <td><span class="dlbl">Type of Entity</span>Proprietorship</td>
+                <td><span class="dlbl">Full Name</span>Menon Traders</td>
+                <td><span class="dlbl">Address</span>Booth 12, Industrial Area Phase 1, Chandigarh 160002</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="doc-sec">2. Case details</div>
+          <div class="doc-sub2">2.1. Cheque details</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Cheque 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Date on cheque</span>15 March 2026</td>
+                <td><span class="dlbl">Amount</span>₹50,25,000</td>
+                <td><span class="dlbl">Cheque number</span>004821</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Bank Name</span>State Bank of India</td>
+                <td colspan="2"><span class="dlbl">Bank Branch</span>Sector 17, Chandigarh</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Cheque 2</td></tr>
+              <tr>
+                <td><span class="dlbl">Date on cheque</span>02 April 2026</td>
+                <td><span class="dlbl">Amount</span>₹1,80,000</td>
+                <td><span class="dlbl">Cheque number</span>004822</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.2. Cheque return memo details</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Cheque return memo 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of presentation</span>02 April 2026</td>
+                <td><span class="dlbl">Date of return</span>05 April 2026</td>
+                <td><span class="dlbl">Return reason</span>Funds insufficient</td>
+              </tr>
+              <tr><td colspan="3"><span class="dlbl">Date of receipt of information about return</span>07 April 2026</td></tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.3. Demand notice details</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Demand Notice 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Date of dispatch of demand notice</span>20 April 2026</td>
+                <td><span class="dlbl">Mode of service</span>Registered post (RPAD)</td>
+                <td><span class="dlbl">Whether delivered?</span>Yes</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Date of delivery</span>24 April 2026</td>
+                <td><span class="dlbl">Has the accused replied to the demand notice?</span>No</td>
+                <td><span class="dlbl">Has the Drawer made full or part payment due under the cheque?</span>No</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.4. Nature of debt or liability</div>
+          <table class="dgrid"><tbody>
+            <tr><td><span class="dlbl">Nature of debt or other liability</span>Repayment of borrowed money</td></tr>
+          </tbody></table>
+          <div class="doc-sub2">2.5. Jurisdiction</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td colspan="3"><span class="dlbl">Was the cheque delivered for collection at a bank account?</span>Yes</td></tr>
+              <tr><td class="dhead" colspan="3">Payee (Complainant) Bank Details</td></tr>
+              <tr>
+                <td><span class="dlbl">IFSC Code</span>HDFC0000512</td>
+                <td><span class="dlbl">Bank Name</span>HDFC Bank</td>
+                <td><span class="dlbl">Bank Branch</span>Sector 22, Chandigarh</td>
+              </tr>
+              <tr><td colspan="3"><span class="dlbl">Police Station</span>Sector 17 PS, Chandigarh</td></tr>
+              <tr><td class="dhead" colspan="3">Other cheque dishonour complaints between the same parties</td></tr>
+              <tr><td colspan="3"><span class="dlbl">Is there any other cheque dishonour complaint pending between the same parties?</span>No</td></tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.6. Limitation Period</div>
+          <table class="dgrid">
+            <tbody>
+              <tr>
+                <td><span class="dlbl">Date of cause of action</span>10 May 2026</td>
+                <td><span class="dlbl">Date of complaint filing</span>28 May 2026</td>
+                <td><span class="dlbl">Duration of delay</span>None — within limitation</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">2.7. ADR</div>
+          <table class="dgrid"><tbody>
+            <tr><td><span class="dlbl">Would you like to settle the case outside the court through alternative methods of dispute resolution?</span>Yes</td></tr>
+          </tbody></table>
+          <div class="doc-sub2">2.8. Other details</div>
+          <table class="dgrid"><tbody>
+            <tr><td><span class="dlbl">Any additional details</span>The complainant has an ongoing business relationship with the accused. The cheques issued towards repayment of borrowed money were dishonoured for insufficiency of funds.</td></tr>
+          </tbody></table>
+          <div class="doc-sub2">2.9. Prayer/ Relief Sought</div>
+          <div style="font-size:13px; font-weight:700; margin:10px 0 2px;">Interim Relief</div>
+          <div class="doc-p">It is, therefore, most respectfully prayed that this Hon'ble Court may be pleased to: Direct the Accused to pay interim compensation to the Complainant under Section 143A of the Negotiable Instruments Act, 1881, during the pendency of the trial, of a sum not exceeding 20% of the cheque amount i.e. Rs. 10,41,000, within 60 days of the order or such further period not exceeding 30 days as this Hon'ble Court may allow for sufficient cause shown.</div>
+          <div style="font-size:13px; font-weight:700; margin:14px 0 2px;">Final Relief</div>
+          <div class="doc-p">It is most respectfully prayed that this Hon'ble Court may be pleased to:</div>
+          <div class="doc-p" style="margin-left:18px;">(a) Take cognizance of the offence committed by the Accused under Section 138 of the Negotiable Instruments Act, 1881;<br>(b) Issue process/summons against the Accused and direct him/her to appear before this Hon'ble Court;<br>(c) Upon trial, convict and sentence the Accused under Section 138 of the Negotiable Instruments Act, 1881, to imprisonment for a term which may extend to two years, or with fine which may extend to twice the amount of the cheque, or with both;<br>(d) Direct the Accused to pay compensation to the Complainant under Section 395 of the Bharatiya Nagarik Suraksha Sanhita, 2023, equivalent to the cheque amount along with interest @ 6% per annum from the date of dishonour;<br>(e) Grant such other and further relief(s) as this Hon'ble Court may deem fit and proper in the facts and circumstances of the case.</div>
+
+          <div class="doc-sec">3. Evidence</div>
+          <div class="doc-sub2">3.1. List of witnesses</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" colspan="3">Witness 1</td></tr>
+              <tr>
+                <td><span class="dlbl">Full Name</span>Anil Verma</td>
+                <td colspan="2"><span class="dlbl">What will this witness prove?</span>Handing over of the cheque</td>
+              </tr>
+              <tr>
+                <td><span class="dlbl">Mobile Number</span>+91 98220 11004</td>
+                <td><span class="dlbl">Email id</span>anil.verma@gmail.com</td>
+                <td><span class="dlbl">Address</span>#12, Sector 19, Chandigarh 160019</td>
+              </tr>
+              <tr><td class="dhead" colspan="3">Witness 2</td></tr>
+              <tr>
+                <td><span class="dlbl">Full Name</span>Bank Manager, SBI Sector 17</td>
+                <td colspan="2"><span class="dlbl">What will this witness prove?</span>Dishonour of the cheque and issue of the return memo</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="doc-sub2">3.2. List of documents</div>
+          <table class="dgrid">
+            <tbody>
+              <tr><td class="dhead" style="width:52px;">S. No.</td><td class="dhead">Document Name</td><td class="dhead" style="width:120px;">Natively Digital</td></tr>
+              <tr><td>1.</td><td>Cheque 1</td><td>Yes</td></tr>
+              <tr><td>2.</td><td>Cheque 2</td><td>Yes</td></tr>
+              <tr><td>3.</td><td>Cheque return memo</td><td>Yes</td></tr>
+              <tr><td>4.</td><td>Demand notice</td><td>Yes</td></tr>
+              <tr><td>5.</td><td>Complainant ID Card (Aadhaar)</td><td>No</td></tr>
+            </tbody>
+          </table>
+          <div class="doc-p" style="margin-top:14px;">Signed on 28.05.2026. Please see Page __ for the signatures.</div>
+
+          <div class="doc-sec">4. Affidavit</div>
+          <div class="doc-p">I am the complainant / authorised representative of the complainant in the above case and am fully acquainted with the facts and circumstances of the case. I am competent and authorised to swear to this affidavit.</div>
+          <div class="doc-p">The accused issued the above cheque in discharge of a legally enforceable debt or liability. It has been dishonoured due to insufficiency of funds. A demand notice has been issued to the accused, but she/ he has failed to make the payment due under the cheque. All other requirements under Section 138 of the Negotiable Instruments Act, 1881 have been complied with.</div>
+          <div class="doc-p">I confirm that the demand notice was served on the last known correct address of the accused(s).</div>
+          <div class="doc-p">In accordance with Section 225 of the Bharatiya Nagarik Suraksha Sanhita, 2023, I confirm that there is sufficient ground for proceeding against the accused.</div>
+          <div class="doc-p">In accordance with Section 223 and other relevant provisions of the Bharatiya Nagarik Suraksha Sanhita, 2023, I confirm that the contents of this complaint are true and correct to the best of my knowledge, belief and information.</div>
+          <div class="doc-p">The physical or electronic records of the documents etc. produced by me with this complaint are in my lawful and proper custody and possession.</div>
+          <div class="doc-p">It is therefore humbly prayed that this Hon’ble Court may be pleased to take cognizance of the offence committed by the accused, and issue process to the accused.</div>
+
+          <div class="doc-sub2" style="margin-top:26px;">Complainant</div>
+          <div class="doc-p">I confirm that I have read and understood all the documents I am submitting through this filing, including the:<br>1. Complaint<br>2. Affidavit of fact</div>
+          <div class="doc-sub2">Advocate</div>
+          <div class="doc-p">I confirm the identity of the party, and that the party has read and fully understood the contents of the affidavit.</div>
+          <div class="doc-p">I confirm that the complaint has been properly drafted and presented in accordance with legal requirements.</div>
+          <div class="doc-p" style="text-align:center; margin-top:20px;">***</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ── ADD SIGNATURE RAIL ── -->
+    <aside style="width:288px; flex-shrink:0; align-self:stretch; border-left:1px solid var(--border); padding:30px 24px; position:sticky; top:54px; height:calc(100vh - 54px); overflow-y:auto;">
+      <div style="font-size:16px; font-weight:700; margin-bottom:4px;">Add your signature</div>
+      <p style="font-size:13px; color:var(--muted-foreground); line-height:1.55; margin:0 0 18px;">Signing as <strong style="color:var(--foreground);">Prateek Agrawal</strong> (Complainant 1).</p>
+
+      <button class="btn btn-default btn-lg" onClick="{{ chooseEsign }}" style="width:100%; margin-bottom:10px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="m2 2 7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+        E-Sign with Aadhaar OTP
+      </button>
+      <div style="margin-top:10px; position:relative;">
+        <button class="btn btn-ghost" onClick="{{ toggleSignMenu }}" style="width:100%; display:inline-flex; align-items:center; justify-content:center; gap:7px;">
+          Sign another way
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <sc-if value="{{ showSignMenu }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--card); border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow-lg); z-index:40; padding:6px; display:flex; flex-direction:column; gap:2px;">
+            <button onClick="{{ chooseUpload }}" style="display:flex; align-items:center; gap:9px; width:100%; padding:10px 12px; border:none; border-radius:8px; background:none; font-size:13.5px; font-weight:500; color:var(--foreground); cursor:pointer; font-family:inherit; text-align:left;" style-hover="background:var(--secondary);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M17 8l-5-5-5 5"></path><path d="M12 3v12"></path></svg>
+              Upload signed copy
+            </button>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="margin-top:20px; padding:14px 16px; border-radius:12px; background:var(--secondary); font-size:12.5px; color:var(--muted-foreground); line-height:1.55;">
+        All parties must sign using the <strong style="color:var(--foreground); font-weight:600;">same mode</strong>. E-Sign requires each signatory's Aadhaar-linked mobile number.
+      </div>
+    </aside>
+  </div>
+
+  <!-- ░░ FOOTER ░░ -->
+  <footer style="position:sticky; bottom:0; z-index:30; background:var(--card); border-top:1px solid var(--border); padding:14px 24px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <a class="btn btn-outline btn-lg" href="Preview.dc.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+        Back
+      </a>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="btn btn-outline btn-lg" onClick="{{ onDownloadPdf }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect width="12" height="8" x="6" y="14"></rect></svg>
+          Print case file
+        </button>
+        <button class="{{ homeCls }}" onClick="{{ openPayment }}">Continue to pay fees
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ░░ MODAL: Choose mode of signing ░░ -->
+  <sc-if value="{{ showChoose }}" hint-placeholder-val="{{ false }}">
+    <div class="modalwrap" onClick="{{ closeModal }}">
+      <div class="modalcard" style="max-width:520px;" onClick="{{ stop }}">
+        <div class="modalhead">
+          <div class="modaltitle">Choose mode of signing</div>
+          <button class="modalx" onClick="{{ closeModal }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+        </div>
+        <div style="padding:22px 26px 24px;">
+          <p style="font-size:14px; line-height:1.6; margin:0 0 12px; color:var(--foreground);">All parties must use the same mode of signing.</p>
+          <p style="font-size:14px; line-height:1.6; margin:0 0 16px; color:var(--foreground);">If E-Sign is selected, all parties must sign using their <strong style="font-weight:600;">Aadhaar-linked mobile number</strong>.</p>
+          <button class="linkbtn" onClick="{{ onDownloadPdf }}" style="font-size:14px;">Download submission</button>
+          <div style="display:flex; align-items:center; justify-content:flex-end; gap:12px; margin-top:26px;">
+            <button class="btn btn-outline btn-lg" onClick="{{ chooseUpload }}">Upload signed copy</button>
+            <button class="btn btn-default btn-lg" onClick="{{ chooseEsign }}">E-Sign</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ░░ MODAL: E-Sign OTP ░░ -->
+  <sc-if value="{{ showOtp }}" hint-placeholder-val="{{ false }}">
+    <div class="modalwrap" onClick="{{ closeModal }}">
+      <div class="modalcard" style="max-width:460px;" onClick="{{ stop }}">
+        <div class="modalhead">
+          <div class="modaltitle">E-Sign with Aadhaar</div>
+          <button class="modalx" onClick="{{ closeModal }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+        </div>
+        <div style="padding:24px 26px 26px;">
+          <p style="font-size:14px; line-height:1.6; margin:0 0 14px; color:var(--muted-foreground);">Enter the 6-digit OTP sent to your Aadhaar-linked mobile ending <strong style="color:var(--foreground); font-weight:600;">•••• 3210</strong>.</p>
+          <div style="display:flex; gap:9px; align-items:flex-start; padding:11px 13px; border-radius:9px; background:color-mix(in oklch, oklch(0.6 0.15 250) 12%, var(--card)); border:1px solid color-mix(in oklch, oklch(0.6 0.15 250) 45%, transparent); margin:0 0 18px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="oklch(0.52 0.16 250)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+            <span style="font-size:12.5px; line-height:1.5; color:var(--foreground);">Every other party has been sent their own SMS link to e-sign.</span>
+          </div>
+          <label style="font-size:13px; font-weight:600; color:var(--foreground); display:block; margin-bottom:8px;">Enter OTP</label>
+          <input class="input otpbox" placeholder="••••••" maxlength="6" value="{{ otpVal }}" onInput="{{ onOtpInput }}">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:12px; font-size:13px;">
+            <span style="color:var(--muted-foreground);">Didn't get it?</span>
+            <button class="linkbtn" onClick="{{ stop }}" style="font-size:13px;">Resend OTP</button>
+          </div>
+          <button class="{{ verifyCls }}" onClick="{{ verifyOtp }}" style="width:100%; margin-top:22px;">Verify &amp; sign</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ░░ MODAL: Upload signed complaint ░░ -->
+  <sc-if value="{{ showUpload }}" hint-placeholder-val="{{ false }}">
+    <div class="modalwrap" onClick="{{ closeModal }}">
+      <div class="modalcard" style="max-width:560px;" onClick="{{ stop }}">
+        <div class="modalhead">
+          <div class="modaltitle">Upload signed complaint</div>
+          <button class="modalx" onClick="{{ closeModal }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+        </div>
+        <div style="padding:22px 26px 24px;">
+          <div style="display:flex; gap:11px; align-items:flex-start; padding:14px 16px; border-radius:12px; background:oklch(0.966 0.03 236); border:1px solid oklch(0.86 0.06 236); margin-bottom:20px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="oklch(0.55 0.15 236)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+            <div style="font-size:13px; line-height:1.55;">
+              <div style="font-weight:700; color:var(--foreground); margin-bottom:2px;">Please note</div>
+              <div style="color:var(--foreground);">Please ensure you have collected the signatures of all parties (<strong style="font-weight:600;">all complainants and an advocate for each complainant must sign the case</strong>). You can upload a file signed physically or with a <strong style="font-weight:600;">Digital Signature Certificate (DSC)</strong>.</div>
+            </div>
+          </div>
+          <div class="drop">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13v8"></path><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="m8 17 4-4 4 4"></path></svg>
+            <div style="font-size:14px; color:var(--muted-foreground);">Drag and drop your file or <button class="linkbtn" onClick="{{ stop }}" style="font-size:14px;">browse in my files</button></div>
+          </div>
+          <p style="font-size:13px; color:var(--muted-foreground); margin:14px 0 4px;">Upload .jpg, .png, .jpeg or .pdf. Maximum upload size of 5MB.</p>
+          <p style="font-size:13px; color:var(--foreground); margin:8px 0 0;">Want to download the unsigned document? <button class="linkbtn" onClick="{{ onDownloadPdf }}" style="font-size:13px;">Click here</button></p>
+          <div style="display:flex; align-items:center; justify-content:flex-end; margin-top:24px;">
+            <button class="btn btn-default btn-lg" onClick="{{ submitUpload }}">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ░░ MODAL: Payment ░░ -->
+  <sc-if value="{{ showPayment }}" hint-placeholder-val="{{ false }}">
+    <div class="modalwrap" onClick="{{ closeModal }}">
+      <div class="modalcard" style="max-width:500px; max-height:90vh; display:flex; flex-direction:column;" onClick="{{ stop }}">
+        <div class="modalhead">
+          <div class="modaltitle">Pay Court Fees</div>
+          <button class="modalx" onClick="{{ closeModal }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+        </div>
+        <div style="padding:20px 24px 22px; overflow:auto; flex:1;">
+          <button onClick="{{ toggleFees }}" style="width:100%; display:flex; align-items:center; gap:9px; background:none; border:none; padding:0 2px 12px; margin:0; cursor:pointer; text-align:left; font-family:inherit;">
+            <span style="font-size:16px; font-weight:600; color:var(--foreground);">Court Fees</span>
+            <sc-if value="{{ feesOpen }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"></path></svg></sc-if>
+            <sc-if value="{{ feesClosed }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></sc-if>
+            <span class="sigpill sig-pending">Pending</span>
+            <span style="margin-left:auto; font-size:17px; font-weight:700; letter-spacing:-0.01em;">Rs 11</span>
+          </button>
+
+          <sc-if value="{{ feesOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="border-top:1px solid var(--border); margin-bottom:20px;">
+            <div class="feerow"><span style="color:var(--foreground);">Advocate Welfare Fund</span><span style="color:var(--muted-foreground); font-weight:500;">Rs 5.00</span></div>
+            <div class="feerow"><span style="color:var(--foreground);">Court Fee - Delay Notice</span><span style="color:var(--muted-foreground); font-weight:500;">Rs 1.00</span></div>
+            <div class="feerow"><span style="color:var(--foreground);">Application Fees (Delay Condonation)</span><span style="color:var(--muted-foreground); font-weight:500;">Rs 5.00</span></div>
+          </div>
+          </sc-if>
+
+          <button onClick="{{ payNow }}" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; padding:13px; border-radius:10px; border:1.5px solid var(--primary); background:var(--card); color:var(--primary); font-size:15px; font-weight:600; cursor:pointer; font-family:inherit;" style-hover="background:color-mix(in oklch, var(--primary) 6%, var(--card));">Pay Online</button>
+        </div>
+        <div style="display:flex; justify-content:flex-end; padding:14px 24px; border-top:1px solid var(--border);">
+          <button onClick="{{ closeModal }}" style="padding:10px 22px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--foreground); font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;" style-hover="background:var(--secondary);">Go Back</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ░░ MODAL: Select Process & Address ░░ -->
+  <sc-if value="{{ showProcAddr }}" hint-placeholder-val="{{ false }}">
+    <div class="modalwrap" onClick="{{ closeModal }}">
+      <div class="modalcard" style="max-width:820px; max-height:90vh; display:flex; flex-direction:column;" onClick="{{ stop }}">
+        <div class="modalhead">
+          <div class="modaltitle">Select Process &amp; Address</div>
+          <button class="modalx" onClick="{{ closeModal }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+        </div>
+        <div style="padding:6px 26px 22px; overflow:auto; flex:1;">
+          <sc-for list="{{ procAccused }}" as="acc" hint-placeholder-count="2">
+            <div style="font-size:16px; font-weight:700; margin:22px 0 8px;">{{ acc.name }}</div>
+            <div style="display:grid; grid-template-columns:1.1fr 1fr 1.2fr; gap:0 24px; border-bottom:1px solid var(--border); padding-bottom:11px; font-size:12px; font-weight:600; color:var(--muted-foreground);">
+              <div>Process</div><div>Delivery Channel</div><div>Select Address</div>
+            </div>
+            <sc-for list="{{ acc.rows }}" as="row" hint-placeholder-count="3">
+              <div style="display:grid; grid-template-columns:1.1fr 1fr 1.2fr; gap:0 24px; align-items:center; padding:14px 0; border-bottom:1px solid color-mix(in oklch,var(--border) 55%,transparent);">
+                <div style="font-size:14.5px; font-weight:600; color:var(--foreground);">{{ row.label }} <span style="font-weight:400; color:var(--muted-foreground); font-size:13px;">{{ row.optionalText }}</span></div>
+                <div style="position:relative;">
+                  <select style="width:100%; padding:9px 34px 9px 12px; border:1px solid var(--border); border-radius:8px; background:var(--card); font-size:14px; font-family:inherit; color:var(--foreground); cursor:pointer; appearance:none; -webkit-appearance:none;">
+                    <option>RPAD</option>
+                    <option>Speed Post</option>
+                    <option>Courier</option>
+                    <option>Email</option>
+                  </select>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none;"><path d="m6 9 6 6 6-6"></path></svg>
+                </div>
+                <div style="position:relative;">
+                  <button onClick="{{ row.onToggleOpen }}" style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 12px; border:1px solid var(--border); border-radius:8px; background:var(--card); font-size:14px; font-family:inherit; color:var(--foreground); cursor:pointer; text-align:left;">
+                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ row.addrLabel }}</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="m6 9 6 6 6-6"></path></svg>
+                  </button>
+                  <sc-if value="{{ row.open }}" hint-placeholder-val="{{ false }}">
+                    <div style="position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--card); border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow-lg); z-index:40; padding:6px; display:flex; flex-direction:column; gap:2px;">
+                      <sc-for list="{{ row.options }}" as="opt" hint-placeholder-count="3">
+                        <label style="display:flex; align-items:flex-start; gap:10px; padding:9px 10px; border-radius:8px; cursor:pointer; font-size:13.5px; line-height:1.4;" style-hover="background:var(--secondary);">
+                          <input type="checkbox" checked="{{ opt.checked }}" onChange="{{ opt.onToggle }}" style="margin-top:2px; width:16px; height:16px; accent-color:var(--primary); cursor:pointer; flex-shrink:0;">
+                          <span>{{ opt.text }}</span>
+                        </label>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </sc-for>
+        </div>
+        <div style="display:flex; justify-content:flex-end; padding:14px 26px; border-top:1px solid var(--border);">
+          <button onClick="{{ payNow }}" style="padding:11px 26px; border-radius:10px; border:none; background:var(--primary); color:var(--primary-foreground); font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;">Save &amp; Next</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ░░ MODAL: Processing ░░ -->
+  <sc-if value="{{ showProcessing }}" hint-placeholder-val="{{ false }}">
+    <div class="modalwrap">
+      <div class="modalcard" style="max-width:400px;">
+        <div style="padding:48px 32px; display:flex; flex-direction:column; align-items:center; gap:20px; text-align:center;">
+          <div class="spinner"></div>
+          <div>
+            <div style="font-size:18px; font-weight:700; letter-spacing:-0.01em;">Processing payment…</div>
+            <div style="font-size:14px; color:var(--muted-foreground); margin-top:6px; line-height:1.55;">Please don't close or refresh this window while we confirm your payment.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ░░ MODAL: Success ░░ -->
+  <sc-if value="{{ showSuccess }}" hint-placeholder-val="{{ false }}">
+    <div class="modalwrap">
+      <div class="modalcard" style="max-width:520px;">
+        <div style="background:var(--success); color:var(--success-foreground); padding:34px 34px 30px; text-align:center;">
+          <div style="width:56px; height:56px; border-radius:9999px; background:color-mix(in oklch, white 22%, transparent); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; animation:pop-in 340ms cubic-bezier(0.22,1,0.36,1) both;">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+          </div>
+          <div style="font-size:20px; font-weight:700; letter-spacing:-0.01em; line-height:1.35;">Payment successful</div>
+          <div style="font-size:14px; margin-top:8px; line-height:1.55; color:color-mix(in oklch, var(--success-foreground) 88%, transparent);">Your case file has been submitted and sent for review by the court.</div>
+        </div>
+        <div style="padding:22px 26px 24px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; background:var(--secondary); border-radius:10px; padding:13px 16px; margin-bottom:14px;">
+            <div>
+              <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:3px;">Case file number</div>
+              <div style="font-size:15px; font-weight:700; letter-spacing:0.01em;">KL-001198-2026</div>
+            </div>
+            <button class="linkbtn" onClick="{{ copyLink }}" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+              {{ copyLabel }}
+            </button>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px; color:var(--muted-foreground); margin-bottom:22px;">
+            <span>Amount paid</span><span style="font-weight:600; color:var(--foreground);">₹10,109.00</span>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <a class="btn btn-outline btn-lg" href="Case Documents Upload.dc.html" style="flex:1;">Go to home</a>
+            <button class="btn btn-outline btn-lg" onClick="{{ onDownloadPdf }}" style="flex:1;">Print case file</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    modal: null,                // 'choose' | 'esign' | 'upload' | 'payment' | 'procaddr' | 'processing' | 'success' | null
+    signMenu: false,
+    otp: '',
+    feesOpen: true,
+    pa: { open: null, sel: {} },
+    copied: false,
+    comp: [
+      { name: 'Prateek Agrawal', role: 'Complainant 1 · Individual', status: 'pending', you: true },
+      { name: 'Sithukumar Enterprises', role: 'Complainant 2 · via Parvez Singh', status: 'pending' },
+    ],
+    adv: [
+      { name: 'Bijini Rejen', role: 'Advocate · P/60/1992', status: 'pending' },
+      { name: 'Aparna Nair', role: 'Advocate · P/61/1992', status: 'pending' },
+    ],
+  };
+
+  openChoose() { this.setState({ modal: 'choose', signMenu: false }); }
+  closeModal() { this.setState({ modal: null }); }
+  toggleSignMenu() { this.setState({ signMenu: !this.state.signMenu }); }
+  chooseEsign() { this.setState({ modal: 'esign', otp: '', signMenu: false }); }
+  chooseUpload() { this.setState({ modal: 'upload', signMenu: false }); }
+  onOtpInput(e) { this.setState({ otp: (e.target.value || '').replace(/[^0-9]/g, '').slice(0, 6) }); }
+
+  signYou() {
+    const comp = this.state.comp.map(s => s.you ? { ...s, status: 'signed' } : s);
+    this.setState({ comp, modal: null, otp: '' });
+  }
+  verifyOtp() { if (this.state.otp.length === 6) this.signYou(); }
+  submitUpload() { this.signYou(); }
+
+  openPayment() { this.setState({ modal: 'payment' }); }
+  toggleFees() { this.setState({ feesOpen: !this.state.feesOpen }); }
+  openProcAddr() { this.setState({ modal: 'procaddr' }); }
+  paToggleOpen(key) { const pa = this.state.pa; pa.open = pa.open === key ? null : key; this.setState({ pa: { ...pa } }); }
+  paToggleAddr(key, i) { const pa = this.state.pa; const arr = (pa.sel[key] || []).slice(); const at = arr.indexOf(i); if (at >= 0) arr.splice(at, 1); else arr.push(i); pa.sel = { ...pa.sel, [key]: arr }; this.setState({ pa: { ...pa } }); }
+  procAccusedData() {
+    const self = this;
+    const ADDRS = ['45 Green Meadows, Sector 34, Chandigarh, 160022', '78 Rose Garden, Sector 22, Chandigarh, 160021', '12 Silver Oaks, Sector 17, Chandigarh, 160023'];
+    const PROCS = [{ k: 'notice', label: 'Notice', opt: false }, { k: 'summons', label: 'Summons', opt: true }, { k: 'warrants', label: 'Warrants', opt: true }];
+    const ACC = [{ n: 1, name: 'Accused 1' }, { n: 2, name: 'Accused 2' }];
+    const pa = this.state.pa;
+    return ACC.map(a => ({ name: a.name, rows: PROCS.map(p => {
+      const key = a.n + '-' + p.k; const sel = pa.sel[key] || [];
+      return { key, label: p.label, optionalText: p.opt ? '(optional)' : '',
+        addrLabel: sel.length ? (sel.length + ' address' + (sel.length > 1 ? 'es' : '') + ' selected') : 'Select Address',
+        open: pa.open === key,
+        onToggleOpen: () => self.paToggleOpen(key),
+        options: ADDRS.map((t, i) => ({ text: t, checked: sel.indexOf(i) >= 0, onToggle: () => self.paToggleAddr(key, i) })) };
+    }) }));
+  }
+  payNow() {
+    this.setState({ modal: 'processing' });
+    clearTimeout(this._payT);
+    this._payT = setTimeout(() => this.setState({ modal: 'success' }), 2600);
+  }
+  copyLink() {
+    try { navigator.clipboard && navigator.clipboard.writeText('KL-001198-2026'); } catch (e) {}
+    this.setState({ copied: true });
+    clearTimeout(this._copyT);
+    this._copyT = setTimeout(() => this.setState({ copied: false }), 1800);
+  }
+  componentWillUnmount() { clearTimeout(this._payT); clearTimeout(this._copyT); }
+
+  renderVals() {
+    const self = this;
+    const mapSig = (arr) => arr.map((s, i) => {
+      const signed = s.status === 'signed';
+      return {
+        num: String(i + 1), name: s.name, role: s.role, you: !!s.you,
+        signed, statusLabel: signed ? 'Signed' : 'Pending',
+        pillCls: signed ? 'sigpill sig-signed' : 'sigpill sig-pending',
+      };
+    });
+    const all = [...this.state.comp, ...this.state.adv];
+    const signedCount = all.filter(s => s.status === 'signed').length;
+    const totalCount = all.length;
+    const allSigned = signedCount === totalCount;
+    return {
+      compSigs: mapSig(this.state.comp),
+      advSigs: mapSig(this.state.adv),
+      signedCount, totalCount,
+      progressPct: Math.round((signedCount / totalCount) * 100) + '%',
+      showChoose: this.state.modal === 'choose',
+      showOtp: this.state.modal === 'esign',
+      showUpload: this.state.modal === 'upload',
+      showPayment: this.state.modal === 'payment',
+      showProcAddr: this.state.modal === 'procaddr',
+      procAccused: this.procAccusedData(),
+      openProcAddr: () => self.openProcAddr(),
+      showProcessing: this.state.modal === 'processing',
+      showSuccess: this.state.modal === 'success',
+      copyLabel: this.state.copied ? 'Copied' : 'Copy link',
+      otpVal: this.state.otp,
+      verifyCls: this.state.otp.length === 6 ? 'btn btn-default btn-lg' : 'btn btn-default btn-lg',
+      homeCls: allSigned ? 'btn btn-default btn-lg' : 'btn btn-default btn-lg',
+      openChoose: () => self.openChoose(),
+      toggleSignMenu: () => self.toggleSignMenu(),
+      showSignMenu: this.state.signMenu,
+      closeModal: () => self.closeModal(),
+      chooseEsign: () => self.chooseEsign(),
+      chooseUpload: () => self.chooseUpload(),
+      onOtpInput: (e) => self.onOtpInput(e),
+      verifyOtp: () => self.verifyOtp(),
+      submitUpload: () => self.submitUpload(),
+      openPayment: () => self.openPayment(),
+      toggleFees: () => self.toggleFees(),
+      feesOpen: this.state.feesOpen,
+      feesClosed: !this.state.feesOpen,
+      payNow: () => self.payNow(),
+      copyLink: () => self.copyLink(),
+      onDownloadPdf: () => { try { window.print(); } catch (e) {} },
+      stop: (e) => e.stopPropagation(),
+    };
+  }
+}
+</script>
+</body>
+</html>

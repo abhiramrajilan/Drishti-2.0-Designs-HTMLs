@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drishti 2.0 — Designs</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --fg: #1a1a1a; --muted: #6b6b6b; --card: #ffffff;
+    --border: #e6e6e3; --accent: #2f5fdd; --tag: #eef1fb; --tag-fg: #2f5fdd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16161a; --fg: #ececec; --muted: #9a9a9f; --card: #1e1e24;
+      --border: #2c2c34; --accent: #7aa2ff; --tag: #23273a; --tag-fg: #9db8ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 64px 24px 96px; }
+  header { margin-bottom: 40px; }
+  h1 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .sub { color: var(--muted); font-size: 15.5px; margin: 0; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em;
+       color: var(--muted); margin: 40px 0 14px; font-weight: 600; }
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 12px; transition: border-color .15s, transform .15s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .card-title { font-size: 16.5px; font-weight: 600; margin: 0 0 3px; }
+  .card-desc { color: var(--muted); font-size: 14px; margin: 0; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .tag { font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+         background: var(--tag); color: var(--tag-fg); white-space: nowrap; }
+  .arrow { margin-left: auto; color: var(--muted); font-size: 18px; }
+  footer { margin-top: 56px; color: var(--muted); font-size: 13px;
+           border-top: 1px solid var(--border); padding-top: 20px; }
+  code { background: var(--tag); color: var(--tag-fg); padding: 1px 6px;
+         border-radius: 5px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Drishti 2.0 — Designs</h1>
+    <p class="sub">Live HTML design flows and iterations for the ON Courts / DRISTI experience.</p>
+  </header>
+
+  <h2>Flows</h2>
+
+  <a class="card" href="designs/e-filing/cheque-bounce/">
+    <div class="row">
+      <p class="card-title">E-Filing — Cheque Bounce (S138)</p>
+      <span class="tag">Finished</span>
+      <span class="arrow">→</span>
+    </div>
+    <p class="card-desc">12-screen single-case e-filing wizard. Structured multi-file prototype.</p>
+  </a>
+
+  <a class="card" href="designs/scrutiny/scrutiny-review-v10.html">
+    <div class="row">
+      <p class="card-title">Scrutiny — Review flow</p>
+      <span class="tag">v10 · current</span>
+      <span class="arrow">→</span>
+    </div>
+    <p class="card-desc">Scrutiny review screen. Latest iteration (see the folder for the full v-trail).</p>
+  </a>
+
+  <footer>
+    Each flow's folder holds its own README and, where relevant, a CHANGELOG.
+    Contribution workflow is in <code>CLAUDE.md</code>. Served flows may take a
+    moment to render.
+  </footer>
+</div>
+</body>
+</html>

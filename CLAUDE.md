@@ -46,6 +46,22 @@ Convention:
 - Keep each iteration self-contained (embed assets) so a single `.html`
   opens correctly on its own.
 
+### Two artifact shapes
+
+Not every design is a single file. Two shapes are both fine:
+
+1. **Single-file iterations** (the default above) — quick versioned `.html`
+   files side by side, `-v<N>.html`, highest = current. Best for exploring.
+2. **Finished structured flows** — a whole folder (`index.html`, `screens/`,
+   `css/`, `js/`, `assets/`) for a completed flow ready for handoff. These
+   live as their own named subfolder, e.g. `designs/e-filing/cheque-bounce/`,
+   and keep their own README with run instructions. Because their assets and
+   shared code are separate files, they are **served** projects — run a local
+   static server (`python3 -m http.server`), don't double-click.
+
+A flow can start as single-file iterations and graduate into a structured
+folder once it's finished.
+
 ### Large demo files
 
 Self-contained "demo master" HTMLs can be 10–12 MB (embedded assets). A few

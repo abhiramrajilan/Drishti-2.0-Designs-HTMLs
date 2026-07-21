@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="../css/app.css">
+<script src="../js/runtime.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<template id="__bundler_thumbnail" data-bg-color="#f5f3ee">
+  <svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg">
+    <!-- sidebar -->
+    <rect x="0" y="40" width="96" height="280" fill="#ffffff" rx="0"/>
+    <rect x="8" y="60" width="80" height="8" rx="4" fill="#e2e0db"/>
+    <rect x="8" y="76" width="64" height="7" rx="3.5" fill="#007E7E" opacity="0.9"/>
+    <rect x="8" y="91" width="72" height="7" rx="3.5" fill="#e2e0db"/>
+    <rect x="8" y="106" width="68" height="7" rx="3.5" fill="#e2e0db"/>
+    <!-- topbar -->
+    <rect x="0" y="0" width="480" height="40" fill="#ffffff"/>
+    <rect x="12" y="12" width="18" height="18" rx="4" fill="#007E7E"/>
+    <rect x="36" y="14" width="48" height="6" rx="3" fill="#1a1a1a"/>
+    <rect x="36" y="23" width="32" height="5" rx="2.5" fill="#b0aca4"/>
+    <!-- main card 1 -->
+    <rect x="112" y="56" width="280" height="90" rx="10" fill="#ffffff" stroke="#e2e0db" stroke-width="1"/>
+    <rect x="124" y="70" width="60" height="7" rx="3.5" fill="#1a1a1a"/>
+    <rect x="124" y="86" width="120" height="6" rx="3" fill="#e2e0db"/>
+    <rect x="124" y="100" width="116" height="6" rx="3" fill="#e2e0db"/>
+    <rect x="252" y="100" width="116" height="6" rx="3" fill="#e2e0db"/>
+    <rect x="124" y="116" width="116" height="18" rx="4" fill="#f0eeea"/>
+    <rect x="252" y="116" width="116" height="18" rx="4" fill="#f5f3ef" stroke="#fbbf24" stroke-width="1"/>
+    <!-- main card 2 -->
+    <rect x="112" y="158" width="280" height="70" rx="10" fill="#ffffff" stroke="#e2e0db" stroke-width="1"/>
+    <rect x="124" y="172" width="50" height="7" rx="3.5" fill="#1a1a1a"/>
+    <rect x="124" y="188" width="120" height="6" rx="3" fill="#e2e0db"/>
+    <rect x="252" y="188" width="116" height="6" rx="3" fill="#e2e0db"/>
+    <rect x="124" y="202" width="116" height="18" rx="4" fill="#f0eeea"/>
+    <rect x="252" y="202" width="116" height="18" rx="4" fill="#f0eeea"/>
+    <!-- footer -->
+    <rect x="0" y="290" width="480" height="30" fill="#ffffff" stroke="#e2e0db" stroke-width="1"/>
+    <rect x="12" y="299" width="52" height="12" rx="6" fill="#e2e0db"/>
+    <rect x="404" y="299" width="64" height="12" rx="6" fill="#007E7E"/>
+  </svg>
+</template>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script>(function(){try{var n=performance.getEntriesByType('navigation')[0];var t=n?n.type:(performance.navigation&&performance.navigation.type===1?'reload':'navigate');if(t==='reload'){void 0;return;}}catch(e){}var F=340;function init(){var s=document.createElement('style');s.textContent='@keyframes pgIn{from{opacity:0}to{opacity:1}}body{animation:pgIn '+F+'ms cubic-bezier(.22,.61,.36,1) both}body.pg-leave{opacity:0 !important;transition:opacity 200ms ease}';document.head.appendChild(s);}if(document.head){init();}else{document.addEventListener('DOMContentLoaded',init);}document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var href=a.getAttribute('href');if(!href||href.charAt(0)==='#'||/^(https?:|mailto:|tel:|javascript:)/i.test(href)||a.target==='_blank')return;e.preventDefault();document.body.classList.add('pg-leave');setTimeout(function(){location.href=href;},F-30);},true);})();</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: #ffffff; font-family: var(--font-sans); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+  .navitem { display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:8px; font-size:14px; font-weight:500; color:color-mix(in oklch, var(--foreground) 78%, var(--background)); text-decoration:none; cursor:pointer; transition:background 150ms, color 150ms; }
+  .navitem:not(.navitem--on) > svg:first-of-type { color:color-mix(in oklch, var(--foreground) 58%, var(--background)); }
+  .navitem:hover { background:var(--secondary); color:var(--foreground); }
+  .navitem--on { background:var(--sidebar-accent); color:var(--sidebar-accent-foreground); }
+  .ocrtip { position:relative; display:inline-flex; margin-left:auto; }
+  .ocrtipbox { position:absolute; top:calc(100% + 8px); right:0; width:222px; background:var(--foreground); color:var(--background); font-size:12px; font-weight:400; line-height:1.5; padding:9px 12px; border-radius:8px; opacity:0; visibility:hidden; transition:opacity 120ms ease; z-index:60; box-shadow:var(--shadow-lg); pointer-events:none; text-align:left; }
+  .ocrtip:hover .ocrtipbox { opacity:1; visibility:visible; }
+
+  .srcpane { position:fixed; top:54px; right:0; width:clamp(320px, calc(100vw - 1232px), 640px); height:calc(100vh - 54px); overflow-y:auto; background:var(--card); border-left:1px solid var(--border); z-index:20; }
+  .formcol { transition:margin 180ms ease; }
+  .formcol--src { margin-right:clamp(320px, calc(100vw - 1232px), 640px); }
+  .srcreopen { align-self:center; flex-shrink:0; display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border:1px solid color-mix(in oklch,var(--primary) 35%,transparent); background:color-mix(in oklch,var(--primary) 7%,transparent); color:var(--primary); border-radius:9999px; font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font-sans); transition:background 150ms; }
+  .srcreopen { display:none !important; }
+  .srcreopen:hover { background:color-mix(in oklch,var(--primary) 15%,transparent); }
+  .alert-info { background:var(--card); border-color:oklch(0.9 0.035 236); }
+  .alert-info .alert-icon { color:oklch(0.62 0.06 236); }
+  .alert-warning { background:color-mix(in oklch, var(--warning) 11%, var(--card)); border-color:color-mix(in oklch, var(--warning) 32%, var(--border)); }
+  .alert-warning .alert-icon { color:var(--warning-muted-foreground); }
+  .alert-success { background:color-mix(in oklch, var(--success) 9%, var(--card)); border-color:color-mix(in oklch, var(--success) 30%, var(--border)); }
+  .alert-success .alert-icon { color:var(--success-muted-foreground); }
+  .fcard { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px 26px; display:flex; flex-direction:column; gap:24px; }
+  .ctitle { font-size:16px; font-weight:600; letter-spacing:-0.005em; }
+  .cdesc { font-size:13px; color:var(--muted-foreground); margin-top:3px; line-height:1.45; }
+  .fld { display:flex; flex-direction:column; gap:7px; }
+  .flabel { font-size:14px; font-weight:500; color:var(--foreground); }
+  .fhelp { font-size:13px; color:var(--muted-foreground); line-height:1.45; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .req { color:var(--destructive); }
+  .input-ai { background:color-mix(in oklch, var(--warning) 8%, var(--background)); border-color:color-mix(in oklch, var(--warning) 30%, var(--input)); }
+  .input-ai:focus, .input-ai:focus-visible { background:var(--background); }
+  .stepbtn { width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--input); background:var(--card); border-radius:8px; color:var(--foreground); cursor:pointer; font-family:var(--font-sans); transition:background 150ms; }
+  .stepbtn:hover { background:var(--secondary); }
+  .stepbtn:disabled { color:var(--muted-foreground); cursor:not-allowed; opacity:0.5; }
+  .stepval { width:54px; height:38px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--input); border-radius:8px; background:var(--background); font-size:15px; font-weight:600; font-variant-numeric:tabular-nums; }
+  .selecttrig { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; height:36px; padding:0 12px; border:1px solid var(--input); border-radius:8px; background:var(--background); font-size:14px; color:var(--foreground); cursor:pointer; font-family:var(--font-sans); text-align:left; transition:border-color 150ms; }
+  .selecttrig:hover { border-color:color-mix(in oklch, var(--foreground) 22%, var(--input)); }
+  .ddmenu { position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--card); border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow-lg); padding:6px; z-index:50; animation:ddpop 130ms ease; }
+  .ddrow { display:flex; align-items:center; gap:11px; width:100%; padding:9px 11px; background:none; border:none; font-size:14px; color:var(--foreground); cursor:pointer; font-family:var(--font-sans); text-align:left; border-radius:6px; }
+  .ddrow:hover { background:var(--secondary); }
+  .cbox { width:18px; height:18px; border-radius:5px; border:1.5px solid var(--input); display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; color:transparent; background:var(--background); transition:all 120ms; }
+  .cbox--on { background:var(--primary); border-color:var(--primary); color:var(--primary-foreground); }
+  .sel-ph { color:var(--muted-foreground); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .sel-val { color:var(--foreground); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .delbtn { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border:none; background:none; border-radius:7px; color:var(--muted-foreground); cursor:pointer; transition:all 150ms; }
+  .delbtn:hover { background:color-mix(in oklch, var(--destructive) 10%, transparent); color:var(--destructive); }
+  .imgzoom { position:relative; }
+  .imgzoom .zoombtn { opacity:0; transition:opacity 150ms ease; }
+  .imgzoom:hover .zoombtn, .imgzoom:focus-within .zoombtn { opacity:1; }
+  .zoombtn:focus-visible { outline:2px solid var(--primary); outline-offset:2px; }
+  @keyframes ddpop { from { transform:translateY(-5px); } to { transform:none; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes lbfade { from { opacity:0; } to { opacity:1; } }
+  @keyframes lbpop { from { opacity:0; transform:scale(0.96); } to { opacity:1; transform:scale(1); } }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; flex-direction:column;">
+
+  <!-- ░░ TOP BAR / PRODUCT HEADER ░░ -->
+  <header style="position:sticky; top:0; z-index:30;">
+  <div style="background:var(--card); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:16px; height:54px; padding:0 24px;">
+    <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+      <div style="width:30px; height:30px; border-radius:8px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:var(--primary-foreground);">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+      </div>
+      <div style="display:flex; flex-direction:column; line-height:1.15;">
+        <span style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:var(--foreground);">24x7 ON Courts</span>
+        <span style="font-size:11px; color:var(--muted-foreground);">Kollam, Kerala</span>
+      </div>
+    </div>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:22px;">
+      <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>EN</span>
+      <span style="font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;">Support</span>
+      <div style="width:32px; height:32px; border-radius:9999px; background:var(--secondary); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--muted-foreground);">RK</div>
+    </div>
+  </div>
+  <div style="display:none;">
+    <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:9999px; background:var(--secondary); color:var(--muted-foreground); font-size:13px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"></path><path d="M12 6v14"></path><path d="M8 8v12"></path><path d="M4 4v16"></path></svg>
+      Filing under <strong style="color:var(--foreground); font-weight:600;">S-138, NI Act</strong> · 24×7 ON Court, Kollam
+    </div>
+    <div style="display:none;">
+      <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted-foreground);">
+        <span style="font-weight:600; color:var(--foreground);">Advocate</span>
+        <span>Section 2 of 13</span>
+      </div>
+      <div style="height:5px; border-radius:9999px; background:var(--secondary); overflow:hidden;">
+        <div style="height:100%; width:{{ progressPct }}; background:var(--primary); border-radius:9999px;"></div>
+      </div>
+    </div>
+  </div>
+  </header>
+
+  <!-- ░░ BODY: sidebar + form ░░ -->
+  <div style="flex:1; display:flex; align-items:flex-start;">
+
+    <!-- ── SIDEBAR ── -->
+    <aside style="width:296px; flex-shrink:0; background:var(--card); border-right:1px solid var(--border); position:sticky; top:54px; height:calc(100vh - 54px); overflow:hidden; padding:18px 16px; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:0 4px 14px;">
+        <span style="font-size:15px; font-weight:700;">Sections</span>
+        <button class="btn btn-outline btn-xs" style="gap:5px;">Hide
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path></svg>
+        </button>
+      </div>
+
+      <div style="padding:0 8px 16px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted-foreground); margin-bottom:6px;">
+          <span style="font-weight:600; color:var(--foreground);">Progress</span>
+          <span>{{ progressPct }}</span>
+        </div>
+        <div style="height:6px; border-radius:9999px; background:var(--secondary); overflow:hidden;">
+          <div style="height:100%; width:{{ progressPct }}; background:var(--primary); border-radius:9999px;"></div>
+        </div>
+      </div>
+
+      <a href="Case Documents Upload.dc.html" style="display:flex; align-items:center; gap:8px; padding:10px 14px; margin:2px 0 16px; border:1px solid var(--border); background:var(--secondary); color:var(--foreground); border-radius:10px; font-size:13.5px; font-weight:600; text-decoration:none; cursor:pointer;">
+        View uploaded documents
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        <span style="margin-left:auto; font-size:11px; font-weight:700; background:var(--primary); color:var(--primary-foreground); border-radius:9999px; padding:2px 8px;">5</span>
+      </a>
+      <div style="flex:1; min-height:0; overflow-y:auto; margin:0 -6px; padding:0 6px;">
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:8px 8px 6px;">Parties</div>
+      <a class="navitem" href="Case Filing Form.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
+        Complainant <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem navitem--on">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+        Advocate
+      </a>
+      <a class="navitem" href="Accused Details.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21a8 8 0 0 1 11.873-7"></path><circle cx="10" cy="8" r="5"></circle><path d="m17 17 5 5"></path><path d="m22 17-5 5"></path></svg>
+        Accused
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Case details</div>
+      <a class="navitem" href="Cheque &amp; Return Memo.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+        Cheque &amp; return memo
+      </a>
+      <a class="navitem" href="Demand Notice &amp; Debt.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        Demand notice &amp; debt
+      </a>
+      <a class="navitem" href="Jurisdiction &amp; Limitation.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Jurisdiction &amp; limitation
+      </a>
+      <a class="navitem" href="ADR, Other details &amp; Prayer.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        ADR, other &amp; prayer
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Evidence</div>
+      <a class="navitem" href="Witnesses.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+        Witnesses
+      </a>
+      <a class="navitem" href="Documents.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path></svg>
+        Documents
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Affidavit</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path><path d="m9 15 2 2 4-4"></path></svg>
+        Affidavit
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Preview</div>
+      <a class="navitem" href="Preview.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        Preview
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Sign</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="m2 2 7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+        Sign
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Pay fees</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+        Pay fees
+      </a>
+    </div>
+    </aside>
+
+    <!-- ── FORM COLUMN ── -->
+    <main class="{{ mainCls }}" style="flex:1; min-width:0; padding:34px 48px 120px;">
+      <div style="max-width:840px;">
+
+        <!-- breadcrumb -->
+        <nav style="display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted-foreground); margin-bottom:28px; flex-wrap:wrap;">
+          <a href="Dashboard.dc.html" style="color:var(--muted-foreground); text-decoration:none;">Dashboard</a>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="m9 18 6-6-6-6"></path></svg>
+          <span>Case filing under <span style="color:var(--foreground); font-weight:500;">S-138, NI Act</span></span>
+        </nav>
+
+        <!-- heading -->
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:20px;">
+          <div>
+            <h1 style="font-size:24px; font-weight:600; letter-spacing:-0.02em; margin:0;">Advocate details</h1>
+            <p style="font-size:14px; color:var(--muted-foreground); margin:8px 0 0; line-height:1.5;">Add the advocates representing the complainant, as listed on the Vakalatnama.</p>
+          </div>
+          <sc-if value="{{ sourceClosed }}" hint-placeholder-val="{{ false }}">
+            <button class="srcreopen" onClick="{{ reopenSource }}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              View source document
+            </button>
+          </sc-if>
+        </div>
+
+        <!-- info alert (dismissable) -->
+        <sc-if value="{{ infoOpen }}" hint-placeholder-val="{{ true }}">
+        <div class="alert alert-info alert-has-icon" style="margin-bottom:24px; position:relative;">
+          <span class="alert-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span>
+          <div class="alert-title">Only registered advocates can be added</div>
+          <div class="alert-description" style="padding-right:26px;">You can add advocates who have registered on the court portal. Others can be given case access later, once they register.</div>
+          <button onClick="{{ dismissInfo }}" aria-label="Dismiss" style="position:absolute; top:10px; right:10px; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border:none; background:none; color:var(--muted-foreground); cursor:pointer; border-radius:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </div>
+        </sc-if>
+
+        <!-- advocate cards -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          <sc-for list="{{ advocates }}" as="adv" hint-placeholder-count="2">
+            <div class="fcard">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                <div class="ctitle">Advocate {{ adv.num }}</div>
+                <sc-if value="{{ adv.canRemove }}" hint-placeholder-val="{{ true }}">
+                  <button class="delbtn" onClick="{{ adv.onRemove }}" aria-label="Remove advocate">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
+                  </button>
+                </sc-if>
+              </div>
+
+              <!-- Advocate for (multi-select) -->
+              <div class="fld" style="{{ adv.fldStyle }}">
+                <label class="flabel">Advocate for <span class="req">*</span></label>
+                <button class="selecttrig" onClick="{{ adv.onToggleDd }}">
+                  <span class="{{ adv.forLabelCls }}">{{ adv.forLabel }}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted-foreground); flex-shrink:0;"><path d="m6 9 6 6 6-6"></path></svg>
+                </button>
+                <sc-if value="{{ adv.ddOpen }}" hint-placeholder-val="{{ false }}">
+                  <div class="ddmenu">
+                    <sc-for list="{{ adv.options }}" as="opt" hint-placeholder-count="4">
+                      <button class="ddrow" onClick="{{ opt.onToggle }}">
+                        <span class="{{ opt.boxCls }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+                        {{ opt.label }}
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+
+              <div class="grid2">
+                <div class="fld">
+                  <label class="flabel">Bar registration number <span class="req">*</span></label>
+                  <input class="input" value="{{ adv.bar }}" onInput="{{ adv.onBar }}" placeholder="e.g. G/60/1992">
+                </div>
+                <div class="fld">
+                  <label class="flabel">Full name <span class="req">*</span></label>
+                  <input class="{{ adv.nameCls }}" value="{{ adv.name }}" readOnly="{{ true }}" onClick="{{ adv.onNameClick }}" placeholder="Fetched from Bar number">
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- add advocate -->
+        <button class="btn btn-outline" style="margin-top:18px; gap:7px;" onClick="{{ inc }}" disabled="{{ atMax }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+          Add another advocate
+        </button>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- click-away layer for open dropdowns -->
+  <sc-if value="{{ anyDdOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDd }}" style="position:fixed; inset:0; z-index:20;"></div>
+  </sc-if>
+
+  <!-- ░░ FOOTER ░░ -->
+  <footer style="position:sticky; bottom:0; z-index:30; background:var(--card); border-top:1px solid var(--border); padding:14px 24px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <a class="btn btn-outline btn-lg" href="Case Filing Form.dc.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+        Back
+      </a>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <sc-if value="{{ saving }}" hint-placeholder-val="{{ false }}">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--muted-foreground);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="animation:spin 0.7s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+            Saving…
+          </span>
+        </sc-if>
+        <sc-if value="{{ saved }}" hint-placeholder-val="{{ true }}">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--success-muted-foreground);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+            Saved
+          </span>
+        </sc-if>
+        <a class="btn btn-default btn-lg" href="Accused Details.dc.html">Continue
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ░░ SOURCE DOCUMENT PANEL (split · right, persistent) ░░ -->
+  <sc-if value="{{ sourceOpen }}" hint-placeholder-val="{{ true }}">
+    <dc-import name="SourcePanel" p="{{ sourceProps }}" hint-size="100%,100%"></dc-import>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  registry = {
+    'G/60/1992': 'Bijini Rejen',
+    'G/60/1993': 'Aparna Nair',
+    'IN/001': 'Vikram Singh',
+    'P/204/2008': 'Meera Joshi',
+  };
+
+  blankAdv() { return { for: [], bar: '' }; }
+
+  state = {
+    complainantNames: ['Complainant 1', 'Complainant 2', 'Complainant 3'],
+    advocates: [
+      { for: [0, 1, 2], bar: 'G/60/1992' },
+      { for: [0], bar: 'G/60/1993' },
+    ],
+    openDd: -1,
+    saving: false,
+    infoOpen: true,
+    sourceOpen: true,
+    sourceValue: 'Bijini Rejen',
+  };
+
+  markSaving() {
+    clearTimeout(this._saveT);
+    if (!this.state.saving) this.setState({ saving: true });
+    this._saveT = setTimeout(() => this.setState({ saving: false }), 900);
+  }
+
+  setSourceValue(v) { this.setState({ sourceValue: v }); }
+
+  inc() {
+    if (this.state.advocates.length >= 6) return;
+    this.state.advocates.push(this.blankAdv());
+    this.markSaving();
+    this.forceUpdate();
+  }
+  dec() {
+    if (this.state.advocates.length <= 1) return;
+    this.state.advocates.pop();
+    if (this.state.openDd >= this.state.advocates.length) this.state.openDd = -1;
+    this.markSaving();
+    this.forceUpdate();
+  }
+  removeAdv(i) {
+    if (this.state.advocates.length <= 1) return;
+    this.state.advocates.splice(i, 1);
+    this.setState({ openDd: -1 });
+    this.markSaving();
+  }
+
+  toggleDd(i) { this.setState({ openDd: this.state.openDd === i ? -1 : i }); }
+  closeDd() { this.setState({ openDd: -1 }); }
+
+  toggleFor(i, idx) {
+    const adv = this.state.advocates[i];
+    const set = new Set(adv.for);
+    if (set.has(idx)) set.delete(idx); else set.add(idx);
+    adv.for = Array.from(set).sort((a, b) => a - b);
+    this.markSaving();
+    this.forceUpdate();
+  }
+  toggleAll(i) {
+    const adv = this.state.advocates[i];
+    const total = this.state.complainantNames.length;
+    adv.for = (adv.for.length === total) ? [] : this.state.complainantNames.map((_, k) => k);
+    this.markSaving();
+    this.forceUpdate();
+  }
+  setBar(i, v) {
+    this.state.advocates[i].bar = v;
+    this.markSaving();
+    this.forceUpdate();
+  }
+  dismissInfo() {
+    this.setState({ infoOpen: false });
+  }
+
+  openSource() { this.setState({ sourceOpen: true }); }
+  closeSource() { this.setState({ sourceOpen: false }); }
+  reopenSource() { this.setState({ sourceOpen: true }); }
+
+  renderVals() {
+    const self = this;
+    const names = this.state.complainantNames;
+    const total = names.length;
+
+    const advocates = this.state.advocates.map((adv, i) => {
+      const allChecked = adv.for.length === total && total > 0;
+      const forLabel = adv.for.length === 0
+        ? 'Select complainants'
+        : allChecked
+          ? 'All complainants'
+          : adv.for.map(k => names[k]).join(', ');
+
+      const options = [{
+        label: 'All complainants',
+        boxCls: allChecked ? 'cbox cbox--on' : 'cbox',
+        onToggle: () => self.toggleAll(i),
+      }].concat(names.map((nm, k) => ({
+        label: nm,
+        boxCls: adv.for.includes(k) ? 'cbox cbox--on' : 'cbox',
+        onToggle: () => self.toggleFor(i, k),
+      })));
+
+      const matched = !!this.registry[adv.bar.trim()];
+      const resolvedName = matched ? this.registry[adv.bar.trim()] : '';
+
+      const ddOpen = this.state.openDd === i;
+      return {
+        num: i + 1,
+        canRemove: this.state.advocates.length > 1,
+        onRemove: () => self.removeAdv(i),
+        forLabel,
+        forLabelCls: adv.for.length === 0 ? 'sel-ph' : 'sel-val',
+        options,
+        ddOpen,
+        onToggleDd: () => self.toggleDd(i),
+        fldStyle: ddOpen ? 'position:relative; z-index:40;' : 'position:relative;',
+        bar: adv.bar,
+        onBar: (e) => self.setBar(i, e.target.value),
+        name: resolvedName,
+        nameCls: matched ? 'input input-ai' : 'input',
+        onNameClick: matched ? () => self.openSource() : null,
+      };
+    });
+
+    return {
+      progressPct: '15%',
+      count: this.state.advocates.length,
+      atMin: this.state.advocates.length <= 1,
+      atMax: this.state.advocates.length >= 6,
+      advocates,
+      anyDdOpen: this.state.openDd >= 0,
+      inc: () => self.inc(),
+      dec: () => self.dec(),
+      closeDd: () => self.closeDd(),
+      saving: this.state.saving,
+      saved: !this.state.saving,
+      infoOpen: this.state.infoOpen,
+      dismissInfo: () => self.dismissInfo(),
+      sourceOpen: this.state.sourceOpen,
+      sourceClosed: !this.state.sourceOpen,
+      mainCls: this.state.sourceOpen ? 'formcol formcol--src' : 'formcol',
+      reopenSource: () => self.reopenSource(),
+      closeSource: () => self.closeSource(),
+      sourceProps: {
+        eyebrow: 'Source',
+        title: 'Full name',
+        onClose: () => self.closeSource(),
+        hasValue: true,
+        editValue: this.state.sourceValue,
+        onEdit: (e) => self.setSourceValue(e.target.value),
+        hasChips: true,
+        chips: [{ label: 'Vakalath.pdf', cls: 'srcchip srcchip--on', onClick: () => {} }],
+        img: '../assets/advocate-document.png',
+        imgAlt: 'Uploaded Vakalatnama',
+        hasRegion: true,
+        regLeft: '14.8%', regTop: '65.5%', regW: '22.5%', regH: '7.5%',
+        hasNote: true,
+        note: 'Advocate name and bar number are matched against the Bar Council registry from the registration number you enter.',
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
