@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="../css/app.css">
+<script src="../js/runtime.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<script>(function(){try{var n=performance.getEntriesByType('navigation')[0];var t=n?n.type:(performance.navigation&&performance.navigation.type===1?'reload':'navigate');if(t==='reload'){void 0;return;}}catch(e){}var F=340;function init(){var s=document.createElement('style');s.textContent='@keyframes pgIn{from{opacity:0}to{opacity:1}}body{animation:pgIn '+F+'ms cubic-bezier(.22,.61,.36,1) both}body.pg-leave{opacity:0 !important;transition:opacity 200ms ease}';document.head.appendChild(s);}if(document.head){init();}else{document.addEventListener('DOMContentLoaded',init);}document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var href=a.getAttribute('href');if(!href||href.charAt(0)==='#'||/^(https?:|mailto:|tel:|javascript:)/i.test(href)||a.target==='_blank')return;e.preventDefault();document.body.classList.add('pg-leave');setTimeout(function(){location.href=href;},F-30);},true);})();</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: #ffffff; font-family: var(--font-sans); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+  .navitem { display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:8px; font-size:14px; font-weight:500; color:color-mix(in oklch, var(--foreground) 78%, var(--background)); text-decoration:none; cursor:pointer; transition:background 150ms, color 150ms; }
+  .navitem:not(.navitem--on) > svg:first-of-type { color:color-mix(in oklch, var(--foreground) 58%, var(--background)); }
+  .navitem:hover { background:var(--secondary); color:var(--foreground); }
+  .navitem--on { background:var(--sidebar-accent); color:var(--sidebar-accent-foreground); }
+  .ocrtip { position:relative; display:inline-flex; margin-left:auto; }
+  .ocrtipbox { position:absolute; top:calc(100% + 8px); right:0; width:222px; background:var(--foreground); color:var(--background); font-size:12px; font-weight:400; line-height:1.5; padding:9px 12px; border-radius:8px; opacity:0; visibility:hidden; transition:opacity 120ms ease; z-index:60; box-shadow:var(--shadow-lg); pointer-events:none; text-align:left; }
+  .ocrtip:hover .ocrtipbox { opacity:1; visibility:visible; }
+
+  .tabstrip { display:flex; align-items:center; gap:2px; flex-wrap:wrap; border-bottom:1px solid var(--border); margin-bottom:24px; }
+  .ptab { display:inline-flex; align-items:center; gap:8px; padding:11px 14px; margin-bottom:-1px; border:none; border-bottom:2px solid transparent; background:transparent; color:var(--muted-foreground); font-size:14px; font-weight:500; cursor:pointer; font-family:var(--font-sans); transition:color 120ms; white-space:nowrap; }
+  .ptab:hover { color:var(--foreground); }
+  .ptab--on { color:var(--foreground); font-weight:600; border-bottom-color:var(--primary); }
+  .tabdot { width:7px; height:7px; border-radius:9999px; flex-shrink:0; }
+  .tabx { display:inline-flex; align-items:center; justify-content:center; color:var(--muted-foreground); border-radius:5px; padding:2px; }
+  .tabx:hover { background:color-mix(in oklch,var(--destructive) 12%,transparent); color:var(--destructive); }
+  .tabadd { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; margin-left:6px; border:none; background:transparent; color:var(--primary); font-size:13.5px; font-weight:600; cursor:pointer; font-family:var(--font-sans); border-radius:8px; }
+  .tabadd:hover { background:color-mix(in oklch,var(--primary) 8%,transparent); }
+  .ctab { display:inline-flex; align-items:center; gap:9px; padding:11px 2px; background:none; border:none; border-bottom:2px solid transparent; font-size:15px; font-weight:600; color:var(--muted-foreground); cursor:pointer; font-family:var(--font-sans); white-space:nowrap; }
+  .ctab:hover { color:var(--foreground); }
+  .prefix { display:inline-flex; align-items:center; height:38px; padding:0 12px; border:1px solid var(--input); border-radius:8px; background:var(--secondary); font-size:14px; color:var(--muted-foreground); flex-shrink:0; }
+  .fcard { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px 26px; display:flex; flex-direction:column; gap:24px; }
+  .fcard > div:first-child { margin-bottom:-7px; }
+  .ctitle { font-size:16px; font-weight:600; letter-spacing:-0.005em; }
+  .cdesc { font-size:13px; color:var(--muted-foreground); margin-top:3px; line-height:1.45; }
+  .fld { display:flex; flex-direction:column; gap:7px; }
+  .flabel { font-size:14px; font-weight:500; color:var(--foreground); display:inline-flex; align-items:center; }
+  .fhelp { font-size:13px; color:var(--muted-foreground); line-height:1.45; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+  .req { color:var(--destructive); margin-left:3px; }
+  .opt { font-weight:400; color:var(--muted-foreground); margin-left:5px; }
+  .subhead { font-size:13px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; }
+  .subblock { border:1px solid var(--border); border-radius:12px; padding:18px 18px 20px; display:flex; flex-direction:column; gap:16px; }
+  .ta { min-height:96px; height:auto; padding:10px 12px; resize:vertical; line-height:1.55; }
+  .ordiv { display:flex; align-items:center; gap:14px; color:var(--muted-foreground); font-size:12px; font-weight:600; letter-spacing:0.06em; }
+  .ordiv > span { flex:1; height:1px; background:var(--border); }
+  .delbtn { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border:none; background:none; border-radius:8px; color:var(--muted-foreground); cursor:pointer; transition:all 150ms; flex-shrink:0; }
+  .delbtn:hover { background:color-mix(in oklch, var(--destructive) 10%, transparent); color:var(--destructive); }
+  .geobtn { display:inline-flex; align-items:center; gap:7px; align-self:flex-start; padding:8px 14px; border:1px solid var(--input); border-radius:8px; background:var(--card); font-size:14px; font-weight:500; color:var(--foreground); cursor:pointer; font-family:var(--font-sans); transition:background 150ms; }
+  .geobtn:hover { background:var(--secondary); }
+  .stepwrap { display:inline-flex; align-items:center; border:1px solid var(--input); border-radius:8px; overflow:hidden; background:var(--background); }
+  .stepbtn { width:40px; height:38px; display:inline-flex; align-items:center; justify-content:center; border:none; background:var(--background); color:var(--foreground); cursor:pointer; font-family:var(--font-sans); transition:background 120ms; }
+  .stepbtn:hover { background:var(--secondary); }
+  .stepbtn:disabled { color:var(--muted-foreground); cursor:not-allowed; opacity:0.5; }
+  .stepval { min-width:46px; text-align:center; font-size:14px; font-weight:600; border-left:1px solid var(--border); border-right:1px solid var(--border); height:38px; line-height:38px; }
+  .modal-overlay { position:fixed; inset:0; z-index:60; background:color-mix(in oklch, var(--foreground) 30%, transparent); display:flex; align-items:center; justify-content:center; padding:24px; animation:fadein 150ms ease; }
+  .modal-card { width:480px; max-width:100%; background:var(--card); border-radius:14px; box-shadow:var(--shadow-xl); overflow:hidden; animation:pop 160ms cubic-bezier(0.22,1,0.36,1); }
+  .modal-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:22px 24px 0; }
+  .modal-title { font-size:18px; font-weight:600; letter-spacing:-0.01em; }
+  .modal-body { padding:14px 24px 0; font-size:14px; color:var(--muted-foreground); line-height:1.55; }
+  .modal-foot { display:flex; align-items:center; justify-content:flex-end; gap:10px; padding:22px 24px 22px; }
+  @keyframes fadein { from { opacity:0; } to { opacity:1; } }
+  @keyframes pop { from { opacity:0; transform:translateY(8px) scale(0.98); } to { opacity:1; transform:none; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; flex-direction:column;">
+
+  <!-- ░░ TOP BAR ░░ -->
+  <header style="position:sticky; top:0; z-index:30;">
+  <div style="background:var(--card); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:16px; height:54px; padding:0 24px;">
+    <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+      <div style="width:30px; height:30px; border-radius:8px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:var(--primary-foreground);">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+      </div>
+      <div style="display:flex; flex-direction:column; line-height:1.15;">
+        <span style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:var(--foreground);">24x7 ON Courts</span>
+        <span style="font-size:11px; color:var(--muted-foreground);">Kollam, Kerala</span>
+      </div>
+    </div>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:22px;">
+      <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>EN</span>
+      <span style="font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;">Support</span>
+      <div style="width:32px; height:32px; border-radius:9999px; background:var(--secondary); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--muted-foreground);">RK</div>
+    </div>
+  </div>
+  <div style="display:none;">
+    <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:9999px; background:var(--secondary); color:var(--muted-foreground); font-size:13px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"></path><path d="M12 6v14"></path><path d="M8 8v12"></path><path d="M4 4v16"></path></svg>
+      Filing under <strong style="color:var(--foreground); font-weight:600;">S-138, NI Act</strong> · 24×7 ON Court, Kollam
+    </div>
+    <div style="display:none;">
+      <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted-foreground);">
+        <span style="font-weight:600; color:var(--foreground);">Evidence</span>
+        <span>Section 8 of 13</span>
+      </div>
+      <div style="height:5px; border-radius:9999px; background:var(--secondary); overflow:hidden;">
+        <div style="height:100%; width:{{ progressPct }}; background:var(--primary); border-radius:9999px;"></div>
+      </div>
+    </div>
+  </div>
+  </header>
+
+  <div style="flex:1; display:flex; align-items:flex-start;">
+
+    <!-- ── SIDEBAR ── -->
+    <aside style="width:296px; flex-shrink:0; background:var(--card); border-right:1px solid var(--border); position:sticky; top:54px; height:calc(100vh - 54px); overflow:hidden; padding:18px 16px; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:0 4px 14px;">
+        <span style="font-size:15px; font-weight:700;">Sections</span>
+        <button class="btn btn-outline btn-xs" style="gap:5px;">Hide
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path></svg>
+        </button>
+      </div>
+
+      <div style="padding:0 8px 16px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted-foreground); margin-bottom:6px;">
+          <span style="font-weight:600; color:var(--foreground);">Progress</span>
+          <span>{{ progressPct }}</span>
+        </div>
+        <div style="height:6px; border-radius:9999px; background:var(--secondary); overflow:hidden;">
+          <div style="height:100%; width:{{ progressPct }}; background:var(--primary); border-radius:9999px;"></div>
+        </div>
+      </div>
+
+      <a href="Case Documents Upload.dc.html" style="display:flex; align-items:center; gap:8px; padding:10px 14px; margin:2px 0 16px; border:1px solid var(--border); background:var(--secondary); color:var(--foreground); border-radius:10px; font-size:13.5px; font-weight:600; text-decoration:none; cursor:pointer;">
+        View uploaded documents
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        <span style="margin-left:auto; font-size:11px; font-weight:700; background:var(--primary); color:var(--primary-foreground); border-radius:9999px; padding:2px 8px;">5</span>
+      </a>
+      <div style="flex:1; min-height:0; overflow-y:auto; margin:0 -6px; padding:0 6px;">
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:8px 8px 6px;">Parties</div>
+      <a class="navitem" href="Case Filing Form.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
+        Complainant <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="Advocate Details.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+        Advocate <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="Accused Details.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21a8 8 0 0 1 11.873-7"></path><circle cx="10" cy="8" r="5"></circle><path d="m17 17 5 5"></path><path d="m22 17-5 5"></path></svg>
+        Accused <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Case details</div>
+      <a class="navitem" href="Cheque &amp; Return Memo.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+        Cheque &amp; return memo <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="Demand Notice &amp; Debt.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        Demand notice &amp; debt <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="Jurisdiction &amp; Limitation.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Jurisdiction &amp; limitation <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+      <a class="navitem" href="ADR, Other details &amp; Prayer.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        ADR, other &amp; prayer <span style="margin-left:auto; color:var(--success); display:inline-flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Evidence</div>
+      <a class="navitem navitem--on">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+        Witnesses
+      </a>
+      <a class="navitem" href="Documents.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path></svg>
+        Documents
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Affidavit</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path><path d="m9 15 2 2 4-4"></path></svg>
+        Affidavit
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Preview</div>
+      <a class="navitem" href="Preview.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        Preview
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Sign</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="m2 2 7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+        Sign
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Pay fees</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+        Pay fees
+      </a>
+    </div>
+    </aside>
+
+    <!-- ── FORM COLUMN ── -->
+    <main style="flex:1; min-width:0; padding:34px 48px 120px;">
+      <div style="max-width:840px;">
+
+        <!-- breadcrumb -->
+        <nav style="display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted-foreground); margin-bottom:28px; flex-wrap:wrap;">
+          <a href="Dashboard.dc.html" style="color:var(--muted-foreground); text-decoration:none;">Dashboard</a>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="m9 18 6-6-6-6"></path></svg>
+          <span>Case filing under <span style="color:var(--foreground); font-weight:500;">S-138, NI Act</span></span>
+        </nav>
+
+        <!-- heading -->
+        <div style="margin-bottom:18px;">
+          <h1 style="font-size:24px; font-weight:600; letter-spacing:-0.02em; margin:0;">Witnesses</h1>
+          <p style="font-size:14px; color:var(--muted-foreground); margin:8px 0 0; line-height:1.5;">List the witnesses you intend to rely on, and how the court can reach them.</p>
+        </div>
+
+        <!-- tabs -->
+        <div class="tabstrip">
+          <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="2">
+            <button class="{{ tab.tabCls }}" onClick="{{ tab.onClick }}">
+              <span class="tabdot" style="background:{{ tab.dot }};"></span>
+              {{ tab.label }}
+              <sc-if value="{{ tab.canRemove }}" hint-placeholder-val="{{ true }}">
+                <span class="tabx" onClick="{{ tab.onRemove }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></span>
+              </sc-if>
+            </button>
+          </sc-for>
+          <button class="tabadd" onClick="{{ addWitness }}">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+            Add witness
+          </button>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+          <!-- ═══ CARD: Witness identity ═══ -->
+          <div class="fcard">
+            <div><div class="ctitle">{{ w.heading }}</div><div class="cdesc">Identify the witness by name, or by official designation.</div></div>
+
+            <div class="fld">
+              <label class="flabel">Full name <span class="req">*</span></label>
+              <input class="input" value="{{ w.fullName }}" onInput="{{ w.onFullName }}" placeholder="Enter">
+            </div>
+
+            <div class="ordiv"><span></span>OR<span></span></div>
+
+            <div class="grid2">
+              <div class="fld">
+                <label class="flabel">Designation <span class="req">*</span></label>
+                <input class="input" value="{{ w.designation }}" onInput="{{ w.onDesignation }}" placeholder="e.g. Bank Manager, SBI Sector 17">
+              </div>
+              <div class="fld">
+                <label class="flabel">Age <span class="opt">optional</span></label>
+                <input class="input" value="{{ w.age }}" onInput="{{ w.onAge }}" placeholder="Enter" inputmode="numeric">
+              </div>
+            </div>
+
+            <div class="fld">
+              <label class="flabel">What will this witness prove?</label>
+              <textarea class="input ta" value="{{ w.prove }}" onInput="{{ w.onProve }}" placeholder="Briefly describe what this witness will testify to."></textarea>
+            </div>
+          </div>
+
+          <!-- ═══ CARD: Contact details ═══ -->
+          <div class="fcard">
+            <div><div class="ctitle">{{ w.contactHeading }}</div><div class="cdesc">A phone number or email helps the court reach the witness.</div></div>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <sc-for list="{{ w.contacts }}" as="ct" hint-placeholder-count="1">
+                <div style="display:flex; align-items:flex-end; gap:14px;">
+                  <div class="grid2" style="flex:1;">
+                    <div class="fld">
+                      <label class="flabel">Mobile number</label>
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="prefix">+91</span>
+                        <input class="input" value="{{ ct.mobile }}" onInput="{{ ct.onMobile }}" placeholder="Enter mobile number" inputmode="numeric">
+                      </div>
+                    </div>
+                    <div class="fld">
+                      <label class="flabel">Email ID</label>
+                      <input class="input" value="{{ ct.email }}" onInput="{{ ct.onEmail }}" placeholder="ex: xyz@gmail.com">
+                    </div>
+                  </div>
+                  <sc-if value="{{ ct.canRemove }}" hint-placeholder-val="{{ false }}">
+                    <button class="delbtn" onClick="{{ ct.onRemove }}" aria-label="Remove contact">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
+                    </button>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <button class="btn btn-outline" style="align-self:flex-start; gap:7px;" onClick="{{ w.addContact }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              Add more
+            </button>
+          </div>
+
+          <!-- ═══ CARD: Address details ═══ -->
+          <div class="fcard">
+            <div><div class="ctitle">{{ w.addressHeading }}</div></div>
+            <div class="alert alert-info alert-has-icon">
+              <span class="alert-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span>
+              <div class="alert-description">Adding multiple addresses will increase your chances of successful delivery.</div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <sc-for list="{{ w.addresses }}" as="ad" hint-placeholder-count="1">
+                <div class="subblock">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                    <span class="subhead">Address {{ ad.num }}</span>
+                    <sc-if value="{{ ad.canRemove }}" hint-placeholder-val="{{ false }}">
+                      <button class="delbtn" onClick="{{ ad.onRemove }}" aria-label="Remove address">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
+                      </button>
+                    </sc-if>
+                  </div>
+                  <dc-import name="AddressFields" f="{{ ad.fields }}" hint-size="100%,230px"></dc-import>
+                  <div class="grid2">
+                    <div class="fld">
+                      <label class="flabel">Police station <span class="req">*</span></label>
+                      <select class="select" value="{{ ad.police }}" onChange="{{ ad.onPolice }}">
+                        <option value="">Select police station</option>
+                        <option>Sector 17 PS, Chandigarh</option>
+                        <option>Sector 11 PS, Chandigarh</option>
+                        <option>Sector 26 PS, Chandigarh</option>
+                        <option>Industrial Area PS, Chandigarh</option>
+                        <option>Mohali City PS</option>
+                      </select>
+                    </div>
+                    <div class="fld">
+                      <label class="flabel">Map location <span class="opt">optional</span></label>
+                      <sc-if value="{{ ad.hasGeo }}" hint-placeholder-val="{{ false }}">
+                        <button class="geobtn" onClick="{{ ad.onPin }}" style="color:var(--success-muted-foreground); border-color:color-mix(in oklch,var(--success) 35%,var(--input));">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                          {{ ad.geo }}
+                        </button>
+                      </sc-if>
+                      <sc-if value="{{ ad.noGeo }}" hint-placeholder-val="{{ true }}">
+                        <button class="geobtn" onClick="{{ ad.onPin }}">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                          Pin location on map
+                        </button>
+                      </sc-if>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <button class="btn btn-outline" style="align-self:flex-start; gap:7px;" onClick="{{ w.addAddress }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              Add address
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ░░ FOOTER ░░ -->
+  <footer style="position:sticky; bottom:0; z-index:30; background:var(--card); border-top:1px solid var(--border); padding:14px 24px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <a class="btn btn-outline btn-lg" href="ADR, Other details &amp; Prayer.dc.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+        Back
+      </a>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <sc-if value="{{ saving }}" hint-placeholder-val="{{ false }}">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--muted-foreground);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="animation:spin 0.7s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+            Saving…
+          </span>
+        </sc-if>
+        <sc-if value="{{ saved }}" hint-placeholder-val="{{ true }}">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--success-muted-foreground);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+            Saved
+          </span>
+        </sc-if>
+        <button class="btn btn-default btn-lg" onClick="{{ onContinue }}">Continue
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ░░ REMOVE WITNESS DIALOG ░░ -->
+  <sc-if value="{{ showRemove }}" hint-placeholder-val="{{ false }}">
+    <div class="modal-overlay" onClick="{{ cancelRemove }}">
+      <div class="modal-card" onClick="{{ stop }}">
+        <div class="modal-head">
+          <div class="modal-title">Remove {{ removeLabel }}</div>
+          <button class="dialog-close" style="position:static;" onClick="{{ cancelRemove }}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </div>
+        <div class="modal-body">Are you sure you want to delete this witness and all their details? This cannot be undone.</div>
+        <div class="modal-foot">
+          <button class="btn btn-outline" onClick="{{ cancelRemove }}">Cancel</button>
+          <button class="btn btn-destructive" onClick="{{ confirmRemove }}">Yes, remove</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  blankAddr() { return { line1: '', city: '', pin: '', district: '', state: '' }; }
+  blankAddrBlock() { return { addr: this.blankAddr(), police: '', geo: '' }; }
+  blankContact() { return { mobile: '', email: '' }; }
+  blankWitness() {
+    return {
+      fullName: '', designation: '', age: '', prove: '',
+      contacts: [ this.blankContact() ],
+      addresses: [ this.blankAddrBlock() ],
+    };
+  }
+
+  state = {
+    witnesses: [ this.blankWitness(), this.blankWitness() ],
+    activeWitness: 0,
+    saving: false,
+    showRemove: false, removeIndex: -1,
+  };
+
+  cur() { return this.state.witnesses[this.state.activeWitness]; }
+
+  markSaving() {
+    clearTimeout(this._saveT);
+    if (!this.state.saving) this.setState({ saving: true });
+    this._saveT = setTimeout(() => this.setState({ saving: false }), 900);
+  }
+
+  setField(k, v) { this.cur()[k] = v; this.markSaving(); this.forceUpdate(); }
+  setPath(obj, path, v) { let o = obj; for (let i = 0; i < path.length - 1; i++) o = o[path[i]]; o[path[path.length - 1]] = v; this.markSaving(); this.forceUpdate(); }
+
+  switchWitness(i) { this.setState({ activeWitness: i }); }
+  addWitness() { this.state.witnesses.push(this.blankWitness()); this.markSaving(); this.setState({ activeWitness: this.state.witnesses.length - 1 }); }
+  stepDown() { if (this.state.witnesses.length <= 1) return; this.askRemove(this.state.witnesses.length - 1); }
+
+  askRemove(i, e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (this.state.witnesses.length <= 1) return;
+    this.setState({ showRemove: true, removeIndex: i });
+  }
+  cancelRemove() { this.setState({ showRemove: false, removeIndex: -1 }); }
+  confirmRemove() {
+    const i = this.state.removeIndex;
+    if (i < 0 || this.state.witnesses.length <= 1) { this.cancelRemove(); return; }
+    this.state.witnesses.splice(i, 1);
+    let a = this.state.activeWitness; if (a >= this.state.witnesses.length) a = this.state.witnesses.length - 1;
+    this.markSaving();
+    this.setState({ showRemove: false, removeIndex: -1, activeWitness: a });
+  }
+
+  addContact() { this.cur().contacts.push(this.blankContact()); this.markSaving(); this.forceUpdate(); }
+  removeContact(i) { const c = this.cur(); if (c.contacts.length <= 1) return; c.contacts.splice(i, 1); this.markSaving(); this.forceUpdate(); }
+
+  addAddress() { this.cur().addresses.push(this.blankAddrBlock()); this.markSaving(); this.forceUpdate(); }
+  removeAddress(i) { const c = this.cur(); if (c.addresses.length <= 1) return; c.addresses.splice(i, 1); this.markSaving(); this.forceUpdate(); }
+  pinGeo(i) { this.cur().addresses[i].geo = '30.7333, 76.7794'; this.markSaving(); this.forceUpdate(); }
+
+  onContinue() { this.markSaving(); window.window.__dcnav('Documents'); }
+
+  renderVals() {
+    const self = this;
+    const c = this.cur();
+    const idx = this.state.activeWitness;
+
+    const contacts = c.contacts.map((ct, i) => ({
+      mobile: ct.mobile, email: ct.email,
+      canRemove: c.contacts.length > 1,
+      onMobile: (e) => { ct.mobile = e.target.value; self.markSaving(); self.forceUpdate(); },
+      onEmail: (e) => { ct.email = e.target.value; self.markSaving(); self.forceUpdate(); },
+      onRemove: () => self.removeContact(i),
+    }));
+
+    const addresses = c.addresses.map((ad, i) => {
+      const v = ad.addr;
+      return {
+        num: i + 1,
+        canRemove: c.addresses.length > 1,
+        onRemove: () => self.removeAddress(i),
+        police: ad.police,
+        onPolice: (e) => { ad.police = e.target.value; self.markSaving(); self.forceUpdate(); },
+        geo: ad.geo, hasGeo: !!ad.geo, noGeo: !ad.geo,
+        onPin: () => self.pinGeo(i),
+        fields: {
+          line1: v.line1, city: v.city, pin: v.pin, district: v.district, state: v.state,
+          prefilled: false, plain: true, aiCls: 'input', selCls: 'select',
+          onLine1: (e) => self.setPath(ad, ['addr', 'line1'], e.target.value),
+          onCity: (e) => self.setPath(ad, ['addr', 'city'], e.target.value),
+          onPin: (e) => self.setPath(ad, ['addr', 'pin'], e.target.value),
+          onDistrict: (e) => self.setPath(ad, ['addr', 'district'], e.target.value),
+          onState: (e) => self.setPath(ad, ['addr', 'state'], e.target.value),
+        },
+      };
+    });
+
+    const tabs = this.state.witnesses.map((wt, i) => ({
+      label: 'Witness ' + (i + 1), value: String(i),
+      tabCls: i === this.state.activeWitness ? 'ptab ptab--on' : 'ptab', onClick: () => self.switchWitness(i),
+      dot: (wt.fullName || wt.designation) ? 'var(--success)' : 'var(--warning)',
+      canRemove: this.state.witnesses.length > 1,
+      onRemove: (e) => self.askRemove(i, e),
+    }));
+
+    return {
+      progressPct: '60%',
+      witnessCount: String(this.state.witnesses.length),
+      tabs,
+      activeTabVal: String(idx),
+      onTabChange: (v) => self.switchWitness(Number(v)),
+      addWitness: () => self.addWitness(),
+      stepUp: () => self.addWitness(),
+      stepDown: () => self.stepDown(),
+      stepDownDisabled: this.state.witnesses.length <= 1,
+
+      w: {
+        heading: 'Witness ' + (idx + 1),
+        contactHeading: 'Witness ' + (idx + 1) + ' contact details',
+        addressHeading: 'Witness ' + (idx + 1) + ' address details',
+        fullName: c.fullName, onFullName: (e) => self.setField('fullName', e.target.value),
+        designation: c.designation, onDesignation: (e) => self.setField('designation', e.target.value),
+        age: c.age, onAge: (e) => self.setField('age', e.target.value),
+        prove: c.prove, onProve: (e) => self.setField('prove', e.target.value),
+        contacts,
+        addContact: () => self.addContact(),
+        addresses,
+        addAddress: () => self.addAddress(),
+      },
+
+      saving: this.state.saving,
+      saved: !this.state.saving,
+      onContinue: () => self.onContinue(),
+
+      showRemove: this.state.showRemove,
+      removeLabel: this.state.removeIndex >= 0 ? ('witness ' + (this.state.removeIndex + 1)) : 'witness',
+      cancelRemove: () => self.cancelRemove(),
+      confirmRemove: () => self.confirmRemove(),
+      stop: (e) => e.stopPropagation(),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="../css/app.css">
+<script src="../js/runtime.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<template id="__bundler_thumbnail" data-bg-color="#007E7E">
+  <svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg">
+    <rect x="150" y="70" width="140" height="180" rx="10" fill="#ffffff"/>
+    <rect x="176" y="104" width="88" height="9" rx="4.5" fill="#cfe3e3"/>
+    <rect x="176" y="126" width="70" height="9" rx="4.5" fill="#e2e0db"/>
+    <rect x="176" y="148" width="88" height="9" rx="4.5" fill="#e2e0db"/>
+    <circle cx="300" cy="210" r="46" fill="#007E7E"/>
+    <path d="M300 190 v40 M282 208 l18 -18 18 18" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </svg>
+</template>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script>(function(){var F=340;function init(){var s=document.createElement('style');s.textContent='@keyframes pgIn{from{opacity:0}to{opacity:1}}body{animation:pgIn '+F+'ms cubic-bezier(.22,.61,.36,1) both}body.pg-leave{opacity:0 !important;transition:opacity 200ms ease}';document.head.appendChild(s);}if(document.head){init();}else{document.addEventListener('DOMContentLoaded',init);}document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var href=a.getAttribute('href');if(!href||href.charAt(0)==='#'||/^(https?:|mailto:|tel:|javascript:)/i.test(href)||a.target==='_blank')return;e.preventDefault();document.body.classList.add('pg-leave');setTimeout(function(){location.href=href;},F-30);},true);})();</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: #ffffff; font-family: var(--font-sans); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+  .slot-thumb { transition: border-color 150ms ease, box-shadow 150ms ease; }
+  .slot-thumb:hover { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 14%, transparent); }
+  .lnk { color: var(--primary); font-weight: 600; cursor: pointer; background: none; border: none; font-family: var(--font-sans); font-size: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 0; }
+  .lnk:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .removelnk { color: var(--muted-foreground); font-size: 13px; cursor: pointer; background: none; border: none; font-family: var(--font-sans); }
+  .removelnk:hover { color: var(--destructive); }
+  @keyframes rajini-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes rajini-zoom-in { from { opacity: 0; transform: scale(0.97) translateY(6px); } to { opacity: 1; transform: none; } }
+  .tabstrip { display:flex; align-items:center; gap:2px; flex-wrap:wrap; border-bottom:1px solid var(--border); margin-bottom:30px; }
+  .ptab { display:inline-flex; align-items:center; gap:7px; padding:11px 14px; margin-bottom:-1px; border:none; border-bottom:2px solid transparent; background:transparent; color:var(--muted-foreground); font-size:14px; font-weight:500; cursor:pointer; font-family:var(--font-sans); transition:color 120ms; white-space:nowrap; }
+  .ptab:hover { color:var(--foreground); }
+  .ptab--on { color:var(--foreground); font-weight:600; border-bottom-color:var(--primary); }
+  .ptab .cnt { font-size:11px; font-weight:600; color:var(--muted-foreground); background:var(--secondary); border-radius:9999px; padding:1px 7px; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; flex-direction:column;">
+
+  <!-- ░░ TOP BAR ░░ -->
+  <header style="position:sticky; top:0; z-index:30;">
+  <div style="background:var(--card); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:16px; height:54px; padding:0 24px;">
+    <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+      <div style="width:30px; height:30px; border-radius:8px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:var(--primary-foreground);">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+      </div>
+      <div style="display:flex; flex-direction:column; line-height:1.15;">
+        <span style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:var(--foreground);">24x7 ON Courts</span>
+        <span style="font-size:11px; color:var(--muted-foreground);">Kollam, Kerala</span>
+      </div>
+    </div>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:22px;">
+      <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>EN</span>
+      <span style="font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;">Support</span>
+      <div style="width:32px; height:32px; border-radius:9999px; background:var(--secondary); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--muted-foreground);">RK</div>
+    </div>
+  </div>
+  </header>
+
+  <!-- ░░ CANVAS ░░ -->
+  <main style="flex:1; padding:40px 28px 132px;">
+    <div style="max-width:760px; margin:0 auto; display:grid; grid-template-columns:minmax(0,1fr); gap:48px; align-items:start;">
+
+      <!-- ── MAIN COLUMN ── -->
+      <div>
+        <!-- breadcrumb -->
+        <nav style="display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted-foreground); margin-bottom:28px; flex-wrap:wrap;">
+          <a href="Dashboard.dc.html" style="color:var(--muted-foreground); text-decoration:none;">Dashboard</a>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="m9 18 6-6-6-6"></path></svg>
+          <span>Case filing under <span style="color:var(--foreground); font-weight:500;">S-138, NI Act</span></span>
+        </nav>
+
+        <div style="font-size:13px; font-weight:600; color:var(--primary); letter-spacing:0.02em; margin-bottom:10px;">Documents</div>
+        <h1 style="font-size:28px; font-weight:600; letter-spacing:-0.02em; margin:0 0 12px;">Add your case documents</h1>
+        <p style="font-size: 15px; line-height: 1.55; color: var(--foreground); margin: 0 0 26px; width: 100%">Put each document in its place. We read them and fill your form where we can — anything we can't read, you type in. Add a card for every cheque and complainant in your case.</p>
+
+        <!-- progress -->
+        <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 34px; margin-left: 2px; margin-right: 4px">
+          <div style="flex: 1; height: 8px; border-radius: 9999px; overflow: hidden; background-color: color-mix(in oklch, var(--foreground) 10%, transparent)">
+            <div style="height:100%; border-radius:9999px; background:var(--primary); width:{{ progressPct }}; transition:width 220ms ease;"></div>
+          </div>
+          <div style="font-size:14px; color:var(--muted-foreground); white-space:nowrap;"><strong style="color:var(--foreground); font-weight:600;">{{ doneCount }} of {{ totalCount }}</strong> required documents · {{ remainingLabel }}</div>
+        </div>
+
+        <!-- ════ THE CHEQUES ════ -->
+        <sc-if value="{{ showCheques }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size: 13px; font-weight: 600; color: var(--muted-foreground); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 14px">The cheques</div>
+
+        <sc-for list="{{ cheques }}" as="cheque" hint-placeholder-count="2">
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow-sm); padding:20px; margin-bottom:18px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:7px; background:color-mix(in oklch, var(--primary) 12%, transparent); color:var(--primary);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+                </span>
+                <span style="font-size:16px; font-weight:600;">{{ cheque.title }}</span>
+              </div>
+              <sc-if value="{{ cheque.canRemove }}" hint-placeholder-val="{{ true }}">
+                <button class="removelnk" onClick="{{ cheque.onRemove }}">Remove this cheque</button>
+              </sc-if>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <sc-for list="{{ cheque.slots }}" as="slot" hint-placeholder-count="2">
+                <dc-import name="DocSlot" slot="{{ slot }}" hint-size="100%,96px"></dc-import>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+
+        <button class="lnk" onClick="{{ addCheque }}" style="margin-bottom:36px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+          Add another cheque
+        </button>
+        </sc-if>
+
+        <!-- ════ PARTIES ════ -->
+        <sc-if value="{{ showParties }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ parties }}" as="party" hint-placeholder-count="1">
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow-sm); padding:20px; margin-bottom:18px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:7px; background:color-mix(in oklch, var(--primary) 12%, transparent); color:var(--primary);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
+                </span>
+                <span style="font-size:16px; font-weight:600;">{{ party.title }}</span>
+              </div>
+              <sc-if value="{{ party.canRemove }}" hint-placeholder-val="{{ false }}">
+                <button class="removelnk" onClick="{{ party.onRemove }}">Remove</button>
+              </sc-if>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <sc-for list="{{ party.slots }}" as="slot" hint-placeholder-count="3">
+                <dc-import name="DocSlot" slot="{{ slot }}" hint-size="100%,96px"></dc-import>
+              </sc-for>
+            </div>
+            <button class="lnk" onClick="{{ party.onAddDoc }}" style="margin-top:14px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              Add other documents
+            </button>
+          </div>
+        </sc-for>
+
+        <button class="lnk" onClick="{{ addParty }}" style="margin-bottom:36px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+          Add another party
+        </button>
+        </sc-if>
+
+        <!-- ════ SUPPORTING ════ -->
+        <sc-if value="{{ showSupporting }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
+          <span style="font-size:13px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.04em; text-transform:uppercase;">Supporting</span>
+          <span style="font-size:12px; color:var(--muted-foreground);">optional</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ supporting }}" as="slot" hint-placeholder-count="1">
+            <dc-import name="DocSlot" slot="{{ slot }}" hint-size="100%,96px"></dc-import>
+          </sc-for>
+        </div>
+        </sc-if>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ░░ FOOTER ACTION BAR ░░ -->
+  <footer style="position:sticky; bottom:0; z-index:30; background:var(--card); border-top:1px solid var(--border); padding:14px 28px;">
+    <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <div style="display:flex; align-items:center; gap:10px; font-size:14px; color:var(--muted-foreground);">
+        <sc-if value="{{ footerPending }}" hint-placeholder-val="{{ true }}">
+          <span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:9999px; background:var(--warning-muted); color:var(--warning-muted-foreground);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          </span>
+        </sc-if>
+        <sc-if value="{{ footerDone }}" hint-placeholder-val="{{ false }}">
+          <span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:9999px; background:var(--success-muted); color:var(--success-muted-foreground);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+        </sc-if>
+        {{ footerText }}
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <a class="btn btn-ghost" href="#">Back</a>
+        <a class="btn btn-default btn-lg" href="Case Filing Form.dc.html">Continue to filing
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ░░ PREVIEW MODAL ░░ -->
+  <sc-if value="{{ showPreview }}" hint-placeholder-val="{{ false }}">
+    <div class="dialog-overlay" onClick="{{ onClose }}">
+      <div class="dialog dialog-lg" style="max-width:560px;" onClick="{{ stop }}">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid var(--border);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="display:inline-flex; padding:4px 8px; border-radius:6px; background:var(--secondary); font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.03em;">{{ preview.ext }}</span>
+            <span style="font-size:16px; font-weight:600;">{{ preview.name }}</span>
+          </div>
+          <button class="dialog-close" style="position:static;" onClick="{{ onClose }}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </div>
+
+        <div style="padding:22px;">
+          <sc-if value="{{ preview.isCheque }}" hint-placeholder-val="{{ true }}">
+            <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+              <div style="background:color-mix(in oklch, var(--info) 6%, var(--card)); padding:16px 20px; border-bottom:1px solid var(--border);">
+                <div style="font-size:14px; font-weight:700; color:var(--info-muted-foreground); letter-spacing:0.03em;">{{ preview.ex.bank }}</div>
+                <div style="font-size:13px; color:var(--muted-foreground); margin-top:3px;">{{ preview.ex.branch }}</div>
+              </div>
+              <div style="padding:18px 20px;">
+                <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px;">
+                  <div>
+                    <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:3px;">Pay to</div>
+                    <div style="font-size:17px; font-weight:600;">{{ preview.ex.payee }}</div>
+                  </div>
+                  <div style="font-family:var(--font-mono); font-size:14px; color:var(--foreground);">{{ preview.ex.date }}</div>
+                </div>
+                <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-top:16px;">
+                  <div>
+                    <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:3px;">Rupees (in words)</div>
+                    <div style="font-size:15px;">{{ preview.ex.words }}</div>
+                  </div>
+                  <div style="font-family:var(--font-mono); font-size:20px; font-weight:700; letter-spacing:0.04em;">{{ preview.ex.amount }}</div>
+                </div>
+                <div style="height:1px; background:var(--border); margin:18px 0;"></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+                  <div>
+                    <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:3px;">IFSC Code</div>
+                    <div style="font-family:var(--font-mono); font-size:15px;">{{ preview.ex.ifsc }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:3px;">Account No.</div>
+                    <div style="font-family:var(--font-mono); font-size:15px;">{{ preview.ex.acct }}</div>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:14px 20px; background:var(--secondary); border-top:1px solid var(--border);">
+                <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:5px;">Cheque / MICR number</div>
+                <div style="font-family:var(--font-mono); font-size:17px; letter-spacing:0.08em;">{{ preview.ex.micr }}</div>
+              </div>
+            </div>
+            <div class="alert alert-success alert-has-icon" style="margin-top:16px;">
+              <span class="alert-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              <div class="alert-description" style="color:var(--foreground);">We read these fields and filled your form. Open the next step to check them.</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ preview.hasImg }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--secondary); display:flex; align-items:center; justify-content:center;"><img src="{{ preview.img }}" style="max-width:100%; max-height:460px; display:block;"/></div>
+          </sc-if>
+
+          <sc-if value="{{ preview.isGeneric }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px solid var(--border); border-radius:12px; background:var(--secondary); height:300px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--muted-foreground);">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path></svg>
+              <div style="font-size:14px;">{{ preview.name }}</div>
+              <div style="font-size:13px;">{{ preview.ext }} · document preview</div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 22px; border-top:1px solid var(--border);">
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-outline" onClick="{{ preview.onReplace }}">Replace file</button>
+            
+          </div>
+          <button class="btn btn-default btn-lg" onClick="{{ onClose }}">Done</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+var DOCIMG={cheque:'../assets/cheque.png',memo:'../assets/return-memo.png',notice:'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20480%20500%22%3E%3Crect%20width%3D%22480%22%20height%3D%22500%22%20fill%3D%22%23FDFDFB%22/%3E%3Crect%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%22479%22%20height%3D%22499%22%20fill%3D%22none%22%20stroke%3D%22%23E0DDD4%22/%3E%3Ctext%20x%3D%22240%22%20y%3D%2246%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2215%22%20font-weight%3D%22bold%22%20fill%3D%22%231E2A4A%22%20text-anchor%3D%22middle%22%20letter-spacing%3D%221%22%3ER.%20RAVAL%20%26amp%3B%20ASSOCIATES%3C/text%3E%3Ctext%20x%3D%22240%22%20y%3D%2262%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%229.5%22%20fill%3D%22%236B6759%22%20text-anchor%3D%22middle%22%3EAdvocates%20%26amp%3B%20Legal%20Consultants%20%C2%B7%2012%2C%20Court%20Road%2C%20Navrangpura%2C%20Kollam%20380009%3C/text%3E%3Crect%20x%3D%2242%22%20y%3D%2272%22%20width%3D%22396%22%20height%3D%221.5%22%20fill%3D%22%231E2A4A%22/%3E%3Ctext%20x%3D%2242%22%20y%3D%2296%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210.5%22%20font-weight%3D%22bold%22%20fill%3D%22%2333312B%22%3EBy%20REGD.%20POST%20A.D.%20/%20SPEED%20POST%3C/text%3E%3Ctext%20x%3D%22438%22%20y%3D%2296%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210.5%22%20fill%3D%22%2333312B%22%20text-anchor%3D%22end%22%3EDate%3A%2002/04/2026%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22120%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ETo%2C%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22135%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ESh.%20Rajesh%20Kumar%20Sharma%2C%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22150%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E%23142%2C%20Sector%2021%2C%20Chandigarh%20%E2%80%94%20160022%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22184%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2211%22%20font-weight%3D%22bold%22%20fill%3D%22%2333312B%22%3ESub%3A%20LEGAL%20DEMAND%20NOTICE%20%26%238212%3B%20Section%20138%2C%20NI%20Act%2C%201881%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22200%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210.5%22%20fill%3D%22%2333312B%22%3E%E2%80%94%20dishonour%20of%20cheque%20no.%20004821%20dated%2015/03/2026%20for%20%26%238377%3B50%2C25%2C000/-%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22226%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ESir%2C%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22242%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EUnder%20instructions%20from%20and%20on%20behalf%20of%20my%20client%2C%20Tata%20Capital%20Financial%20Services%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22258%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ELtd.%2C%20I%20serve%20upon%20you%20this%20notice%20of%20demand.%20Towards%20discharge%20of%20your%20liability%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22274%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Eunder%20loan%20facility%20TCFS-20007%2C%20you%20issued%20the%20above%20cheque%20drawn%20on%20State%20Bank%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22290%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Eof%20India%2C%20Sector%2017%2C%20Chandigarh%2C%20which%20on%20presentation%20was%20returned%20unpaid%20with%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22306%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Ethe%20remark%20%26%238220%3Bfunds%20insufficient%26%238221%3B%20per%20the%20return%20memo%20dated%2002/04/2026.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22336%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EYou%20are%20hereby%20called%20upon%20to%20pay%20the%20said%20sum%20of%20%26%238377%3B50%2C25%2C000/-%20within%20FIFTEEN%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22352%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Edays%20of%20receipt%20of%20this%20notice%2C%20failing%20which%20my%20client%20shall%20initiate%20prosecution%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22368%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Eunder%20Section%20138%20of%20the%20Act%2C%20besides%20civil%20remedies%2C%20entirely%20at%20your%20risk%20as%20to%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22384%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Ecosts%20and%20consequences.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22416%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EYours%20faithfully%2C%3C/text%3E%3Cpath%20d%3D%22M0%200%20c%208%20-14%2018%20-10%2022%20-2%20c%203%206%2010%204%2015%20-4%20c%205%20-8%2013%20-6%2017%202%20c%203%206%2011%206%2018%20-2%22%20stroke%3D%22%232E3A6E%22%20stroke-width%3D%221.6%22%20fill%3D%22none%22%20transform%3D%22translate%2842%2C436%29%22/%3E%3Ctext%20x%3D%2242%22%20y%3D%22466%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E%28Rajesh%20Raval%29%2C%20Advocate%3C/text%3E%3C/svg%3E',receipt:'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20480%20280%22%3E%3Crect%20width%3D%22480%22%20height%3D%22280%22%20fill%3D%22%23FDFDFB%22/%3E%3Crect%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%22479%22%20height%3D%22279%22%20fill%3D%22none%22%20stroke%3D%22%23E0DDD4%22/%3E%3Ctext%20x%3D%22240%22%20y%3D%2240%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2214%22%20font-weight%3D%22bold%22%20fill%3D%22%238A2A2A%22%20text-anchor%3D%22middle%22%20letter-spacing%3D%222%22%3EINDIA%20POST%3C/text%3E%3Ctext%20x%3D%22240%22%20y%3D%2256%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%229.5%22%20fill%3D%22%236B6759%22%20text-anchor%3D%22middle%22%3ESpeed%20Post%20%E2%80%94%20Booking%20Receipt%20%C2%B7%20Navrangpura%20S.O.%20380009%3C/text%3E%3Crect%20x%3D%2240%22%20y%3D%2266%22%20width%3D%22400%22%20height%3D%221%22%20fill%3D%22%23C9C4B8%22/%3E%3Ctext%20x%3D%2240%22%20y%3D%2292%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EArticle%20No.%20%20%20%20%20EG%208845%202201%207%20IN%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%22112%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ETo%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Rajesh%20Kumar%20Sharma%2C%20Chandigarh%20160022%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%22132%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EFrom%20%20%20%20%20%20%20%20%20%20%20%20R.%20Raval%20%26amp%3B%20Associates%2C%20Kollam%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%22152%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EWeight%20%20%20%20%20%20%20%20%20%2020%20g%20%20%20%20%20%20%20%20%20%20Amount%3A%20%26%238377%3B41.00%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%22172%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EBooked%20%20%20%20%20%20%20%20%20%2002/04/2026%2011%3A42%3C/text%3E%3Crect%20x%3D%2260%22%20y%3D%22200%22%20width%3D%222%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%2271%22%20y%3D%22200%22%20width%3D%224%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%2282%22%20y%3D%22200%22%20width%3D%226%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%2293%22%20y%3D%22200%22%20width%3D%223%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22104%22%20y%3D%22200%22%20width%3D%225%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22115%22%20y%3D%22200%22%20width%3D%222%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22126%22%20y%3D%22200%22%20width%3D%224%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22137%22%20y%3D%22200%22%20width%3D%226%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22148%22%20y%3D%22200%22%20width%3D%223%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22159%22%20y%3D%22200%22%20width%3D%225%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22170%22%20y%3D%22200%22%20width%3D%222%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22181%22%20y%3D%22200%22%20width%3D%224%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22192%22%20y%3D%22200%22%20width%3D%226%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22203%22%20y%3D%22200%22%20width%3D%223%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22214%22%20y%3D%22200%22%20width%3D%225%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22225%22%20y%3D%22200%22%20width%3D%222%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22236%22%20y%3D%22200%22%20width%3D%224%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22247%22%20y%3D%22200%22%20width%3D%226%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22258%22%20y%3D%22200%22%20width%3D%223%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22269%22%20y%3D%22200%22%20width%3D%225%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22280%22%20y%3D%22200%22%20width%3D%222%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22291%22%20y%3D%22200%22%20width%3D%224%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22302%22%20y%3D%22200%22%20width%3D%226%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22313%22%20y%3D%22200%22%20width%3D%223%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22324%22%20y%3D%22200%22%20width%3D%225%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22335%22%20y%3D%22200%22%20width%3D%222%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22346%22%20y%3D%22200%22%20width%3D%224%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22357%22%20y%3D%22200%22%20width%3D%226%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22368%22%20y%3D%22200%22%20width%3D%223%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22379%22%20y%3D%22200%22%20width%3D%225%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22390%22%20y%3D%22200%22%20width%3D%222%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22401%22%20y%3D%22200%22%20width%3D%224%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Crect%20x%3D%22412%22%20y%3D%22200%22%20width%3D%226%22%20height%3D%2236%22%20fill%3D%22%232A2A24%22/%3E%3Ctext%20x%3D%22240%22%20y%3D%22258%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%229%22%20fill%3D%22%236B6759%22%20text-anchor%3D%22middle%22%3E%2AEG884522017IN%2A%20%E2%80%94%20Track%20on%20indiapost.gov.in%20%C2%B7%20Please%20retain%20this%20receipt%3C/text%3E%3C/svg%3E',ad:'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20480%20260%22%3E%3Crect%20width%3D%22480%22%20height%3D%22260%22%20fill%3D%22%23FDFDFB%22/%3E%3Crect%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%22479%22%20height%3D%22259%22%20fill%3D%22none%22%20stroke%3D%22%23E0DDD4%22/%3E%3Crect%20x%3D%22356%22%20y%3D%2226%22%20width%3D%2284%22%20height%3D%2264%22%20rx%3D%223%22%20fill%3D%22none%22%20stroke%3D%22%23C9C4B8%22%20stroke-width%3D%221.6%22%20stroke-dasharray%3D%225%204%22/%3E%3Ctext%20x%3D%22398%22%20y%3D%2262%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%228%22%20fill%3D%22%23B0AB9E%22%20text-anchor%3D%22middle%22%3ESTAMP%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%2248%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2214%22%20font-weight%3D%22bold%22%20fill%3D%22%2333312B%22%20letter-spacing%3D%221%22%3EACKNOWLEDGEMENT%20DUE%3C/text%3E%3Crect%20x%3D%2240%22%20y%3D%2258%22%20width%3D%22180%22%20height%3D%221.5%22%20fill%3D%22%2333312B%22/%3E%3Ctext%20x%3D%2240%22%20y%3D%2286%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EReceived%20article%20no.%20EG%208845%202201%207%20IN%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%22105%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Eaddressed%20to%3A%20Sh.%20Rajesh%20Kumar%20Sharma%2C%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%22124%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E%23142%2C%20Sector%2021%2C%20Chandigarh%20160022%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%22143%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%22162%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EDate%20of%20delivery%3A%2006/04/2026%3C/text%3E%3Ctext%20x%3D%2240%22%20y%3D%22212%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%236B6759%22%3ESignature%20of%20addressee%3A%3C/text%3E%3Cpath%20d%3D%22M0%200%20c%208%20-14%2018%20-10%2022%20-2%20c%203%206%2010%204%2015%20-4%20c%205%20-8%2013%20-6%2017%202%20c%203%206%2011%206%2018%20-2%22%20stroke%3D%22%232E3A6E%22%20stroke-width%3D%221.6%22%20fill%3D%22none%22%20transform%3D%22translate%28170%2C208%29%22/%3E%3Ccircle%20cx%3D%22392%22%20cy%3D%22196%22%20r%3D%2230%22%20fill%3D%22none%22%20stroke%3D%22%23B8574E%22%20stroke-width%3D%221.6%22%20opacity%3D%220.65%22/%3E%3Ctext%20x%3D%22392%22%20y%3D%22192%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%227.5%22%20fill%3D%22%23B8574E%22%20text-anchor%3D%22middle%22%20opacity%3D%220.8%22%3ECHANDIGARH%20G.P.O.%3C/text%3E%3Ctext%20x%3D%22392%22%20y%3D%22204%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%228%22%20fill%3D%22%23B8574E%22%20text-anchor%3D%22middle%22%20opacity%3D%220.8%22%3E06%20APR%202026%3C/text%3E%3C/svg%3E',reply:'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20480%20320%22%3E%3Crect%20width%3D%22480%22%20height%3D%22320%22%20fill%3D%22%23FDFDFB%22/%3E%3Crect%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%22479%22%20height%3D%22319%22%20fill%3D%22none%22%20stroke%3D%22%23E0DDD4%22/%3E%3Ctext%20x%3D%22240%22%20y%3D%2244%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2214%22%20font-weight%3D%22bold%22%20fill%3D%22%233A2A1E%22%20text-anchor%3D%22middle%22%20letter-spacing%3D%221%22%3EMEHTA%20LAW%20CHAMBERS%3C/text%3E%3Ctext%20x%3D%22240%22%20y%3D%2260%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%229.5%22%20fill%3D%22%236B6759%22%20text-anchor%3D%22middle%22%3EAdvocates%20%C2%B7%20Sector%209%2C%20Chandigarh%3C/text%3E%3Crect%20x%3D%2242%22%20y%3D%2270%22%20width%3D%22396%22%20height%3D%221.5%22%20fill%3D%22%233A2A1E%22/%3E%3Ctext%20x%3D%22438%22%20y%3D%2294%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210.5%22%20fill%3D%22%2333312B%22%20text-anchor%3D%22end%22%3EDate%3A%2012/04/2026%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22118%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2211%22%20fill%3D%22%2333312B%22%3ESub%3A%20Reply%20to%20your%20notice%20dated%2002/04/2026%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22146%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ESir%2C%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22162%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EOn%20behalf%20of%20my%20client%20Sh.%20Rajesh%20Kumar%20Sharma%2C%20receipt%20of%20your%20notice%20is%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22178%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Eacknowledged.%20The%20contents%20thereof%20are%20denied%20as%20incorrect.%20Without%20prejudice%2C%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22194%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Emy%20client%20is%20exploring%20an%20amicable%20resolution%20and%20reserves%20all%20rights%20and%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22210%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Edefences%20available%20in%20law.%20Nothing%20herein%20be%20construed%20as%20an%20admission.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22240%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EYours%20faithfully%2C%3C/text%3E%3Cpath%20d%3D%22M0%200%20c%208%20-14%2018%20-10%2022%20-2%20c%203%206%2010%204%2015%20-4%20c%205%20-8%2013%20-6%2017%202%20c%203%206%2011%206%2018%20-2%22%20stroke%3D%22%232E3A6E%22%20stroke-width%3D%221.6%22%20fill%3D%22none%22%20transform%3D%22translate%2842%2C258%29%22/%3E%3Ctext%20x%3D%2242%22%20y%3D%22288%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E%28A.%20Mehta%29%2C%20Advocate%3C/text%3E%3C/svg%3E',agreement:'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20480%20330%22%3E%3Crect%20width%3D%22480%22%20height%3D%22330%22%20fill%3D%22%23FDFDFB%22/%3E%3Crect%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%22479%22%20height%3D%22329%22%20fill%3D%22none%22%20stroke%3D%22%23E0DDD4%22/%3E%3Ctext%20x%3D%22240%22%20y%3D%2246%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2215%22%20font-weight%3D%22bold%22%20fill%3D%22%2333312B%22%20text-anchor%3D%22middle%22%20letter-spacing%3D%221%22%3ELOAN%20AGREEMENT%3C/text%3E%3Ctext%20x%3D%22240%22%20y%3D%2264%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%236B6759%22%20text-anchor%3D%22middle%22%3EAgreement%20No.%20TCFS-20007%20%C2%B7%20Tata%20Capital%20Financial%20Services%20Ltd%3C/text%3E%3Crect%20x%3D%2242%22%20y%3D%2274%22%20width%3D%22396%22%20height%3D%221%22%20fill%3D%22%23C9C4B8%22/%3E%3Ctext%20x%3D%2242%22%20y%3D%22100%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ETHIS%20AGREEMENT%20is%20made%20at%20Chandigarh%20on%20this%2014th%20day%20of%20January%202025%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22116%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EBETWEEN%20Tata%20Capital%20Financial%20Services%20Ltd%20%28the%20%26%238220%3BLender%26%238221%3B%29%20AND%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22132%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ESh.%20Rajesh%20Kumar%20Sharma%20%28the%20%26%238220%3BBorrower%26%238221%3B%29.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22162%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E1.%20%20The%20Lender%20agrees%20to%20advance%20a%20term%20loan%20of%20%26%238377%3B45%2C00%2C000/-%20repayable%20in%2036%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22178%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E%20%20%20%20%20equated%20monthly%20instalments%20together%20with%20interest%20at%2014.5%25%20p.a.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22194%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E2.%20%20The%20Borrower%20has%20delivered%20post-dated%20cheques%20towards%20repayment%2C%20and%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22210%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E%20%20%20%20%20agrees%20that%20dishonour%20of%20any%20such%20instrument%20shall%20constitute%20default.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22226%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E3.%20%20This%20agreement%20is%20governed%20by%20the%20laws%20of%20India.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22272%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%236B6759%22%3EFor%20the%20Lender%3C/text%3E%3Ctext%20x%3D%22300%22%20y%3D%22272%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%236B6759%22%3EThe%20Borrower%3C/text%3E%3Cpath%20d%3D%22M0%200%20c%208%20-14%2018%20-10%2022%20-2%20c%203%206%2010%204%2015%20-4%20c%205%20-8%2013%20-6%2017%202%20c%203%206%2011%206%2018%20-2%22%20stroke%3D%22%232E3A6E%22%20stroke-width%3D%221.6%22%20fill%3D%22none%22%20transform%3D%22translate%2842%2C292%29%22/%3E%3Cpath%20d%3D%22M0%200%20c%208%20-14%2018%20-10%2022%20-2%20c%203%206%2010%204%2015%20-4%20c%205%20-8%2013%20-6%2017%202%20c%203%206%2011%206%2018%20-2%22%20stroke%3D%22%232E3A6E%22%20stroke-width%3D%221.6%22%20fill%3D%22none%22%20transform%3D%22translate%28300%2C292%29%22/%3E%3C/svg%3E',aadhaar:'../assets/aadhaar-card.jpg',poa:'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20480%20330%22%3E%3Crect%20width%3D%22480%22%20height%3D%22330%22%20fill%3D%22%23FDFDFB%22/%3E%3Crect%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%22479%22%20height%3D%22329%22%20fill%3D%22none%22%20stroke%3D%22%23E0DDD4%22/%3E%3Ctext%20x%3D%22240%22%20y%3D%2246%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2215%22%20font-weight%3D%22bold%22%20fill%3D%22%2333312B%22%20text-anchor%3D%22middle%22%20letter-spacing%3D%222%22%3EPOWER%20OF%20ATTORNEY%3C/text%3E%3Crect%20x%3D%22160%22%20y%3D%2256%22%20width%3D%22160%22%20height%3D%221.5%22%20fill%3D%22%2333312B%22/%3E%3Ctext%20x%3D%2242%22%20y%3D%2284%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EKNOW%20ALL%20MEN%20BY%20THESE%20PRESENTS%20that%20I%2C%20Prateek%20Agrawal%2C%20resident%20of%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22100%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EChandigarh%2C%20do%20hereby%20nominate%20and%20appoint%20the%20officers%20of%20Tata%20Capital%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22116%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EFinancial%20Services%20Ltd%20as%20my%20lawful%20attorney%2C%20to%20do%20the%20following%20acts%3A%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22146%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E1.%20%20To%20institute%2C%20sign%2C%20verify%20and%20prosecute%20the%20complaint%20under%20Section%20138%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22162%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E%20%20%20%20%20of%20the%20Negotiable%20Instruments%20Act%2C%201881%20in%20respect%20of%20cheque%20no.%20004821.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22178%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E2.%20%20To%20engage%20advocates%2C%20swear%20affidavits%20and%20give%20evidence%20on%20my%20behalf.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22194%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3E3.%20%20To%20do%20all%20acts%20incidental%20to%20the%20above%20proceedings.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22226%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EIN%20WITNESS%20WHEREOF%20I%20have%20signed%20this%20deed%20at%20Chandigarh%20on%2020/03/2026.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22266%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%236B6759%22%3EExecutant%3C/text%3E%3Cpath%20d%3D%22M0%200%20c%208%20-14%2018%20-10%2022%20-2%20c%203%206%2010%204%2015%20-4%20c%205%20-8%2013%20-6%2017%202%20c%203%206%2011%206%2018%20-2%22%20stroke%3D%22%232E3A6E%22%20stroke-width%3D%221.6%22%20fill%3D%22none%22%20transform%3D%22translate%2842%2C284%29%22/%3E%3Ccircle%20cx%3D%22392%22%20cy%3D%22272%22%20r%3D%2228%22%20fill%3D%22none%22%20stroke%3D%22%232E3A6E%22%20stroke-width%3D%221.4%22%20opacity%3D%220.55%22/%3E%3Ctext%20x%3D%22392%22%20y%3D%22268%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%227%22%20fill%3D%22%232E3A6E%22%20text-anchor%3D%22middle%22%20opacity%3D%220.7%22%3ENOTARY%3C/text%3E%3Ctext%20x%3D%22392%22%20y%3D%22280%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%227%22%20fill%3D%22%232E3A6E%22%20text-anchor%3D%22middle%22%20opacity%3D%220.7%22%3ECHANDIGARH%3C/text%3E%3C/svg%3E',vakalat:'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20480%20340%22%3E%3Crect%20width%3D%22480%22%20height%3D%22340%22%20fill%3D%22%23FDFDFB%22/%3E%3Crect%20x%3D%220.5%22%20y%3D%220.5%22%20width%3D%22479%22%20height%3D%22339%22%20fill%3D%22none%22%20stroke%3D%22%23E0DDD4%22/%3E%3Ctext%20x%3D%22240%22%20y%3D%2242%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2214%22%20font-weight%3D%22bold%22%20fill%3D%22%2333312B%22%20text-anchor%3D%22middle%22%20letter-spacing%3D%222%22%3EVAKALATNAMA%3C/text%3E%3Ctext%20x%3D%22240%22%20y%3D%2262%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%236B6759%22%20text-anchor%3D%22middle%22%3EIN%20THE%20COURT%20OF%20THE%20METROPOLITAN%20MAGISTRATE%2C%20AHMEDABAD%3C/text%3E%3Crect%20x%3D%2242%22%20y%3D%2272%22%20width%3D%22396%22%20height%3D%221%22%20fill%3D%22%23C9C4B8%22/%3E%3Ctext%20x%3D%2242%22%20y%3D%2296%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ETata%20Capital%20Financial%20Services%20Ltd%20%20%26%238230%3B%20%20Complainant%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22113%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Eversus%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22130%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ERajesh%20Kumar%20Sharma%20%20%26%238230%3B%20%20Accused%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22162%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EI%2C%20the%20above-named%20complainant%2C%20do%20hereby%20appoint%20and%20retain%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22178%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3ERAJESH%20RAVAL%2C%20Advocate%2C%20to%20appear%2C%20plead%20and%20act%20on%20my%20behalf%20in%20the%20above%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22194%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Eproceedings%20and%20all%20connected%20applications%2C%20with%20authority%20to%20sign%2C%20file%20and%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22210%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3Ewithdraw%20pleadings%2C%20receive%20documents%20and%20deposit%20or%20receive%20monies.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22240%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%2333312B%22%3EDated%20at%20Kollam%2C%20this%203rd%20day%20of%20July%2C%202026.%3C/text%3E%3Ctext%20x%3D%2242%22%20y%3D%22278%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%236B6759%22%3EClient%3C/text%3E%3Cpath%20d%3D%22M0%200%20c%208%20-14%2018%20-10%2022%20-2%20c%203%206%2010%204%2015%20-4%20c%205%20-8%2013%20-6%2017%202%20c%203%206%2011%206%2018%20-2%22%20stroke%3D%22%232E3A6E%22%20stroke-width%3D%221.6%22%20fill%3D%22none%22%20transform%3D%22translate%2842%2C296%29%22/%3E%3Ctext%20x%3D%22300%22%20y%3D%22278%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2210%22%20fill%3D%22%236B6759%22%3EAccepted%3A%20Advocate%3C/text%3E%3Cpath%20d%3D%22M0%200%20c%208%20-14%2018%20-10%2022%20-2%20c%203%206%2010%204%2015%20-4%20c%205%20-8%2013%20-6%2017%202%20c%203%206%2011%206%2018%20-2%22%20stroke%3D%22%232E3A6E%22%20stroke-width%3D%221.6%22%20fill%3D%22none%22%20transform%3D%22translate%28300%2C296%29%22/%3E%3C/svg%3E'};
+function pickImg(s){if(!s)return null;var n=((s.uploadName||'')+' '+(s.label||'')).toLowerCase();if(n.indexOf('memo')>=0)return DOCIMG.memo;if(n.indexOf('vakalat')>=0)return DOCIMG.vakalat;if(n.indexOf('aadhaar')>=0||n.indexOf('pan card')>=0||n.indexOf('identity')>=0)return DOCIMG.aadhaar;if(n.indexOf('attorney')>=0||n.indexOf('poa')>=0)return DOCIMG.poa;if(n.indexOf('cheque')>=0)return DOCIMG.cheque;if(n.indexOf('reply')>=0)return DOCIMG.reply;if(n.indexOf('demand')>=0||n.indexOf('notice')>=0)return DOCIMG.notice;if(n.indexOf('dispatch')>=0||n.indexOf('receipt')>=0)return DOCIMG.receipt;if(n.indexOf('ad-card')>=0||n.indexOf('ad card')>=0||n.indexOf('delivery')>=0)return DOCIMG.ad;if(n.indexOf('agreement')>=0||n.indexOf('loan')>=0)return DOCIMG.agreement;return null;}
+class Component extends DCLogic {
+  state = {
+    cheques: [
+      { n: 1, slots: [
+        { key: 'c1f', kind: 'cheque', label: 'Cheque (front side)', required: true,
+          uploadName: 'Cheque-1.jpg', uploadSize: '2.1 MB', uploadExt: 'JPG',
+          file: { name: 'Cheque-1.jpg', size: '2.1 MB', ext: 'JPG' },
+          extracted: { bank: 'STATE BANK OF INDIA', branch: 'Sector 17 Branch, Chandigarh — IFSC Zone', payee: 'Rajesh Kumar Sharma', date: '15/03/2026', words: 'Fifty Lakh Twenty Five Thousand Only', amount: '₹50,25,000', ifsc: 'SBIN0001234', acct: 'XXXXXXXX4821', micr: '⑈004821⑈  110002 ⑆ 31' } },
+        { key: 'c1m', kind: 'pdf', label: 'Cheque return memo', required: true,
+          desc: 'The memo your bank issued when this cheque bounced.',
+          uploadName: 'Return-memo-1.pdf', uploadSize: '0.6 MB', uploadExt: 'PDF',
+          file: { name: 'Return-memo-1.pdf', size: '0.6 MB', ext: 'PDF' } },
+        { key: 'c1dn', kind: 'pdf', label: 'Demand notice', required: true,
+          desc: 'The statutory demand notice sent to the accused.',
+          uploadName: 'Demand-notice-1.pdf', uploadSize: '0.5 MB', uploadExt: 'PDF',
+          file: { name: 'Demand-notice-1.pdf', size: '0.5 MB', ext: 'PDF' } },
+        { key: 'c1dp', kind: 'pdf', label: 'Proof of dispatch of demand notice (postal receipt)', required: true,
+          desc: 'Speed post / RPAD receipt showing dispatch.', poorScan: true,
+          uploadName: 'Dispatch-receipt-1.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+        { key: 'c1ad', kind: 'pdf', label: 'Proof of delivery of demand notice (AD Card)', required: true,
+          desc: 'Acknowledgement-due card or tracking proof of delivery.',
+          uploadName: 'AD-card-1.pdf', uploadSize: '0.3 MB', uploadExt: 'PDF', file: null },
+        { key: 'c1rp', kind: 'pdf', label: 'Reply to the demand notice', optional: true,
+          desc: "The accused's reply to the notice, if any.",
+          uploadName: 'Reply-1.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+      ]},
+      { n: 2, slots: [
+        { key: 'c2f', kind: 'cheque', label: 'Cheque (front side)', required: true,
+          uploadName: 'Cheque-2.jpg', uploadSize: '1.9 MB', uploadExt: 'JPG',
+          file: { name: 'Cheque-2.jpg', size: '1.9 MB', ext: 'JPG' },
+          extracted: { bank: 'STATE BANK OF INDIA', branch: 'Sector 17 Branch, Chandigarh — IFSC Zone', payee: 'Rajesh Kumar Sharma', date: '02/04/2026', words: 'One Lakh Eighty Thousand Only', amount: '₹1,80,000', ifsc: 'SBIN0001234', acct: 'XXXXXXXX4821', micr: '⑈004822⑈  110002 ⑆ 31' } },
+        { key: 'c2m', kind: 'pdf', label: 'Cheque return memo', required: true,
+          desc: 'The memo your bank issued when this cheque bounced.',
+          uploadName: 'Return-memo-2.pdf', uploadSize: '0.6 MB', uploadExt: 'PDF',
+          file: null },
+        { key: 'c2dn', kind: 'pdf', label: 'Demand notice', required: true,
+          desc: 'The statutory demand notice sent to the accused.',
+          uploadName: 'Demand-notice-2.pdf', uploadSize: '0.5 MB', uploadExt: 'PDF', file: null },
+        { key: 'c2dp', kind: 'pdf', label: 'Proof of dispatch of demand notice (postal receipt)', required: true,
+          desc: 'Speed post / RPAD receipt showing dispatch.',
+          uploadName: 'Dispatch-receipt-2.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+        { key: 'c2ad', kind: 'pdf', label: 'Proof of delivery of demand notice (AD Card)', required: true,
+          desc: 'Acknowledgement-due card or tracking proof of delivery.',
+          uploadName: 'AD-card-2.pdf', uploadSize: '0.3 MB', uploadExt: 'PDF', file: null },
+        { key: 'c2rp', kind: 'pdf', label: 'Reply to the demand notice', optional: true,
+          desc: "The accused's reply to the notice, if any.",
+          uploadName: 'Reply-2.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+      ]},
+    ],
+    parties: [
+      { n: 1, slots: [
+        { key: 'p1id', kind: 'pdf', label: 'Aadhaar card (Complainant)', required: true,
+          desc: 'PAN, Aadhaar, Passport, Driving licence, Voter ID, Ration card or Bank passbook.',
+          uploadName: 'Aadhaar.pdf', uploadSize: '0.5 MB', uploadExt: 'PDF',
+          file: { name: 'Aadhaar.pdf', size: '0.5 MB', ext: 'PDF' } },
+        { key: 'p1poa', kind: 'pdf', label: 'Power of Attorney', required: true,
+          desc: 'If the complaint is filed through a PoA holder.',
+          uploadName: 'PoA.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+        { key: 'p1vak', kind: 'pdf', label: 'Vakalatnama', required: true,
+          desc: 'Signed authorisation appointing your advocate(s).',
+          uploadName: 'Vakalatnama.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+      ]},
+    ],
+    notice: [],
+    supporting: [
+      { key: 'sl', kind: 'pdf', label: 'Loan agreement / invoice / ledger', optional: true,
+        desc: 'Anything that records the debt, if you have it.',
+        uploadName: 'Loan-agreement.pdf', uploadSize: '0.8 MB', uploadExt: 'PDF',
+        file: null },
+    ],
+    preview: null,
+    activeTab: 'all',
+  };
+
+  setTab(t) { this.setState({ activeTab: t }); }
+
+  slotAt(loc) {
+    if (loc.g === 'cheques') return this.state.cheques[loc.gi].slots[loc.si];
+    if (loc.g === 'parties') return this.state.parties[loc.gi].slots[loc.si];
+    return this.state[loc.g][loc.si];
+  }
+
+  fill(loc) {
+    const s = this.slotAt(loc);
+    s.file = { name: s.uploadName, size: s.uploadSize, ext: s.uploadExt };
+    this.forceUpdate();
+  }
+  choose(loc) {
+    const s = this.slotAt(loc);
+    if (s.processing) return;
+    s.processing = true; s.progress = 0; s.poor = false; s.file = null;
+    clearInterval(s._t);
+    this.forceUpdate();
+    s._t = setInterval(() => {
+      s.progress = Math.min(100, (s.progress || 0) + (9 + Math.random() * 17));
+      if (s.progress >= 100) {
+        clearInterval(s._t);
+        s.progress = 100; s.processing = false;
+        s.file = { name: s.uploadName, size: s.uploadSize, ext: s.uploadExt };
+        s.poor = !!s.poorScan && !s._reup; s._reup = true;
+      }
+      this.forceUpdate();
+    }, 170);
+  }
+  del(loc) {
+    const s = this.slotAt(loc);
+    s.file = null;
+    if (this.state.preview && JSON.stringify(this.state.preview.loc) === JSON.stringify(loc)) this.setState({ preview: null });
+    else this.forceUpdate();
+  }
+  openPreview(loc) { this.setState({ preview: { loc } }); }
+  closePreview() { this.setState({ preview: null }); }
+
+  addCheque() {
+    const n = this.state.cheques.length + 1;
+    this.state.cheques.push({ n, slots: [
+      { key: 'c' + n + 'f', kind: 'cheque', label: 'Cheque (front side)', required: true, desc: 'The bounced cheque, front side.', uploadName: 'Cheque-' + n + '.jpg', uploadSize: '2.0 MB', uploadExt: 'JPG', file: null,
+        extracted: { bank: 'STATE BANK OF INDIA', branch: 'Sector 17 Branch, Chandigarh — IFSC Zone', payee: 'Prateek Agrawal', date: '10/04/2026', words: 'One Lakh Only', amount: '₹1,00,000', ifsc: 'SBIN0001234', acct: 'XXXXXXXX4821', micr: '⑈004823⑈  110002 ⑆ 31' } },
+      { key: 'c' + n + 'm', kind: 'pdf', label: 'Cheque return memo', required: true, desc: 'The memo your bank issued when this cheque bounced.', uploadName: 'Return-memo-' + n + '.pdf', uploadSize: '0.6 MB', uploadExt: 'PDF', file: null },
+      { key: 'c' + n + 'dn', kind: 'pdf', label: 'Demand notice', required: true, desc: 'The statutory demand notice sent to the accused.', uploadName: 'Demand-notice-' + n + '.pdf', uploadSize: '0.5 MB', uploadExt: 'PDF', file: null },
+      { key: 'c' + n + 'dp', kind: 'pdf', label: 'Proof of dispatch of demand notice (postal receipt)', required: true, desc: 'Speed post / RPAD receipt showing dispatch.', uploadName: 'Dispatch-receipt-' + n + '.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+      { key: 'c' + n + 'ad', kind: 'pdf', label: 'Proof of delivery of demand notice (AD Card)', required: true, desc: 'Acknowledgement-due card or tracking proof of delivery.', uploadName: 'AD-card-' + n + '.pdf', uploadSize: '0.3 MB', uploadExt: 'PDF', file: null },
+      { key: 'c' + n + 'rp', kind: 'pdf', label: 'Reply to the demand notice', optional: true, desc: "The accused's reply to the notice, if any.", uploadName: 'Reply-' + n + '.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+    ]});
+    this.forceUpdate();
+  }
+  removeCheque(gi) {
+    this.state.cheques.splice(gi, 1);
+    this.state.cheques.forEach((c, i) => { c.n = i + 1; });
+    this.forceUpdate();
+  }
+  addParty() {
+    const n = this.state.parties.length + 1;
+    this.state.parties.push({ n, slots: [
+      { key: 'p' + n + 'id', kind: 'pdf', label: 'Aadhaar card (Complainant)', required: true, desc: 'PAN, Aadhaar, Passport, Driving licence, Voter ID, Ration card or Bank passbook.', uploadName: 'Aadhaar-' + n + '.pdf', uploadSize: '0.5 MB', uploadExt: 'PDF', file: null },
+      { key: 'p' + n + 'poa', kind: 'pdf', label: 'Power of Attorney', required: true, desc: 'If the complaint is filed through a PoA holder.', uploadName: 'PoA-' + n + '.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+      { key: 'p' + n + 'vak', kind: 'pdf', label: 'Vakalatnama', required: true, desc: 'Signed authorisation appointing your advocate(s).', uploadName: 'Vakalatnama-' + n + '.pdf', uploadSize: '0.4 MB', uploadExt: 'PDF', file: null },
+    ]});
+    this.forceUpdate();
+  }
+  removeParty(gi) {
+    this.state.parties.splice(gi, 1);
+    this.state.parties.forEach((c, i) => { c.n = i + 1; });
+    this.forceUpdate();
+  }
+  addPartyDoc(gi) {
+    const p = this.state.parties[gi];
+    p.slots.push({ key: 'p' + p.n + 'x' + (p.slots.length + 1), kind: 'pdf', label: 'Other document', optional: true, desc: 'Any additional document for this party.', uploadName: 'Document.pdf', uploadSize: '0.3 MB', uploadExt: 'PDF', file: null });
+    this.forceUpdate();
+  }
+
+  viewSlot(loc, s) {
+    const self = this;
+    return {
+      key: s.key, kind: s.kind, label: s.label, desc: s.desc || '', hasDesc: !!s.desc,
+      required: !!s.required, optional: !!s.optional,
+      hasFile: !!s.file, empty: !s.file,
+      processing: !!s.processing, progressPct: (Math.round(s.progress || 0)) + '%',
+      poor: !!(s.file && s.poor), good: !!(s.file && !s.poor),
+      emptyRequired: !s.file && !s.processing && !s.optional, emptyOptional: !s.file && !s.processing && !!s.optional,
+      ext: s.file ? s.file.ext : (s.uploadExt || ''),
+      fileName: s.file ? s.file.name : '', fileSize: s.file ? s.file.size : '',
+      isCheque: s.kind === 'cheque',
+      read: !!(s.file && s.extracted),
+      readText: s.extracted ? ('Read · ' + s.extracted.amount) : '',
+      thumb: pickImg(s),
+      onPreview: () => self.openPreview(loc),
+      onReplace: () => self.choose(loc),
+      onDelete: () => self.del(loc),
+      onChoose: () => self.choose(loc),
+    };
+  }
+
+  renderVals() {
+    const self = this;
+    const t = this.state.activeTab;
+    const cheques = this.state.cheques.map((c, gi) => ({
+      n: c.n, title: 'Cheque ' + c.n,
+      canRemove: this.state.cheques.length > 1,
+      onRemove: () => self.removeCheque(gi),
+      slots: c.slots.map((s, si) => self.viewSlot({ g: 'cheques', gi, si }, s)),
+    }));
+    const parties = this.state.parties.map((p, gi) => ({
+      n: p.n, title: 'Party ' + p.n + ' details',
+      canRemove: this.state.parties.length > 1,
+      onRemove: () => self.removeParty(gi),
+      onAddDoc: () => self.addPartyDoc(gi),
+      slots: p.slots.map((s, si) => self.viewSlot({ g: 'parties', gi, si }, s)),
+    }));
+    const notice = this.state.notice.map((s, si) => self.viewSlot({ g: 'notice', si }, s));
+    const supporting = this.state.supporting.map((s, si) => self.viewSlot({ g: 'supporting', si }, s));
+
+    const reqAll = [];
+    this.state.cheques.forEach(c => c.slots.forEach(s => { if (s.required) reqAll.push(s); }));
+    this.state.parties.forEach(p => p.slots.forEach(s => { if (s.required) reqAll.push(s); }));
+    this.state.notice.forEach(s => { if (s.required) reqAll.push(s); });
+    const total = reqAll.length;
+    const done = reqAll.filter(s => s.file).length;
+    const remaining = total - done;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+
+    let preview = null;
+    if (this.state.preview) {
+      const sl = this.slotAt(this.state.preview.loc);
+      const loc = this.state.preview.loc;
+      const isCheque = sl.kind === 'cheque' && !!sl.extracted && !!sl.file;
+      preview = {
+        name: sl.file ? sl.file.name : sl.label,
+        ext: sl.file ? sl.file.ext : (sl.uploadExt || ''),
+        isCheque: false, img: pickImg(sl)||'', hasImg: !!pickImg(sl), isGeneric: !pickImg(sl),
+        ex: sl.extracted || {},
+        onReplace: () => self.fill(loc),
+        onDelete: () => self.del(loc),
+      };
+    }
+
+    return {
+      cheques, parties, notice, supporting,
+      progressPct: pct + '%', doneCount: done, totalCount: total,
+      remainingLabel: remaining > 0 ? (remaining + ' to go') : 'all set',
+      footerText: remaining > 0 ? (remaining + ' required document' + (remaining > 1 ? 's' : '') + ' still needed') : 'All required documents added',
+      footerPending: remaining > 0, footerDone: remaining === 0,
+      showPreview: !!preview, preview,
+      stop: (e) => { e.stopPropagation(); },
+      onClose: () => self.closePreview(),
+      addCheque: () => self.addCheque(),
+      addParty: () => self.addParty(),
+      showCheques: t === 'all' || t === 'cheques',
+      showParties: t === 'all' || t === 'parties',
+      showNotice: t === 'all' || t === 'notice',
+      showSupporting: t === 'all' || t === 'supporting',
+      tabAllCls: t === 'all' ? 'ptab ptab--on' : 'ptab',
+      tabChequesCls: t === 'cheques' ? 'ptab ptab--on' : 'ptab',
+      tabPartiesCls: t === 'parties' ? 'ptab ptab--on' : 'ptab',
+      tabNoticeCls: t === 'notice' ? 'ptab ptab--on' : 'ptab',
+      tabSupCls: t === 'supporting' ? 'ptab ptab--on' : 'ptab',
+      showAll: () => self.setTab('all'),
+      showChequesTab: () => self.setTab('cheques'),
+      showPartiesTab: () => self.setTab('parties'),
+      showNoticeTab: () => self.setTab('notice'),
+      showSupTab: () => self.setTab('supporting'),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="../css/app.css">
+<script src="../js/runtime.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<script>(function(){try{var n=performance.getEntriesByType('navigation')[0];var t=n?n.type:(performance.navigation&&performance.navigation.type===1?'reload':'navigate');if(t==='reload'){void 0;return;}}catch(e){}var F=340;function init(){var s=document.createElement('style');s.textContent='@keyframes pgIn{from{opacity:0}to{opacity:1}}body{animation:pgIn '+F+'ms cubic-bezier(.22,.61,.36,1) both}body.pg-leave{opacity:0 !important;transition:opacity 200ms ease}';document.head.appendChild(s);}if(document.head){init();}else{document.addEventListener('DOMContentLoaded',init);}document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var href=a.getAttribute('href');if(!href||href.charAt(0)==='#'||/^(https?:|mailto:|tel:|javascript:)/i.test(href)||a.target==='_blank')return;e.preventDefault();document.body.classList.add('pg-leave');setTimeout(function(){location.href=href;},F-30);},true);})();</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: #ffffff; font-family: var(--font-sans); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+  .navitem { display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:8px; font-size:14px; font-weight:500; color:color-mix(in oklch, var(--foreground) 78%, var(--background)); text-decoration:none; cursor:pointer; transition:background 150ms, color 150ms; }
+  .navitem:not(.navitem--on) > svg:first-of-type { color:color-mix(in oklch, var(--foreground) 58%, var(--background)); }
+  .navitem:hover { background:var(--secondary); color:var(--foreground); }
+  .navitem--on { background:var(--sidebar-accent); color:var(--sidebar-accent-foreground); }
+  .ocrtip { position:relative; display:inline-flex; margin-left:auto; }
+  .ocrtipbox { position:absolute; top:calc(100% + 8px); right:0; width:222px; background:var(--foreground); color:var(--background); font-size:12px; font-weight:400; line-height:1.5; padding:9px 12px; border-radius:8px; opacity:0; visibility:hidden; transition:opacity 120ms ease; z-index:60; box-shadow:var(--shadow-lg); pointer-events:none; text-align:left; }
+  .ocrtip:hover .ocrtipbox { opacity:1; visibility:visible; }
+  .alert-info { background:var(--card); border-color:oklch(0.9 0.035 236); }
+  .alert-info .alert-icon { color:oklch(0.62 0.06 236); }
+  .alert-warning { background:color-mix(in oklch, var(--warning) 11%, var(--card)); border-color:color-mix(in oklch, var(--warning) 32%, var(--border)); }
+  .alert-warning .alert-icon { color:var(--warning-muted-foreground); }
+  .alert-success { background:color-mix(in oklch, var(--success) 9%, var(--card)); border-color:color-mix(in oklch, var(--success) 30%, var(--border)); }
+  .alert-success .alert-icon { color:var(--success-muted-foreground); }
+  .ctab { display:inline-flex; align-items:center; gap:9px; padding:11px 2px; background:none; border:none; border-bottom:2px solid transparent; font-size:15px; font-weight:600; color:var(--muted-foreground); cursor:pointer; font-family:var(--font-sans); white-space:nowrap; }
+  .ctab:hover { color:var(--foreground); }
+  .ctab--on { color:var(--primary); border-bottom-color:var(--primary); }
+  .tabstrip { display:flex; align-items:center; gap:2px; flex-wrap:wrap; border-bottom:1px solid var(--border); margin-bottom:24px; }
+  .ptab { display:inline-flex; align-items:center; gap:8px; padding:11px 14px; margin-bottom:-1px; border:none; border-bottom:2px solid transparent; background:transparent; color:var(--muted-foreground); font-size:14px; font-weight:500; cursor:pointer; font-family:var(--font-sans); transition:color 120ms; white-space:nowrap; }
+  .ptab:hover { color:var(--foreground); }
+  .ptab--on { color:var(--foreground); font-weight:600; border-bottom-color:var(--primary); }
+  .tabdot { width:7px; height:7px; border-radius:9999px; flex-shrink:0; }
+  .tabx { display:inline-flex; align-items:center; justify-content:center; color:var(--muted-foreground); border-radius:5px; padding:2px; }
+  .tabx:hover { background:color-mix(in oklch,var(--destructive) 12%,transparent); color:var(--destructive); }
+  .tabadd { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; margin-left:6px; border:none; background:transparent; color:var(--primary); font-size:13.5px; font-weight:600; cursor:pointer; font-family:var(--font-sans); border-radius:8px; }
+  .tabadd:hover { background:color-mix(in oklch,var(--primary) 8%,transparent); }
+  .seg-group { display:inline-flex; align-self:flex-start; background:var(--secondary); border-radius:9999px; padding:4px; gap:2px; }
+  .seg { padding:8px 22px; border-radius:9999px; border:none; background:none; font-size:14px; font-weight:500; color:var(--muted-foreground); cursor:pointer; font-family:var(--font-sans); transition:all 150ms; white-space:nowrap; }
+  .seg--on { background:var(--background); color:var(--primary); font-weight:600; box-shadow:var(--shadow-sm); }
+  .vsrc { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:9999px; border:1px solid color-mix(in oklch,var(--primary) 35%,transparent); background:color-mix(in oklch,var(--primary) 8%,transparent); color:var(--primary); font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font-sans); transition:background 150ms; }
+  .vsrc:hover { background:color-mix(in oklch,var(--primary) 16%,transparent); }
+  .srcchip { padding:7px 14px; border-radius:8px; border:1px solid var(--border); background:var(--card); font-size:13px; font-weight:600; color:var(--foreground); cursor:pointer; font-family:var(--font-sans); }
+  .srcchip--on { background:var(--primary); color:var(--primary-foreground); border-color:var(--primary); }
+  .toolbtn { min-width:30px; height:28px; padding:0 7px; display:inline-flex; align-items:center; justify-content:center; border:none; background:none; border-radius:6px; color:var(--muted-foreground); cursor:pointer; font-family:var(--font-sans); }
+  .toolbtn:hover { background:var(--secondary); color:var(--foreground); }
+  .prefix { display:inline-flex; align-items:center; height:36px; padding:0 12px; border:1px solid var(--input); border-radius:8px; background:var(--secondary); font-size:14px; color:var(--muted-foreground); flex-shrink:0; }
+  .fcard { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px 26px; display:flex; flex-direction:column; gap:26px; }
+  .fcard > div:first-child { margin-bottom:-9px; }
+  .srcrow { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .srcrow:last-child { border-bottom:none; }
+  .srcrow-l { font-size:12px; color:var(--muted-foreground); }
+  .srcval { font-size:14px; font-weight:500; }
+  .srcval--hl { background:color-mix(in oklch,var(--primary) 16%,transparent); box-shadow:0 0 0 2px color-mix(in oklch,var(--primary) 40%,transparent); border-radius:5px; padding:2px 8px; }
+  .srcval--mono { font-family:var(--font-mono); font-weight:400; }
+  .ctitle { font-size:16px; font-weight:600; letter-spacing:-0.005em; }
+  .cdesc { font-size:13px; color:var(--muted-foreground); margin-top:3px; line-height:1.45; }
+  .fld { display:flex; flex-direction:column; gap:7px; }
+  .flabel { font-size:14px; font-weight:500; color:var(--foreground); }
+  .fhelp { font-size:13px; color:var(--muted-foreground); line-height:1.45; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+  .req { color:var(--destructive); }
+  .input-ai { background:color-mix(in oklch, var(--warning) 8%, var(--background)); border-color:color-mix(in oklch, var(--warning) 30%, var(--input)); }
+  .input-ai:focus, .input-ai:focus-visible { background:var(--background); }
+  .subhead { font-size:13px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; }
+  @keyframes slidein-right { from { transform: translateX(100%); } to { transform: none; } }
+  @keyframes fadein { from { opacity:0; } to { opacity:1; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .imgzoom { position:relative; }
+  .imgzoom .zoombtn { opacity:0; transition:opacity 150ms ease; }
+  .imgzoom:hover .zoombtn, .imgzoom:focus-within .zoombtn { opacity:1; }
+  .zoombtn:focus-visible { outline:2px solid var(--primary); outline-offset:2px; }
+  @keyframes lbfade { from { opacity:0; } to { opacity:1; } }
+  @keyframes lbpop { from { opacity:0; transform:scale(0.96); } to { opacity:1; transform:scale(1); } }
+  .srcpane { position:fixed; top:54px; right:0; width:clamp(320px, calc(100vw - 1232px), 640px); height:calc(100vh - 54px); overflow-y:auto; background:var(--card); border-left:1px solid var(--border); z-index:20; animation:srcSlideIn 280ms cubic-bezier(.22,.61,.36,1) both; }
+  @keyframes srcSlideIn { from { opacity:0; transform:translateX(24px); } to { opacity:1; transform:translateX(0); } }
+  .formcol { transition:margin 180ms ease; }
+  .formcol--src { margin-right:clamp(320px, calc(100vw - 1232px), 640px); }
+  .srcreopen { margin-left:auto; align-self:center; display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border:1px solid color-mix(in oklch,var(--primary) 35%,transparent); background:color-mix(in oklch,var(--primary) 7%,transparent); color:var(--primary); border-radius:9999px; font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font-sans); transition:background 150ms; }
+  .srcreopen { display:none !important; }
+  .srcreopen:hover { background:color-mix(in oklch,var(--primary) 15%,transparent); }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; flex-direction:column;">
+
+  <!-- ░░ TOP BAR / PRODUCT HEADER ░░ -->
+  <header style="position:sticky; top:0; z-index:30;">
+  <div style="background:var(--card); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:16px; height:54px; padding:0 24px;">
+    <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+      <div style="width:30px; height:30px; border-radius:8px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:var(--primary-foreground);">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+      </div>
+      <div style="display:flex; flex-direction:column; line-height:1.15;">
+        <span style="font-size:14px; font-weight:700; letter-spacing:-0.01em; color:var(--foreground);">24x7 ON Courts</span>
+        <span style="font-size:11px; color:var(--muted-foreground);">Kollam, Kerala</span>
+      </div>
+    </div>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:22px;">
+      <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>EN</span>
+      <span style="font-size:13px; font-weight:500; color:var(--muted-foreground); cursor:pointer;">Support</span>
+      <div style="width:32px; height:32px; border-radius:9999px; background:var(--secondary); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--muted-foreground);">RK</div>
+    </div>
+  </div>
+  <div style="display:none;">
+    <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:9999px; background:var(--secondary); color:var(--muted-foreground); font-size:13px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"></path><path d="M12 6v14"></path><path d="M8 8v12"></path><path d="M4 4v16"></path></svg>
+      Filing under <strong style="color:var(--foreground); font-weight:600;">S-138, NI Act</strong> · 24×7 ON Court, Kollam
+    </div>
+    <div style="display:none;">
+      <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted-foreground);">
+        <span style="font-weight:600; color:var(--foreground);">Complainant</span>
+        <span>Section 1 of 13</span>
+      </div>
+      <div style="height:5px; border-radius:9999px; background:var(--secondary); overflow:hidden;">
+        <div style="height:100%; width:{{ progressPct }}; background:var(--primary); border-radius:9999px;"></div>
+      </div>
+    </div>
+  </div>
+  </header>
+
+  <!-- ░░ BODY: sidebar + form ░░ -->
+  <div style="flex:1; display:flex; align-items:flex-start;">
+
+    <!-- ── SIDEBAR ── -->
+    <aside style="width:296px; flex-shrink:0; background:var(--card); border-right:1px solid var(--border); position:sticky; top:54px; height:calc(100vh - 54px); overflow:hidden; padding:18px 16px; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:0 4px 14px;">
+        <span style="font-size:15px; font-weight:700;">Sections</span>
+        <button class="btn btn-outline btn-xs" style="gap:5px;">Hide
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path></svg>
+        </button>
+      </div>
+
+      <div style="padding:0 8px 16px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted-foreground); margin-bottom:6px;">
+          <span style="font-weight:600; color:var(--foreground);">Progress</span>
+          <span>{{ progressPct }}</span>
+        </div>
+        <div style="height:6px; border-radius:9999px; background:var(--secondary); overflow:hidden;">
+          <div style="height:100%; width:{{ progressPct }}; background:var(--primary); border-radius:9999px;"></div>
+        </div>
+      </div>
+
+      <button onClick="{{ openDocs }}" style="display:flex; width:100%; align-items:center; gap:8px; padding:10px 14px; margin:2px 0 16px; border:1px solid var(--border); background:var(--secondary); color:var(--foreground); border-radius:10px; font-size:13.5px; font-weight:600; text-decoration:none; cursor:pointer; font-family:var(--font-sans); text-align:left;">
+        View uploaded documents
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        <span style="margin-left:auto; font-size:11px; font-weight:700; background:var(--primary); color:var(--primary-foreground); border-radius:9999px; padding:2px 8px;">5</span>
+      </button>
+      <div style="flex:1; min-height:0; overflow-y:auto; margin:0 -6px; padding:0 6px;">
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:8px 8px 6px;">Parties</div>
+      <a class="navitem navitem--on">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
+        Complainant
+      </a>
+      <a class="navitem" href="Advocate Details.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+        Advocate
+      </a>
+      <a class="navitem" href="Accused Details.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21a8 8 0 0 1 11.873-7"></path><circle cx="10" cy="8" r="5"></circle><path d="m17 17 5 5"></path><path d="m22 17-5 5"></path></svg>
+        Accused
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Case details</div>
+      <a class="navitem" href="Cheque &amp; Return Memo.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+        Cheque &amp; return memo
+      </a>
+      <a class="navitem" href="Demand Notice &amp; Debt.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+        Demand notice &amp; debt
+      </a>
+      <a class="navitem" href="Jurisdiction &amp; Limitation.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Jurisdiction &amp; limitation
+      </a>
+      <a class="navitem" href="ADR, Other details &amp; Prayer.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        ADR, other &amp; prayer
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Evidence</div>
+      <a class="navitem" href="Witnesses.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+        Witnesses
+      </a>
+      <a class="navitem" href="Documents.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path></svg>
+        Documents
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Affidavit</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path><path d="m9 15 2 2 4-4"></path></svg>
+        Affidavit
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Preview</div>
+      <a class="navitem" href="Preview.dc.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        Preview
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Sign</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="m2 2 7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+        Sign
+      </a>
+
+      <div style="font-size:11px; font-weight:600; color:var(--muted-foreground); letter-spacing:0.01em; padding:18px 8px 6px;">Pay fees</div>
+      <a class="navitem">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+        Pay fees
+      </a>
+    </div>
+    </aside>
+
+    <!-- ── FORM COLUMN ── -->
+    <main class="{{ mainCls }}" style="flex:1; min-width:0; padding:34px 48px 120px;">
+      <div style="max-width:840px;">
+
+        <!-- breadcrumb -->
+        <nav style="display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted-foreground); margin-bottom:28px; flex-wrap:wrap;">
+          <a href="Dashboard.dc.html" style="color:var(--muted-foreground); text-decoration:none;">Dashboard</a>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="m9 18 6-6-6-6"></path></svg>
+          <span>Case filing under <span style="color:var(--foreground); font-weight:500;">S-138, NI Act</span></span>
+        </nav>
+
+        <!-- heading -->
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px; flex-wrap:wrap;">
+          <h1 style="font-size:24px; font-weight:600; letter-spacing:-0.02em; margin:0; white-space:nowrap;">Complainant details</h1>
+         
+        </div>
+
+        <!-- tabs -->
+        <div class="tabstrip">
+          <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="1">
+            <button class="{{ tab.tabCls }}" onClick="{{ tab.onClick }}">
+              <span class="tabdot" style="background:{{ tab.dot }};"></span>
+              {{ tab.label }}
+              <sc-if value="{{ tab.canRemove }}" hint-placeholder-val="{{ false }}">
+                <span class="tabx" onClick="{{ tab.onRemove }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></span>
+              </sc-if>
+            </button>
+          </sc-for>
+          <button class="tabadd" onClick="{{ addComplainant }}">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+            Add complainant
+          </button>
+          <sc-if value="{{ sourceClosed }}" hint-placeholder-val="{{ false }}">
+            <button class="srcreopen" onClick="{{ reopenSource }}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              View source document
+            </button>
+          </sc-if>
+        </div>
+
+        <!-- pre-filled info alert -->
+        <sc-if value="{{ prefillAlertOpen }}" hint-placeholder-val="{{ true }}">
+        <div class="alert alert-info alert-has-icon" style="margin-bottom:20px; position:relative;">
+          <span class="alert-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span>
+          <div class="alert-title">We've pre-filled some details</div>
+          <div class="alert-description" style="padding-right:26px;">Highlighted fields were read from your cheque and demand notice — click one to see its source. Please check them before continuing.</div>
+          <button onClick="{{ dismissPrefillAlert }}" aria-label="Dismiss" style="position:absolute; top:10px; right:10px; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border:none; background:none; color:var(--muted-foreground); cursor:pointer; border-radius:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </div>
+        </sc-if>
+
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+          <!-- CARD: Representation & type -->
+          <div class="fcard">
+            <div><div class="ctitle">Representation &amp; type</div></div>
+            <div class="fld">
+              <label class="flabel">Are you representing yourself in person (party-in-person)?</label>
+              <div class="seg-group">
+                <button class="{{ tg.pip.aCls }}" onClick="{{ tg.pip.onA }}">Yes</button>
+                <button class="{{ tg.pip.bCls }}" onClick="{{ tg.pip.onB }}">No</button>
+              </div>
+            </div>
+            <div class="fld">
+              <label class="flabel">Complainant type</label>
+              <div class="seg-group">
+                <button class="{{ tg.type.aCls }}" onClick="{{ tg.type.onA }}">Individual</button>
+                <button class="{{ tg.type.bCls }}" onClick="{{ tg.type.onB }}">Institution</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ═══════════ INDIVIDUAL ═══════════ -->
+          <sc-if value="{{ isIndividual }}" hint-placeholder-val="{{ true }}">
+
+            <!-- Contact -->
+            <div class="fcard">
+              <div><div class="ctitle">Contact</div><div class="cdesc">Use the complainant's own number, not the advocate's.</div></div>
+              <div class="grid2">
+                <div class="fld">
+                  <label class="flabel">Mobile number <span class="req">*</span></label>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="prefix">+91</span>
+                    <input class="input" value="{{ c.mobile }}" onInput="{{ c.onMobile }}" placeholder="10-digit number">
+                  </div>
+                  <sc-if value="{{ verified }}" hint-placeholder-val="{{ true }}">
+                    <span style="display:inline-flex; align-items:center; gap:5px; font-size:13px; color:var(--success-muted-foreground); font-weight:500;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Verified by OTP</span>
+                  </sc-if>
+                  <sc-if value="{{ notVerified }}" hint-placeholder-val="{{ false }}">
+                    <button class="vsrc" style="align-self:flex-start;" onClick="{{ onVerify }}">Verify by OTP</button>
+                  </sc-if>
+                </div>
+                <div class="fld">
+                  <label class="flabel">Confirm number <span class="req">*</span></label>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="prefix">+91</span>
+                    <input class="input" value="{{ c.confirm }}" onInput="{{ c.onConfirm }}" placeholder="Re-enter number">
+                  </div>
+                  <sc-if value="{{ mobileMatched }}" hint-placeholder-val="{{ true }}">
+                    <span style="display:inline-flex; align-items:center; gap:5px; font-size:13px; color:var(--success-muted-foreground); font-weight:500;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Numbers match</span>
+                  </sc-if>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:12px 16px; border:1px solid var(--border); border-radius:10px; background:color-mix(in oklch, var(--info) 4%, var(--card));">
+                <button class="btn btn-outline" style="color:var(--primary); border-color:color-mix(in oklch,var(--primary) 35%,transparent);" onClick="{{ fetchDetails }}">Fetch details</button>
+                <span class="fhelp" style="flex:1; min-width:220px;">Already registered with ON Court? Pull their saved contact and address.</span>
+              </div>
+            </div>
+
+            <!-- Basic details -->
+            <div class="fcard">
+              <div><div class="ctitle">Basic details</div></div>
+              <div class="grid2">
+                <div class="fld">
+                  <label class="flabel">Full name <span class="req">*</span></label>
+                  <input class="{{ c.nameCls }}" value="{{ c.name }}" onInput="{{ c.onName }}" onClick="{{ openSourceName }}" placeholder="As printed on the cheque" style="cursor:pointer;">
+                </div>
+                <div class="fld">
+                  <label class="flabel">Email address <span style="font-weight:400; color:var(--muted-foreground);">optional</span></label>
+                  <input class="{{ c.emailCls }}" value="{{ c.email }}" onInput="{{ c.onEmail }}" onClick="{{ openSourceEmail }}" placeholder="optional@example.com" style="cursor:pointer;">
+                </div>
+              </div>
+              <div class="fld">
+                <label class="flabel">Age <span class="req">*</span></label>
+                <input class="input" value="{{ c.age }}" onInput="{{ c.onAge }}" placeholder="e.g. 47" inputmode="numeric" style="max-width:50%;">
+              </div>
+            </div>
+
+            <!-- Residential address -->
+            <div class="fcard">
+              <div><div class="ctitle">Residential address</div><div class="cdesc">Where the complainant currently lives.</div></div>
+              <dc-import name="AddressFields" f="{{ addrRes }}" hint-size="100%,230px"></dc-import>
+              <div class="fld">
+                <label class="flabel">Is the permanent address the same as the residential address?</label>
+                <div class="seg-group">
+                  <button class="{{ tg.permSame.aCls }}" onClick="{{ tg.permSame.onA }}">Yes</button>
+                  <button class="{{ tg.permSame.bCls }}" onClick="{{ tg.permSame.onB }}">No</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Permanent address (conditional) -->
+            <sc-if value="{{ showPerm }}" hint-placeholder-val="{{ false }}">
+              <div class="fcard">
+                <div><div class="ctitle">Permanent address</div></div>
+                <dc-import name="AddressFields" f="{{ addrPerm }}" hint-size="100%,230px"></dc-import>
+              </div>
+            </sc-if>
+
+            <!-- Power of attorney -->
+            <div class="fcard">
+              <div><div class="ctitle">Power of attorney (PoA)</div></div>
+              <div class="fld">
+                <label class="flabel">Has the complainant authorised any person as their power of attorney in this case?</label>
+                <div class="seg-group">
+                  <button class="{{ tg.poa.aCls }}" onClick="{{ tg.poa.onA }}">Yes</button>
+                  <button class="{{ tg.poa.bCls }}" onClick="{{ tg.poa.onB }}">No</button>
+                </div>
+              </div>
+
+              <sc-if value="{{ showPoa }}" hint-placeholder-val="{{ false }}">
+                <div style="height:1px; background:var(--border);"></div>
+                <div class="subhead">PoA holder details</div>
+                <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:14px 16px; border:1px solid var(--border); border-radius:10px; background:color-mix(in oklch, var(--info) 4%, var(--card));">
+                  <div class="fld" style="flex:1; min-width:240px;">
+                    <label class="flabel">PoA holder mobile number <span class="req">*</span></label>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span class="prefix">+91</span>
+                      <input class="input" value="{{ poaF.mobile }}" onInput="{{ poaF.onMobile }}" placeholder="10-digit number">
+                    </div>
+                  </div>
+                  <button class="btn btn-outline" style="color:var(--primary); border-color:color-mix(in oklch,var(--primary) 35%,transparent); margin-top:6px;" onClick="{{ fetchDetails }}">Fetch details</button>
+                </div>
+                <div class="grid2">
+                  <div class="fld">
+                    <label class="flabel">PoA holder full name <span class="req">*</span></label>
+                    <input class="input" value="{{ poaF.name }}" onInput="{{ poaF.onName }}" placeholder="Full name">
+                  </div>
+                  <div class="fld">
+                    <label class="flabel">PoA holder age <span class="req">*</span></label>
+                    <input class="input" value="{{ poaF.age }}" onInput="{{ poaF.onAge }}" placeholder="e.g. 52" inputmode="numeric">
+                  </div>
+                </div>
+                <div class="subhead">PoA holder's residential address</div>
+                <dc-import name="AddressFields" f="{{ poaRes }}" hint-size="100%,230px"></dc-import>
+                <div class="fld">
+                  <label class="flabel">Is the PoA holder's permanent address the same as residential?</label>
+                  <div class="seg-group">
+                    <button class="{{ tg.poaPermSame.aCls }}" onClick="{{ tg.poaPermSame.onA }}">Yes</button>
+                    <button class="{{ tg.poaPermSame.bCls }}" onClick="{{ tg.poaPermSame.onB }}">No</button>
+                  </div>
+                </div>
+                <sc-if value="{{ showPoaPerm }}" hint-placeholder-val="{{ false }}">
+                  <div class="subhead">PoA holder's permanent address</div>
+                  <dc-import name="AddressFields" f="{{ poaPerm }}" hint-size="100%,230px"></dc-import>
+                </sc-if>
+              </sc-if>
+            </div>
+
+          </sc-if>
+
+          <!-- ═══════════ INSTITUTION ═══════════ -->
+          <sc-if value="{{ isInstitution }}" hint-placeholder-val="{{ false }}">
+
+            <div class="fcard">
+              <div><div class="ctitle">Institution details</div></div>
+              <div class="grid2">
+                <div class="fld">
+                  <label class="flabel">Type of entity <span class="req">*</span></label>
+                  <select class="select" value="{{ entF.type }}" onChange="{{ entF.onType }}">
+                    <option value="">Select type</option>
+                    <option>Proprietorship</option>
+                    <option>Partnership firm</option>
+                    <option>Private limited company</option>
+                    <option>Public limited company</option>
+                    <option>Society / trust</option>
+                    <option>LLP</option>
+                  </select>
+                </div>
+                <div class="fld">
+                  <label class="flabel">Entity name <span class="req">*</span></label>
+                  <input class="{{ entF.nameCls }}" value="{{ entF.name }}" onInput="{{ entF.onName }}" onClick="{{ openSourceEnt }}" placeholder="Registered name" style="cursor:pointer;">
+                </div>
+              </div>
+              <div class="grid2">
+                <div class="fld">
+                  <label class="flabel">Contact number <span style="font-weight:400; color:var(--muted-foreground);">optional</span></label>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="prefix">+91</span>
+                    <input class="input" value="{{ entF.phone }}" onInput="{{ entF.onPhone }}" placeholder="10-digit number">
+                  </div>
+                </div>
+                <div class="fld">
+                  <label class="flabel">Email address <span style="font-weight:400; color:var(--muted-foreground);">optional</span></label>
+                  <input class="input" value="{{ entF.email }}" onInput="{{ entF.onEmail }}" placeholder="optional@example.com">
+                </div>
+              </div>
+            </div>
+
+            <div class="fcard">
+              <div><div class="ctitle">Registered address</div></div>
+              <dc-import name="AddressFields" f="{{ entAddr }}" hint-size="100%,230px"></dc-import>
+            </div>
+
+            <div class="fcard">
+              <div><div class="ctitle">Authorised representative</div><div class="cdesc">The person authorised to act for the institution in this case.</div></div>
+              <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:14px 16px; border:1px solid var(--border); border-radius:10px; background:color-mix(in oklch, var(--info) 4%, var(--card));">
+                <div class="fld" style="flex:1; min-width:240px;">
+                  <label class="flabel">Mobile number <span class="req">*</span></label>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="prefix">+91</span>
+                    <input class="input" value="{{ repF.mobile }}" onInput="{{ repF.onMobile }}" placeholder="10-digit number">
+                  </div>
+                </div>
+                <button class="btn btn-outline" style="color:var(--primary); border-color:color-mix(in oklch,var(--primary) 35%,transparent); margin-top:6px;" onClick="{{ fetchDetails }}">Fetch details</button>
+              </div>
+              <div class="grid2">
+                <div class="fld">
+                  <label class="flabel">Full name <span class="req">*</span></label>
+                  <input class="input" value="{{ repF.name }}" onInput="{{ repF.onName }}" placeholder="Full name">
+                </div>
+                <div class="fld">
+                  <label class="flabel">Age <span class="req">*</span></label>
+                  <input class="input" value="{{ repF.age }}" onInput="{{ repF.onAge }}" placeholder="e.g. 47" inputmode="numeric">
+                </div>
+              </div>
+              <div class="fld">
+                <label class="flabel">Email address <span style="font-weight:400; color:var(--muted-foreground);">optional</span></label>
+                <input class="input" value="{{ repF.email }}" onInput="{{ repF.onEmail }}" placeholder="optional@example.com" style="max-width:50%;">
+              </div>
+              <div class="subhead">Representative's address</div>
+              <dc-import name="AddressFields" f="{{ repAddr }}" hint-size="100%,230px"></dc-import>
+            </div>
+
+          </sc-if>
+
+          <!-- ═══════════ AFFIDAVIT (party-in-person) ═══════════ -->
+          <sc-if value="{{ showAffidavit }}" hint-placeholder-val="{{ true }}">
+            <div class="fcard">
+              <div><div class="ctitle">Affidavit for appearing as party-in-person</div><div class="cdesc">Pre-filled from the standard template — edit if needed.</div></div>
+              <div style="border:1px solid var(--input); border-radius:10px; overflow:hidden; background:var(--card);">
+                <div style="display:flex; align-items:center; gap:2px; padding:6px 8px; border-bottom:1px solid var(--border); background:var(--secondary);">
+                  <button class="toolbtn" style="font-weight:700;">B</button>
+                  <button class="toolbtn" style="font-style:italic;">I</button>
+                  <span style="width:1px; height:18px; background:var(--border); margin:0 4px;"></span>
+                  <button class="toolbtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" x2="21" y1="6" y2="6"></line><line x1="8" x2="21" y1="12" y2="12"></line><line x1="8" x2="21" y1="18" y2="18"></line><line x1="3" x2="3.01" y1="6" y2="6"></line><line x1="3" x2="3.01" y1="12" y2="12"></line><line x1="3" x2="3.01" y1="18" y2="18"></line></svg></button>
+                  <button class="toolbtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="3" y1="6" y2="6"></line><line x1="15" x2="3" y1="12" y2="12"></line><line x1="17" x2="3" y1="18" y2="18"></line></svg></button>
+                </div>
+                <div contenteditable="true" style="padding:16px 18px; font-size:14px; line-height:1.6; color:var(--foreground); min-height:160px; outline:none;">
+                  <p style="margin:0 0 12px;">Request permission to appear and argue in person, as a party in person.</p>
+                  <p style="margin:0 0 12px;">I have not engaged any advocate for this case.</p>
+                  <p style="margin:0 0 12px;">I give an undertaking that I will maintain decorum of the Court and will not use or express objectionable and unparliamentary language or behaviour during the course of hearing in the Court premises or in any pleadings.</p>
+                  <p style="margin:0;">Kindly grant me permission to appear in person and conduct the proceedings.</p>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ░░ FOOTER ░░ -->
+  <footer style="position:sticky; bottom:0; z-index:30; background:var(--card); border-top:1px solid var(--border); padding:14px 24px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <button class="btn btn-outline btn-lg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+        Back
+      </button>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <sc-if value="{{ saving }}" hint-placeholder-val="{{ false }}">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--muted-foreground);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="animation:spin 0.7s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+            Saving…
+          </span>
+        </sc-if>
+        <sc-if value="{{ saved }}" hint-placeholder-val="{{ true }}">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--success-muted-foreground);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+            Saved
+          </span>
+        </sc-if>
+        <a class="btn btn-default btn-lg" href="Advocate Details.dc.html">Continue
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ░░ SOURCE DOCUMENT PANEL (split · left, persistent) ░░ -->
+  <sc-if value="{{ sourceOpen }}" hint-placeholder-val="{{ true }}">
+    <dc-import name="SourcePanel" p="{{ sourceProps }}" hint-size="100%,100%"></dc-import>
+  </sc-if>
+
+  <!-- ░░ UPLOADED DOCUMENTS DRAWER ░░ -->
+  <sc-if value="{{ docsOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDocs }}" style="position:fixed; inset:0; z-index:70; background:color-mix(in oklch,var(--foreground) 30%,transparent); animation:fadein 150ms ease;">
+      <aside onClick="{{ stop }}" style="position:absolute; top:0; right:0; height:100%; width:380px; max-width:92vw; background:var(--card); border-left:1px solid var(--border); overflow-y:auto; display:flex; flex-direction:column;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:20px 22px 16px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--card); z-index:2;">
+          <div>
+            <div style="font-size:17px; font-weight:600; letter-spacing:-0.01em;">Uploaded documents</div>
+            <div style="font-size:12.5px; color:var(--muted-foreground); margin-top:3px;">Read by OCR to pre-fill your form</div>
+          </div>
+          <button class="dialog-close" style="position:static;" onClick="{{ closeDocs }}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </div>
+        <div style="padding:16px 22px; display:flex; flex-direction:column; gap:10px; flex:1;">
+          <button onClick="{{ viewChequeDoc }}" style="display:flex; align-items:center; gap:12px; padding:10px; border:1px solid var(--border); border-radius:11px; background:var(--card); cursor:pointer; font-family:var(--font-sans); text-align:left;">
+            <img src="../assets/cheque.png" alt="Cheque" style="width:64px; height:44px; object-fit:cover; border-radius:7px; border:1px solid var(--border);">
+            <span style="flex:1; min-width:0;">
+              <span style="display:block; font-size:13.5px; font-weight:600; color:var(--foreground);">Cheque</span>
+              <span style="display:block; font-size:12px; color:var(--success-muted-foreground); margin-top:2px;">Read · ₹50,25,000 · 4 fields filled</span>
+            </span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg>
+          </button>
+          <button onClick="{{ viewAadhaarDoc }}" style="display:flex; align-items:center; gap:12px; padding:10px; border:1px solid var(--border); border-radius:11px; background:var(--card); cursor:pointer; font-family:var(--font-sans); text-align:left;">
+            <img src="../assets/aadhaar-card.jpg" alt="Aadhaar" style="width:64px; height:44px; object-fit:cover; border-radius:7px; border:1px solid var(--border);">
+            <span style="flex:1; min-width:0;">
+              <span style="display:block; font-size:13.5px; font-weight:600; color:var(--foreground);">Aadhaar.pdf</span>
+              <span style="display:block; font-size:12px; color:var(--success-muted-foreground); margin-top:2px;">Read · identity verified</span>
+            </span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg>
+          </button>
+          <div style="display:flex; align-items:center; gap:12px; padding:10px; border:1px solid var(--border); border-radius:11px;">
+            <span style="width:64px; height:44px; display:flex; align-items:center; justify-content:center; background:var(--secondary); border-radius:7px; font-size:10px; font-weight:700; color:var(--muted-foreground);">PDF</span>
+            <span style="flex:1;"><span style="display:block; font-size:13.5px; font-weight:600;">Return-memo-1.pdf</span><span style="display:block; font-size:12px; color:var(--success-muted-foreground); margin-top:2px;">Read · return reason filled</span></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:10px; border:1px solid var(--border); border-radius:11px;">
+            <span style="width:64px; height:44px; display:flex; align-items:center; justify-content:center; background:var(--secondary); border-radius:7px; font-size:10px; font-weight:700; color:var(--muted-foreground);">PDF</span>
+            <span style="flex:1;"><span style="display:block; font-size:13.5px; font-weight:600;">Demand-notice.pdf</span><span style="display:block; font-size:12px; color:var(--success-muted-foreground); margin-top:2px;">Read · dispatch date filled</span></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:10px; border:1px solid var(--border); border-radius:11px;">
+            <span style="width:64px; height:44px; display:flex; align-items:center; justify-content:center; background:var(--secondary); border-radius:7px; font-size:10px; font-weight:700; color:var(--muted-foreground);">PDF</span>
+            <span style="flex:1;"><span style="display:block; font-size:13.5px; font-weight:600;">Vakalatnama.pdf</span><span style="display:block; font-size:12px; color:var(--muted-foreground); margin-top:2px;">Uploaded</span></span>
+          </div>
+        </div>
+        <div style="padding:14px 22px 20px; border-top:1px solid var(--border); position:sticky; bottom:0; background:var(--card); display:flex; flex-direction:column; gap:9px;">
+          <a class="btn btn-default" href="Case Documents Upload.dc.html" style="width:100%; gap:7px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M17 8l-5-5-5 5"></path><path d="M12 3v12"></path></svg>
+            Upload more documents
+          </a>
+          <a class="btn btn-outline" href="Case Documents Upload.dc.html" style="width:100%;">Manage documents</a>
+        </div>
+      </aside>
+    </div>
+  </sc-if>
+
+  <!-- ░░ IMAGE LIGHTBOX ░░ -->
+  <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeLightbox }}" style="position:fixed; inset:0; z-index:80; background:color-mix(in oklch,var(--foreground) 72%,transparent); display:flex; align-items:center; justify-content:center; padding:40px; animation:lbfade 150ms ease;">
+      <div onClick="{{ stopLb }}" style="position:relative; max-width:min(1100px,92vw); max-height:90vh; animation:lbpop 180ms cubic-bezier(0.22,1,0.36,1);">
+        <sc-if value="{{ lightboxIsCheque }}" hint-placeholder-val="{{ true }}">
+          <img src="../assets/cheque.png" alt="Uploaded cheque" style="display:block; max-width:100%; max-height:90vh; border-radius:12px; box-shadow:var(--shadow-xl); background:var(--card);">
+        </sc-if>
+        <sc-if value="{{ lightboxIsRecord }}" hint-placeholder-val="{{ false }}">
+          <img src="../assets/aadhaar-card.jpg" alt="Uploaded Aadhaar card" style="display:block; max-width:100%; max-height:90vh; border-radius:12px; box-shadow:var(--shadow-xl); background:var(--card);">
+        </sc-if>
+        <button onClick="{{ closeLightbox }}" style="position:absolute; top:-14px; right:-14px; width:36px; height:36px; border-radius:9999px; border:none; background:var(--card); color:var(--foreground); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:var(--shadow-lg);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;pageBg&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#ffffff&quot;,&quot;options&quot;:[&quot;#ffffff&quot;,&quot;#f4f2ec&quot;,&quot;#eef1f4&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Appearance&quot;}}">
+class Component extends DCLogic {
+  blankAddr() { return { line1: '', city: '', pin: '', district: '', state: '' }; }
+  blankC(prefill) {
+    const base = {
+      pip: 'no', type: 'individual',
+      mobile: '', confirm: '', verified: false,
+      name: prefill ? 'Prateek Agrawal' : '', age: '', email: '',
+      res: prefill ? { line1: 'C/O G Balakrishna Pillai, Vijaya Bhavan, Manakkattu', city: 'Mavoor', pin: '673661', district: 'Kozhikode', state: 'Kerala' } : this.blankAddr(),
+      permSame: 'yes', perm: this.blankAddr(),
+      poa: 'no', poaData: { mobile: '', name: '', age: '', res: this.blankAddr(), permSame: 'yes', perm: this.blankAddr() },
+      entType: '', entName: '', entPhone: '', entEmail: '', entAddr: this.blankAddr(),
+      rep: { mobile: '', name: '', age: '', email: '', addr: this.blankAddr() },
+      toReview: !!prefill,
+      prefilledFields: prefill ? { name: true, res: true } : {},
+      edited: {},
+    };
+    return base;
+  }
+
+  state = {
+    complainants: [ this.blankC(true) ],
+    activeC: 0,
+    showSource: false, sourceOpen: false, sourceField: 'name',
+    sourceDocOverride: null,
+    lightboxOpen: false,
+    docsOpen: false,
+    saving: false,
+    prefillAlertOpen: (() => { try { return localStorage.getItem('oncourt_prefill_alert_dismissed') !== '1'; } catch (e) { return true; } })(),
+  };
+
+  cur() { return this.state.complainants[this.state.activeC]; }
+  setField(k, v) { this.cur()[k] = v; this.markSaving(); this.forceUpdate(); }
+  setPath(path, v) { let o = this.cur(); for (let i = 0; i < path.length - 1; i++) o = o[path[i]]; o[path[path.length - 1]] = v; this.markSaving(); this.forceUpdate(); }
+  getPath(path) { let o = this.cur(); for (const p of path) o = o[p]; return o; }
+  verify() { this.cur().verified = true; this.forceUpdate(); }
+
+  markSaving() {
+    clearTimeout(this._saveT);
+    if (!this.state.saving) this.setState({ saving: true });
+    this._saveT = setTimeout(() => this.setState({ saving: false }), 900);
+  }
+  dismissPrefillAlert() {
+    try { localStorage.setItem('oncourt_prefill_alert_dismissed', '1'); } catch (e) {}
+    this.setState({ prefillAlertOpen: false });
+  }
+
+  switchC(i) { this.setState({ activeC: i }); }
+  addComplainant() { this.state.complainants.push(this.blankC(false)); this.setState({ activeC: this.state.complainants.length - 1 }); }
+  removeComplainant(i, e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (this.state.complainants.length <= 1) return;
+    this.state.complainants.splice(i, 1);
+    let a = this.state.activeC; if (a >= this.state.complainants.length) a = this.state.complainants.length - 1;
+    this.setState({ activeC: a });
+  }
+
+  openSource(field) { this.setState({ sourceOpen: true, sourceField: field, sourceDocOverride: null }); }
+  closeSource() { this.setState({ sourceOpen: false }); }
+  reopenSource() { this.setState({ sourceOpen: true }); }
+  showSourceDoc(which) { this.setState({ sourceDocOverride: which }); }
+  openLightbox() { this.setState({ lightboxOpen: true }); }
+  closeLightbox() { this.setState({ lightboxOpen: false }); }
+  openDocs() { this.setState({ docsOpen: true }); }
+  closeDocs() { this.setState({ docsOpen: false }); }
+  fetchDetails() { this.forceUpdate(); }
+
+  markEdited(f) { const c = this.cur(); c.edited = c.edited || {}; c.edited[f] = true; }
+  setSourceValue(v) {
+    const f = this.state.sourceField || 'name';
+    const c = this.cur();
+    if (f === 'res') c.res.line1 = v;
+    else if (f === 'entName') c.entName = v;
+    else c[f] = v;
+    this.markEdited(f);
+    this.markSaving();
+    this.forceUpdate();
+  }
+
+  sourceMeta(field) {
+    const c = this.cur();
+    const addrStr = (a) => [a.line1, a.city, a.district, a.state, a.pin].filter(Boolean).join(', ') || '#142, Sector 21, Chandigarh, 160022';
+    const recRow = (l, v, opts) => ({ l, v, cls: 'srcval' + ((opts && opts.hl) ? ' srcval--hl' : '') + ((opts && opts.mono) ? ' srcval--mono' : '') });
+    const aadhaar = (rows) => ({
+      isRecord: true, docName: 'Aadhaar.pdf', otherDoc: 'Cheque-1.jpg',
+      recBadge: 'AADHAAR', recTitle: 'Unique Identification Authority of India', recSubtitle: 'Government of India',
+      recRows: rows,
+    });
+    const cfg = {
+      name: { fieldLabel: 'Full name', fieldLower: 'full name', value: c.name || 'Prateek Agrawal', isCheque: true, docName: 'Cheque-1.jpg', otherDoc: 'Aadhaar.pdf' },
+      entName: { fieldLabel: 'Entity name', fieldLower: 'entity name', value: c.entName || 'Sharma Traders', isCheque: true, docName: 'Cheque-1.jpg', otherDoc: 'GST-cert.pdf' },
+      email: { fieldLabel: 'Email address', fieldLower: 'email address', value: c.email || 'rajesh.sharma@gmail.com', ...aadhaar([
+        recRow('Name', c.name || 'Prateek Agrawal'),
+        recRow('Date of birth', '20/05/1970', { mono: true }),
+        recRow('Email on record', c.email || 'rajesh.sharma@gmail.com', { hl: true }),
+        recRow('Mobile', '+91 98765 43210', { mono: true }),
+      ]) },
+      res: { fieldLabel: 'Residential address', fieldLower: 'residential address', value: addrStr(c.res), ...aadhaar([
+        recRow('Name', c.name || 'Prateek Agrawal'),
+        recRow('Address', addrStr(c.res), { hl: true }),
+        recRow('Pincode', (c.res && c.res.pin) || '673661', { mono: true }),
+      ]) },
+    };
+    return cfg[field] || cfg.name;
+  }
+
+  componentDidMount() { this.applyBg(); this.persist(); }
+  componentDidUpdate() { this.applyBg(); this.persist(); }
+  applyBg() { try { document.body.style.background = this.props.pageBg ?? '#ffffff'; } catch (e) {} }
+  persist() {
+    try {
+      const c = this.state.complainants[0];
+      localStorage.setItem('oncourt_complainant', JSON.stringify({
+        name: c.name, type: c.type, mobile: c.mobile, email: c.email, age: c.age,
+        res: c.res, entName: c.entName, entType: c.entType, entPhone: c.entPhone, entEmail: c.entEmail, entAddr: c.entAddr, poa: c.poa,
+      }));
+    } catch (e) {}
+  }
+
+  renderVals() {
+    const self = this;
+    const c = this.cur();
+    const segCls = (on) => on ? 'seg seg--on' : 'seg';
+    const seg2 = (val, a, b, setter) => ({ aCls: segCls(val === a), bCls: segCls(val === b), onA: () => setter(a), onB: () => setter(b) });
+    const onField = (k) => (e) => self.setField(k, e.target.value);
+    const onPath = (path) => (e) => self.setPath(path, e.target.value);
+    const ed = c.edited || {};
+    const pf = c.prefilledFields || {};
+    const aiClsFor = (f, val) => 'input' + (pf[f] && !ed[f] && !!val ? ' input-ai' : '');
+    const editHandler = (k, f) => (e) => { self.setField(k, e.target.value); self.markEdited(f); };
+
+    const addrView = (path, prefilled, srcField, editField) => {
+      const v = self.getPath(path);
+      return {
+        line1: v.line1, city: v.city, pin: v.pin, district: v.district, state: v.state,
+        prefilled, plain: !prefilled,
+        aiCls: editField ? aiClsFor(editField, v.line1) : 'input',
+        selCls: editField ? ('select' + (pf[editField] && !ed[editField] && !!v.line1 ? ' select-ai' : '')) : 'select',
+        hasSource: !!(prefilled && srcField),
+        onViewSource: (prefilled && srcField) ? () => self.openSource(srcField) : null,
+        onLine1: editField
+          ? (e) => { self.setPath([...path, 'line1'], e.target.value); self.markEdited(editField); }
+          : onPath([...path, 'line1']),
+        onCity: onPath([...path, 'city']), onPin: onPath([...path, 'pin']),
+        onDistrict: onPath([...path, 'district']), onState: onPath([...path, 'state']),
+      };
+    };
+
+    const tabs = this.state.complainants.map((cp, i) => ({
+      label: cp.name || cp.entName || ('Complainant ' + (i + 1)), name: '', value: String(i),
+      cls: i === this.state.activeC ? 'ctab ctab--on' : 'ctab',
+      tabCls: i === this.state.activeC ? 'ptab ptab--on' : 'ptab',
+      dot: cp.toReview ? 'var(--warning)' : 'var(--success)',
+      canRemove: this.state.complainants.length > 1,
+      onClick: () => self.switchC(i), onRemove: (e) => self.removeComplainant(i, e),
+    }));
+
+    const source = (() => {
+      const baseMeta = this.sourceMeta(this.state.sourceField || 'name');
+      const ov = this.state.sourceDocOverride;
+      const isChequeEff = ov ? (ov === 'cheque') : baseMeta.isCheque;
+      const m = Object.assign(baseMeta, {
+        editValue: (this.state.sourceField === 'res') ? c.res.line1
+          : (this.state.sourceField === 'entName') ? c.entName
+          : c[this.state.sourceField || 'name'],
+      });
+      m.isCheque = isChequeEff;
+      m.isRecord = !isChequeEff;
+      m.chequeChipCls = isChequeEff ? 'srcchip srcchip--on' : 'srcchip';
+      m.aadhaarChipCls = isChequeEff ? 'srcchip' : 'srcchip srcchip--on';
+      m.docTitle = isChequeEff ? 'Cheque' : 'Aadhaar.pdf';
+      const isAddrRecord = !isChequeEff && this.state.sourceField === 'res';
+      m.hasRegion = (isChequeEff && !!baseMeta.isCheque) || isAddrRecord; m.isAddrRecord = isAddrRecord;
+      if (isAddrRecord) {
+        m.regLeft = '2%'; m.regTop = '23%'; m.regW = '62%'; m.regH = '22%';
+      } else {
+        m.regLeft = '16.5%'; m.regTop = '22.5%'; m.regW = '35%'; m.regH = '12%';
+      }
+      return m;
+    })();
+
+    return {
+      reviewCount: this.state.complainants.filter(cp => cp.toReview).length,
+      tabs,
+      activeTabVal: String(this.state.activeC),
+      onTabChange: (val) => self.switchC(Number(val)),
+      c: {
+        pip: c.pip, type: c.type, mobile: c.mobile, confirm: c.confirm, name: c.name, age: c.age, email: c.email,
+        nameCls: aiClsFor('name', c.name), emailCls: aiClsFor('email', c.email),
+        onMobile: onField('mobile'), onConfirm: onField('confirm'), onName: editHandler('name', 'name'), onAge: onField('age'), onEmail: editHandler('email', 'email'),
+      },
+      poaF: { mobile: c.poaData.mobile, name: c.poaData.name, age: c.poaData.age, onMobile: onPath(['poaData', 'mobile']), onName: onPath(['poaData', 'name']), onAge: onPath(['poaData', 'age']) },
+      entF: { type: c.entType, name: c.entName, phone: c.entPhone, email: c.entEmail, nameCls: aiClsFor('entName', c.entName), onType: onField('entType'), onName: editHandler('entName', 'entName'), onPhone: onField('entPhone'), onEmail: onField('entEmail') },
+      repF: { mobile: c.rep.mobile, name: c.rep.name, age: c.rep.age, email: c.rep.email, onMobile: onPath(['rep', 'mobile']), onName: onPath(['rep', 'name']), onAge: onPath(['rep', 'age']), onEmail: onPath(['rep', 'email']) },
+      addrRes: addrView(['res'], true, 'res', 'res'),
+      addrPerm: addrView(['perm'], false),
+      poaRes: addrView(['poaData', 'res'], false),
+      poaPerm: addrView(['poaData', 'perm'], false),
+      entAddr: addrView(['entAddr'], false),
+      repAddr: addrView(['rep', 'addr'], false),
+      tg: {
+        pip: seg2(c.pip, 'yes', 'no', (v) => self.setField('pip', v)),
+        type: seg2(c.type, 'individual', 'institution', (v) => self.setField('type', v)),
+        permSame: seg2(c.permSame, 'yes', 'no', (v) => self.setField('permSame', v)),
+        poa: seg2(c.poa, 'yes', 'no', (v) => self.setField('poa', v)),
+        poaPermSame: seg2(c.poaData.permSame, 'yes', 'no', (v) => self.setPath(['poaData', 'permSame'], v)),
+      },
+      isIndividual: c.type === 'individual',
+      isInstitution: c.type === 'institution',
+      showPerm: c.permSame === 'no',
+      showPoa: c.poa === 'yes',
+      showPoaPerm: c.poaData.permSame === 'no',
+      showAffidavit: c.pip === 'yes',
+      verified: !!c.verified, notVerified: !c.verified,
+      mobileMatched: !!c.mobile && c.mobile === c.confirm,
+      onVerify: () => self.verify(),
+      addComplainant: () => self.addComplainant(),
+      fetchDetails: () => self.fetchDetails(),
+      openSourceName: () => self.openSource('name'),
+      openSourceEmail: () => self.openSource('email'),
+      openSourceEnt: () => self.openSource('entName'),
+      closeSource: () => self.closeSource(),
+      stop: (e) => e.stopPropagation(),
+      progressPct: '8%',
+      sourceOpen: this.state.sourceOpen, sourceClosed: !this.state.sourceOpen, mainCls: this.state.sourceOpen ? 'formcol formcol--src' : 'formcol', reopenSource: () => self.reopenSource(),
+      saving: this.state.saving,
+      saved: !this.state.saving,
+      prefillAlertOpen: this.state.prefillAlertOpen,
+      dismissPrefillAlert: () => self.dismissPrefillAlert(),
+      showCheque: () => self.showSourceDoc('cheque'),
+      showAadhaar: () => self.showSourceDoc('record'),
+      onSourceEdit: (e) => self.setSourceValue(e.target.value),
+      sourceProps: {
+        eyebrow: 'Source',
+        title: source.fieldLabel,
+        onClose: () => self.closeSource(),
+        hasValue: true,
+        editValue: source.editValue,
+        onEdit: (e) => self.setSourceValue(e.target.value),
+        hasChips: true,
+        chips: [
+          { label: 'Cheque', cls: source.chequeChipCls, onClick: () => self.showSourceDoc('cheque') },
+          { label: 'Aadhaar.pdf', cls: source.aadhaarChipCls, onClick: () => self.showSourceDoc('record') },
+        ],
+        img: source.isCheque ? '../assets/cheque.png' : (source.isAddrRecord ? '../assets/aadhaar-card-back.jpg' : '../assets/aadhaar-card.jpg'),
+        imgAlt: source.isCheque ? 'Uploaded cheque' : 'Uploaded Aadhaar card',
+        hasRegion: source.hasRegion,
+        regLeft: source.regLeft, regTop: source.regTop, regW: source.regW, regH: source.regH,
+        hasNote: false,
+        note: '',
+      },
+      lightboxOpen: this.state.lightboxOpen,
+      lightboxIsCheque: this.state.sourceDocOverride ? (this.state.sourceDocOverride === 'cheque') : this.sourceMeta(this.state.sourceField || 'name').isCheque,
+      lightboxIsRecord: !(this.state.sourceDocOverride ? (this.state.sourceDocOverride === 'cheque') : this.sourceMeta(this.state.sourceField || 'name').isCheque),
+      openLightbox: () => self.openLightbox(),
+      docsOpen: this.state.docsOpen,
+      openDocs: () => self.openDocs(),
+      closeDocs: () => self.closeDocs(),
+      viewChequeDoc: () => self.setState({ sourceDocOverride: 'cheque', lightboxOpen: true }),
+      viewAadhaarDoc: () => self.setState({ sourceDocOverride: 'record', lightboxOpen: true }),
+      closeLightbox: () => self.closeLightbox(),
+      stopLb: (e) => e.stopPropagation(),
+    };
+  }
+}
+</script>
+</body>
+</html>
