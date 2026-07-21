@@ -26,6 +26,33 @@ lowercase-hyphenated name; if it might overlap with someone else's area,
 a quick heads-up before you start avoids duplicate structure — that's a
 courtesy, not something the tooling enforces.
 
+## Iterations within a flow
+
+Designs iterate as **separate, versioned HTML files that all live side by
+side** in the flow folder — this is deliberate, so anyone can open any two
+versions in a browser and compare renders without a git checkout.
+
+Convention:
+
+    designs/<flow>/<flow>-v<N>.html      # e.g. scrutiny-review-v10.html
+    designs/<flow>/CHANGELOG.md           # what changed, which is current
+
+- **Highest version number = the current design.** No `latest.html`, no
+  moving files into archives — you just save the next `-v<N>.html`.
+- Each flow folder has a **`CHANGELOG.md`** listing every version with a
+  one-line "what changed". Update it in the same commit as a new version.
+- Version numbers may skip (a `v5` gap is fine) — note intentional skips in
+  the CHANGELOG so they don't read as a lost file.
+- Keep each iteration self-contained (embed assets) so a single `.html`
+  opens correctly on its own.
+
+### Large demo files
+
+Self-contained "demo master" HTMLs can be 10–12 MB (embedded assets). A few
+are fine in plain git. If a flow starts accumulating *many* large-file
+iterations, raise it — we'll move those to Git LFS rather than let the repo
+balloon. Small iteration files (tens to a few hundred KB) never need this.
+
 ## Branch naming
 
     <github-username>/<short-description>

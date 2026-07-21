@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrutiny — CMP/1043/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ————————————————————————————————————————————————
+   Visual language: "ledger" — warm paper, ink, one
+   vermilion for flags. Serif for what matters,
+   hairlines instead of boxes, almost no chrome.
+   ———————————————————————————————————————————————— */
+:root{
+  --paper:#f7f4ee;        /* room */
+  --sheet:#fffdf9;        /* working surfaces */
+  --ink:#211e19;
+  --ink-2:#6b655c;        /* secondary */
+  --ink-3:#a39c8f;        /* tertiary */
+  --line:#e3ddd1;         /* hairline */
+  --line-2:#cfc7b8;
+  --flag:#b0402a;         /* vermilion — the only alarm colour */
+  --flag-soft:#f7e8e2;
+  --ok:#41694f;           /* quiet green, used sparingly */
+  --ok-soft:#e9efe7;
+  --pin:#f3d98b;          /* document highlight */
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Inter",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);font-size:15px;line-height:1.5;color:var(--ink);
+  background:var(--paper);overflow:hidden;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+::selection{background:var(--pin)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ————— shell ————— */
+#app{height:100vh;display:flex;flex-direction:column}
+
+header{display:flex;align-items:baseline;gap:14px;padding:18px 28px 14px;
+  border-bottom:1px solid var(--line-2)}
+header .case{font-family:var(--serif);font-size:21px;font-weight:600;letter-spacing:.01em}
+header .matter{color:var(--ink-2)}
+header .why{margin-left:auto;color:var(--ink-2);font-size:13px}
+header .why b{color:var(--ink);font-weight:500}
+
+main{flex:1;display:flex;min-height:0}
+
+/* ————— left: the checklist ————— */
+#work{width:440px;flex:none;display:flex;flex-direction:column;min-height:0;
+  border-right:1px solid var(--line-2);background:var(--sheet)}
+
+.steps{display:flex;gap:4px;padding:16px 28px 0}
+.steps .step{flex:1;padding:6px 0 10px;text-align:left;font-size:12px;color:var(--ink-3);
+  border-top:2px solid var(--line);transition:color .15s,border-color .15s}
+.steps .step .n{display:block;font-family:var(--serif);font-size:13px}
+.steps .step.now{color:var(--ink);border-top-color:var(--ink)}
+.steps .step.done{color:var(--ink-2);border-top-color:var(--ok)}
+.steps .step.done .n::after{content:" ✓";color:var(--ok)}
+
+#fields{flex:1;overflow-y:auto;padding:10px 28px 24px}
+#fields::-webkit-scrollbar{width:8px}
+#fields::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:4px}
+
+.sec-title{font-family:var(--serif);font-size:26px;font-weight:600;margin:14px 0 2px}
+.sec-sub{color:var(--ink-2);font-size:13px;margin-bottom:14px}
+
+/* field rows */
+.field{border-top:1px solid var(--line);padding:14px 2px 14px 14px;position:relative;cursor:pointer;
+  transition:background .12s}
+.field:last-of-type{border-bottom:1px solid var(--line)}
+.field:hover{background:#faf7f0}
+.field::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:2px;
+  background:transparent;transition:background .12s}
+.field.sel{background:#faf6ec}
+.field.sel::before{background:var(--ink)}
+.field.flagged::before{background:var(--flag)}
+.field .lab{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+  display:flex;align-items:center;gap:8px}
+.field .lab .mark{font-size:13px;letter-spacing:0;text-transform:none}
+.field .lab .mark.ok{color:var(--ok)}
+.field .lab .mark.fl{color:var(--flag);font-weight:600}
+.field .val{font-size:17px;margin-top:2px}
+.field .src{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.field .src u{text-decoration:none;border-bottom:1px dotted var(--line-2)}
+.field .docread{font-size:13px;color:var(--ink-2);margin-top:6px;padding-left:10px;
+  border-left:2px solid var(--pin)}
+.field .docread b{font-weight:500;color:var(--ink)}
+
+/* actions inside selected row */
+.acts{display:flex;gap:8px;margin-top:10px}
+.acts button{font-size:13.5px;font-weight:500;padding:7px 14px;border-radius:99px;
+  border:1px solid var(--line-2);background:var(--sheet);transition:all .12s}
+.acts .a-ok:hover{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.acts .a-fl:hover{border-color:var(--flag);color:var(--flag);background:var(--flag-soft)}
+
+/* saved flag note */
+.flagnote{margin-top:10px;padding:10px 12px;background:var(--flag-soft);border-radius:8px;font-size:14px}
+.flagnote .fmeta{display:flex;gap:10px;margin-top:6px;font-size:12px;color:var(--ink-2);align-items:center}
+.flagnote .fmeta .ev{color:var(--flag);font-weight:500}
+.flagnote .fmeta button{font-size:12px;color:var(--ink-2);text-decoration:underline;padding:0}
+
+/* composer */
+.composer{margin-top:10px}
+.composer .box{display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--ink);
+  border-radius:10px;padding:4px 6px 4px 12px}
+.composer input{flex:1;border:none;outline:none;background:none;font-size:14.5px;padding:7px 0}
+.composer input::placeholder{color:var(--ink-3)}
+.composer .mic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-2);transition:all .12s;flex:none}
+.composer .mic:hover{background:var(--paper);color:var(--ink)}
+.composer .mic.rec{background:var(--flag);color:#fff}
+.composer .rectime{font-size:13px;color:var(--flag);font-variant-numeric:tabular-nums;
+  display:flex;align-items:center;gap:6px}
+.composer .rectime .dot{width:8px;height:8px;border-radius:50%;background:var(--flag);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.composer .under{display:flex;align-items:center;gap:14px;margin-top:8px;font-size:13px}
+.composer .under .point{color:var(--ink-2);text-decoration:underline;text-underline-offset:2px}
+.composer .under .point.active{color:var(--flag);font-weight:500;text-decoration:none}
+.composer .under .evchip{color:var(--flag);font-weight:500}
+.composer .under .evchip button{text-decoration:underline;color:var(--ink-2);font-size:12px;margin-left:4px}
+.composer .under .save{margin-left:auto;background:var(--ink);color:var(--sheet);padding:7px 16px;
+  border-radius:99px;font-weight:500;font-size:13.5px}
+.composer .under .save:disabled{opacity:.35;cursor:default}
+.composer .under .cancel{color:var(--ink-2)}
+.composer .voicechip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);
+  margin-top:6px;background:var(--paper);padding:3px 10px;border-radius:99px}
+
+/* bottom: next */
+#advance{padding:16px 28px 20px;border-top:1px solid var(--line)}
+#advance .status{font-size:13px;color:var(--ink-2);margin-bottom:10px}
+#advance .nextbtn{width:100%;background:var(--ink);color:var(--sheet);font-size:16px;font-weight:500;
+  padding:14px 20px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;
+  transition:background .12s}
+#advance .nextbtn:hover{background:#000}
+#advance .nextbtn .arr{font-family:var(--serif)}
+
+/* ————— right: the documents ————— */
+#docs{flex:1;display:flex;flex-direction:column;min-height:0}
+#docstrip{display:flex;gap:2px;padding:14px 26px 0;overflow-x:auto;flex:none}
+#docstrip button{font-size:13px;color:var(--ink-2);padding:7px 13px;border-radius:8px 8px 0 0;
+  white-space:nowrap;border:1px solid transparent;border-bottom:none}
+#docstrip button.on{background:var(--sheet);color:var(--ink);border-color:var(--line-2);font-weight:500}
+#docstrip button:hover:not(.on){color:var(--ink)}
+
+#viewer{flex:1;overflow:auto;padding:26px 40px 60px;position:relative}
+#viewer.drawing{cursor:crosshair}
+#viewer.drawing .sheet *{pointer-events:none}
+.drawhint{position:sticky;top:0;z-index:9;display:flex;justify-content:center;pointer-events:none}
+.drawhint span{background:var(--ink);color:var(--sheet);font-size:13px;padding:7px 16px;border-radius:99px;
+  box-shadow:0 4px 14px rgb(0 0 0/.2)}
+
+.sheet{position:relative;margin:0 auto;background:#fff;max-width:640px;
+  box-shadow:0 1px 2px rgb(60 50 30/.08),0 12px 32px rgb(60 50 30/.10);
+  border:1px solid var(--line);padding:44px 48px;min-height:640px}
+
+/* highlight pin */
+.pin{position:absolute;background:rgba(243,217,139,.42);border:1.5px solid #d9b74a;border-radius:3px;
+  transition:opacity .2s;pointer-events:none}
+.pin.flash{animation:flash .9s ease-out}
+@keyframes flash{0%{background:rgba(243,217,139,.85)}100%{background:rgba(243,217,139,.42)}}
+
+/* officer evidence rectangle */
+.evrect{position:absolute;border:2px solid var(--flag);background:rgba(176,64,42,.07);border-radius:2px;
+  pointer-events:none}
+.evrect::after{content:"⚑";position:absolute;top:-11px;right:-9px;color:var(--flag);font-size:14px;
+  background:#fff;border-radius:50%;line-height:1;padding:1px}
+
+/* ————— mock documents ————— */
+.m-mut{color:#8a8272}.m-sm{font-size:12px}.m-xs{font-size:10.5px}
+.mockrule{border:none;border-top:1px solid #e8e2d4;margin:14px 0}
+
+/* aadhaar */
+.aad-band{height:10px;background:linear-gradient(90deg,#e8842f 33%,#fff 33% 66%,#3d8a4e 66%);
+  border:1px solid #e3ddd1;margin-bottom:18px}
+.aad-head{display:flex;align-items:center;gap:10px;font-size:13px;color:#555;margin-bottom:22px}
+.aad-emb{width:34px;height:34px;border:1.5px solid #999;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;font-size:16px;color:#777}
+.aad-body{display:flex;gap:22px}
+.aad-photo{width:110px;height:130px;background:#efece4;border:1px solid #ddd;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:34px;color:#b8b2a4}
+.aad-name{font-size:19px;font-weight:600;letter-spacing:.02em}
+.aad-line{font-size:14px;color:#444;margin-top:6px}
+.aad-no{font-size:24px;letter-spacing:.28em;text-align:center;margin-top:34px;font-weight:500}
+.aad-foot{text-align:center;font-size:11px;color:#a00;margin-top:6px;letter-spacing:.06em}
+
+/* cheque */
+.chq{font-size:13px}
+.chq-top{display:flex;justify-content:space-between;align-items:flex-start}
+.chq-bank{font-weight:600;font-size:16px;color:#1c3f7a}
+.chq-date{display:flex;gap:3px}
+.chq-date span{width:22px;height:26px;border:1px solid #bbb;display:flex;align-items:center;
+  justify-content:center;font-size:13px}
+.chq-line{display:flex;gap:8px;align-items:baseline;margin-top:20px}
+.chq-line .l{color:#888;font-size:12px;flex:none}
+.chq-line .w{flex:1;border-bottom:1px solid #ccc;padding:2px 6px;font-size:15px}
+.chq-amt{border:1.5px solid #999;padding:8px 14px;font-size:17px;font-weight:600;white-space:nowrap}
+.chq-foot{display:flex;justify-content:space-between;margin-top:34px;align-items:flex-end}
+.chq-micr{letter-spacing:.2em;font-size:15px;color:#333;font-family:monospace}
+.chq-sig{text-align:center;font-size:11px;color:#888}
+.chq-sig .s{font-family:var(--serif);font-style:italic;font-size:19px;color:#334;margin-bottom:2px}
+
+/* letter (legal notice) */
+.let-head{text-align:center;border-bottom:2px solid #333;padding-bottom:10px}
+.let-head .nm{font-family:var(--serif);font-size:18px;font-weight:600}
+.let-para{font-size:13.5px;color:#333;margin-top:12px;text-align:justify}
+.let-re{font-weight:600;font-size:13.5px;margin-top:14px}
+
+/* receipt */
+.rcp{max-width:380px!important;min-height:420px!important}
+.rcp-head{text-align:center;font-weight:600;border-bottom:1px dashed #bbb;padding-bottom:8px}
+.rcp-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px dotted #e0dacb}
+.rcp-bar{height:36px;margin-top:18px;background:repeating-linear-gradient(90deg,#222 0 2px,#fff 2px 5px)}
+
+/* generic page */
+.gen-title{font-family:var(--serif);font-size:17px;font-weight:600;text-align:center}
+.gen-line{height:9px;background:#efebe0;border-radius:2px;margin-top:10px}
+.gen-line.w60{width:60%}.gen-line.w80{width:80%}.gen-line.w40{width:40%}
+
+/* ————— summary & done ————— */
+.sum-wrap{padding:6px 0 0}
+.sum-item{border-top:1px solid var(--line);padding:13px 2px}
+.sum-item:last-of-type{border-bottom:1px solid var(--line)}
+.sum-item .where{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.sum-item .what{font-size:15px;margin-top:3px}
+.sum-item .what b{color:var(--flag);font-weight:600}
+.sum-item .meta{font-size:12.5px;color:var(--ink-2);margin-top:4px;display:flex;gap:12px;align-items:center}
+.sum-item .meta button{text-decoration:underline;color:var(--ink-2);padding:0;font-size:12.5px}
+.sum-clean{padding:26px 0;color:var(--ink-2);font-size:15px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.btn2{width:100%;font-size:15px;font-weight:500;padding:13px 18px;border-radius:12px;margin-top:10px;
+  border:1px solid var(--line-2);background:var(--sheet)}
+.btn2.pri{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.btn2.pri:hover{background:#000}
+.btn2:not(.pri):hover{border-color:var(--ink)}
+.acknote{font-size:12.5px;color:var(--ink-2);margin-top:10px}
+
+#done{position:fixed;inset:0;background:var(--paper);display:none;align-items:center;justify-content:center;z-index:50}
+#done.show{display:flex}
+#done .card{text-align:center;max-width:460px;padding:40px}
+#done .big{font-family:var(--serif);font-size:32px;font-weight:600;line-height:1.2}
+#done .sub{color:var(--ink-2);margin-top:12px}
+#done .seal{font-size:40px;margin-bottom:18px}
+#done button{margin-top:26px;text-decoration:underline;color:var(--ink-2)}
+
+/* drawing overlay rect (live) */
+#liverect{position:absolute;border:2px dashed var(--flag);background:rgba(176,64,42,.06);display:none;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <span class="case">CMP/1043/2026</span>
+    <span class="matter">Complaint u/s 138, NI Act · filed by Adv. Priya Nair</span>
+    <span class="why">Sent for scrutiny: <b>a flag was skipped at filing</b></span>
+  </header>
+
+  <main>
+    <section id="work" aria-label="Fields to verify">
+      <nav class="steps" id="steps"></nav>
+      <div id="fields"></div>
+      <div id="advance"></div>
+    </section>
+
+    <section id="docs" aria-label="Uploaded documents">
+      <div id="docstrip"></div>
+      <div id="viewer">
+        <div class="drawhint" id="drawhint" style="display:none"><span>Drag a box around the spot, then release</span></div>
+        <div id="sheetmount"></div>
+        <div id="liverect"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="done"><div class="card">
+  <div class="seal">☑</div>
+  <div class="big" id="donebig"></div>
+  <div class="sub" id="donesub"></div>
+  <button onclick="location.reload()">Start over (demo)</button>
+</div></div>
+
+<script>
+/* ————————————————————— data ————————————————————— */
+const DOCS = {
+  aadhaar:  {name:"Aadhaar — Complainant"},
+  notice:   {name:"Legal Notice"},
+  cheque:   {name:"Cheque (front)"},
+  receipt:  {name:"Postal Receipt"},
+  rental:   {name:"Rental Agreement"},
+  vakalat:  {name:"Vakalatnama"},
+};
+
+/* regions are % of the sheet: [left, top, width, height] */
+const SECTIONS = [
+  {title:"Complainant details", short:"Complainant", fields:[
+    {id:"c-name", label:"Full name", value:"Om Kumar", doc:"aadhaar", region:[31,22,42,7],
+      docread:"OM KUMAR S/O RAJESH"},
+    {id:"c-aad",  label:"Aadhaar number", value:"XXXX-XXXX-4821", doc:"aadhaar", region:[24,64,52,8]},
+    {id:"c-addr", label:"Address", value:"14/2 Gandhi Nagar, Bengaluru — 560032", doc:"aadhaar", region:[31,36,58,13]},
+    {id:"c-mob",  label:"Mobile number", value:"98XXXXXX21", doc:null},
+  ]},
+  {title:"Respondent details", short:"Respondent", fields:[
+    {id:"r-name", label:"Full name", value:"Rajesh Sharma", doc:"notice", region:[8,30,55,6]},
+    {id:"r-addr", label:"Address", value:"221 MG Road, Bengaluru — 560001", doc:"notice", region:[8,36,70,6]},
+    {id:"r-rel",  label:"Relationship to complainant", value:"Tenant (rental agreement)", doc:"rental", region:[10,26,80,8]},
+  ]},
+  {title:"Cheque details", short:"Cheque", fields:[
+    {id:"q-no",   label:"Cheque number", value:"004512", doc:"cheque", region:[8,78,34,8]},
+    {id:"q-amt",  label:"Amount", value:"₹ 2,40,000", doc:"cheque", region:[69,42,26,10]},
+    {id:"q-date", label:"Date on cheque", value:"12/03/2026", doc:"cheque", region:[60,10,36,9]},
+    {id:"q-bank", label:"Drawee bank", value:"Canara Bank, Jayanagar Branch", doc:"cheque", region:[6,8,42,10]},
+  ]},
+  {title:"Legal notice & service", short:"Notice", fields:[
+    {id:"n-date", label:"Date of legal notice", value:"02/04/2026", doc:"notice", region:[70,20,22,5]},
+    {id:"n-sent", label:"Date of dispatch", value:"03/04/2026", doc:"receipt", region:[10,32,80,9]},
+    {id:"n-mode", label:"Mode of service", value:"Registered Post A.D.", doc:"receipt", region:[10,14,80,9]},
+  ]},
+];
+
+const ALLFIELDS = SECTIONS.flatMap(s => s.fields.map(f => ({...f, sec:s.title})));
+const state = {};             // fieldId -> {status:'ok'|'flagged', comment, voice, evidence:{doc,rect}}
+let secIdx = 0;
+let selId = null;
+let composeId = null;         // field currently being flagged
+let draft = {text:"", voice:false, evidence:null};
+let openDoc = "aadhaar";
+let drawing = false;
+let summaryMode = false;
+
+/* ————————————————————— left panel ————————————————————— */
+const $ = s => document.querySelector(s);
+
+function secDone(i){ return SECTIONS[i].fields.every(f => state[f.id]); }
+
+function renderSteps(){
+  $("#steps").innerHTML = SECTIONS.map((s,i)=>{
+    const cls = summaryMode ? (secDone(i)?"done":"") : (i===secIdx?"now":(secDone(i)?"done":""));
+    return `<button class="step ${cls}" onclick="gotoSec(${i})"><span class="n">${i+1}. ${s.short}</span></button>`;
+  }).join("");
+}
+
+function fieldRow(f){
+  const st = state[f.id];
+  const sel = f.id===selId;
+  let mark = "";
+  if(st?.status==="ok") mark = `<span class="mark ok">✓ checked</span>`;
+  if(st?.status==="flagged") mark = `<span class="mark fl">⚑ flagged</span>`;
+  const src = f.doc
+    ? `<div class="src">from <u>${DOCS[f.doc].name}</u></div>`
+    : `<div class="src">no document to verify against</div>`;
+  const docread = f.docread && !st
+    ? `<div class="docread">document reads: <b>${f.docread}</b></div>` : "";
+  const acts = (sel && !st && composeId!==f.id)
+    ? `<div class="acts">
+         <button class="a-ok" onclick="event.stopPropagation();markOk('${f.id}')">✓&nbsp; Looks right</button>
+         <button class="a-fl" onclick="event.stopPropagation();openComposer('${f.id}')">⚑&nbsp; Flag for advocate</button>
+       </div>` : "";
+  const note = st?.status==="flagged"
+    ? `<div class="flagnote">“${st.comment}”
+         <div class="fmeta">
+           ${st.voice?`<span>🎙 voice note</span>`:""}
+           ${st.evidence?`<span class="ev">⚑ marked on ${DOCS[st.evidence.doc].name}</span>`:""}
+           <button onclick="event.stopPropagation();removeFlag('${f.id}')">remove</button>
+         </div>
+       </div>` : "";
+  const comp = composeId===f.id ? composerHTML() : "";
+  return `<div class="field ${sel?"sel":""} ${st?.status==="flagged"?"flagged":""}" onclick="selectField('${f.id}')">
+    <div class="lab">${f.label} ${mark}</div>
+    <div class="val">${f.value}</div>
+    ${src}${docread}${acts}${note}${comp}
+  </div>`;
+}
+
+function composerHTML(){
+  const recing = draft.recording;
+  return `<div class="composer" onclick="event.stopPropagation()">
+    <div class="box">
+      ${recing
+        ? `<span class="rectime"><span class="dot"></span> recording… <span id="rectimer">0:00</span></span><span style="flex:1"></span>`
+        : `<input id="cmpin" placeholder="What should the advocate check or fix?" value="${draft.text.replace(/"/g,"&quot;")}"
+             oninput="draft.text=this.value;syncSave()">`}
+      <button class="mic ${recing?"rec":""}" onclick="toggleRec()" title="${recing?"Stop recording":"Record a voice note"}">
+        ${recing
+          ? `<svg width="14" height="14" viewBox="0 0 14 14"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>`
+          : `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="1.5" width="4" height="8" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5"/></svg>`}
+      </button>
+    </div>
+    ${draft.voice && !recing ? `<span class="voicechip">🎙 voice note attached — transcript above</span>`:""}
+    <div class="under">
+      ${draft.evidence
+        ? `<span class="evchip">⚑ marked on ${DOCS[draft.evidence.doc].name}<button onclick="clearEvidence()">undo</button></span>`
+        : `<button class="point ${drawing?"active":""}" onclick="startDraw()">${drawing?"drawing — drag on the document":"Mark the spot on the document"}</button>`}
+      <button class="cancel" onclick="closeComposer()">Cancel</button>
+      <button class="save" id="savebtn" onclick="saveFlag()" ${draft.text.trim()?"":"disabled"}>Save flag</button>
+    </div>
+  </div>`;
+}
+
+function renderAdvance(){
+  const el = $("#advance");
+  if(summaryMode){ el.innerHTML=""; return; }
+  const sec = SECTIONS[secIdx];
+  const done = sec.fields.filter(f=>state[f.id]).length;
+  const last = secIdx===SECTIONS.length-1;
+  el.innerHTML = `
+    <div class="status">${done} of ${sec.fields.length} fields checked${done<sec.fields.length?" — you can still move on":""}</div>
+    <button class="nextbtn" onclick="${last?"showSummary()":"gotoSec("+(secIdx+1)+")"}">
+      <span>${last?"Review &amp; submit":"Next — "+SECTIONS[secIdx+1].title}</span><span class="arr">→</span>
+    </button>`;
+}
+
+function renderFields(){
+  if(summaryMode){ renderSummary(); return; }
+  const sec = SECTIONS[secIdx];
+  $("#fields").innerHTML =
+    `<div class="sec-title">${sec.title}</div>
+     <div class="sec-sub">Check each value against the document on the right.</div>`
+    + sec.fields.map(fieldRow).join("");
+  renderSteps(); renderAdvance();
+  const inp = $("#cmpin"); if(inp){ inp.focus(); inp.selectionStart = inp.value.length; }
+}
+
+/* ————————————————————— summary ————————————————————— */
+function flagList(){ return ALLFIELDS.filter(f=>state[f.id]?.status==="flagged"); }
+
+function renderSummary(){
+  const flags = flagList();
+  const items = flags.length
+    ? flags.map(f=>{
+        const st = state[f.id];
+        return `<div class="sum-item">
+          <div class="where">${f.sec} — ${f.label}</div>
+          <div class="what"><b>⚑</b> “${st.comment}”</div>
+          <div class="meta">
+            ${st.voice?`<span>🎙 voice note</span>`:""}
+            ${st.evidence?`<span>marked on ${DOCS[st.evidence.doc].name}</span>`:""}
+            <button onclick="editFlag('${f.id}')">edit</button>
+          </div>
+        </div>`;}).join("")
+    : `<div class="sum-clean">No issues found. Every field was checked against its documents.</div>`;
+  $("#fields").innerHTML =
+    `<div class="sec-title">Your review</div>
+     <div class="sec-sub">${flags.length ? flags.length+" flag"+(flags.length>1?"s":"")+" will go back to Adv. Priya Nair. She makes the corrections — nothing is changed by the court." : "Ready to move forward."}</div>
+     <div class="sum-wrap">${items}</div>
+     ${flags.length
+        ? `<button class="btn2 pri" onclick="finish('back')">Send back to advocate</button>
+           <button class="btn2" onclick="finish('fwd')">Approve anyway, forward for cognizance</button>
+           <div class="acknote">Approving with open flags sends them along for the judge's reference.</div>`
+        : `<button class="btn2 pri" onclick="finish('fwd')">Approve — forward for cognizance</button>`}
+     <button class="btn2" style="border:none;text-decoration:underline" onclick="gotoSec(${SECTIONS.length-1})">← Back to checking</button>`;
+  renderSteps(); renderAdvance();
+}
+
+function showSummary(){ summaryMode=true; selId=null; composeId=null; renderFields(); }
+function editFlag(id){
+  summaryMode=false;
+  secIdx = SECTIONS.findIndex(s=>s.fields.some(f=>f.id===id));
+  selectField(id);
+}
+function finish(kind){
+  $("#donebig").textContent = kind==="back" ? "Sent back to Adv. Priya Nair" : "Forwarded for cognizance";
+  $("#donesub").textContent = kind==="back"
+    ? flagList().length+" flag(s) delivered. The advocate corrects and refiles — you'll see it again only if it needs you."
+    : "CMP/1043/2026 is on the judge's list. Next file in your queue is ready.";
+  $("#done").classList.add("show");
+}
+
+/* ————————————————————— actions ————————————————————— */
+function gotoSec(i){ summaryMode=false; secIdx=i; selId=null; composeId=null; stopDraw(); renderFields(); $("#fields").scrollTop=0; }
+
+function selectField(id){
+  if(composeId && composeId!==id) return;      // finish or cancel the open flag first
+  selId = id;
+  const f = ALLFIELDS.find(x=>x.id===id);
+  if(f.doc){ showDoc(f.doc, f.region); }
+  renderFields();
+}
+
+function markOk(id){
+  state[id] = {status:"ok"};
+  const sec = SECTIONS[secIdx];
+  const next = sec.fields.find(f=>!state[f.id]);
+  selId = next ? next.id : null;
+  if(next && next.doc) showDoc(next.doc, next.region);
+  renderFields();
+}
+
+function openComposer(id){
+  composeId = id; selId = id;
+  draft = {text:"", voice:false, evidence:null, recording:false};
+  renderFields();
+}
+function closeComposer(){ composeId=null; stopDraw(); draft={text:"",voice:false,evidence:null}; renderFields(); }
+function saveFlag(){
+  if(!draft.text.trim()) return;
+  state[composeId] = {status:"flagged", comment:draft.text.trim(), voice:draft.voice, evidence:draft.evidence};
+  const id = composeId;
+  composeId=null; stopDraw();
+  const sec = SECTIONS[secIdx];
+  const next = sec.fields.find(f=>!state[f.id]);
+  selId = next ? next.id : id;
+  if(next && next.doc) showDoc(next.doc,next.region);
+  renderFields();
+}
+function removeFlag(id){ delete state[id]; renderFields(); }
+function syncSave(){ const b=$("#savebtn"); if(b) b.disabled = !draft.text.trim(); }
+
+/* voice — simulated */
+let recT0=null, recTick=null;
+function toggleRec(){
+  if(draft.recording){
+    clearInterval(recTick);
+    const secs = Math.max(1,Math.round((Date.now()-recT0)/1000));
+    draft.recording=false; draft.voice=true;
+    draft.text = "The name on the Aadhaar reads Om Kumar S/O Rajesh but the complaint says Om Kumar — please confirm the full legal name and refile.";
+    renderFields();
+  } else {
+    draft.recording=true; recT0=Date.now();
+    renderFields();
+    recTick=setInterval(()=>{
+      const s=Math.round((Date.now()-recT0)/1000);
+      const el=$("#rectimer"); if(el) el.textContent = "0:"+String(s).padStart(2,"0");
+    },250);
+  }
+}
+function clearEvidence(){ draft.evidence=null; renderFields(); }
+
+/* ————————————————————— documents ————————————————————— */
+function showDoc(docId, region){
+  openDoc = docId;
+  renderDocStrip();
+  $("#sheetmount").innerHTML = `<div class="sheet ${docId==="receipt"?"rcp":""}" id="sheet">${MOCK[docId]()}</div>`;
+  const sheet = $("#sheet");
+  if(region){
+    const p=document.createElement("div");
+    p.className="pin flash";
+    p.style.cssText=`left:${region[0]}%;top:${region[1]}%;width:${region[2]}%;height:${region[3]}%`;
+    sheet.appendChild(p);
+  }
+  /* re-draw saved evidence rects for this doc */
+  for(const [fid,st] of Object.entries(state)){
+    if(st.evidence && st.evidence.doc===docId) addEvRect(sheet, st.evidence.rect);
+  }
+  if(draft.evidence && draft.evidence.doc===docId) addEvRect(sheet, draft.evidence.rect);
+}
+function addEvRect(sheet, r){
+  const d=document.createElement("div");
+  d.className="evrect";
+  d.style.cssText=`left:${r[0]}%;top:${r[1]}%;width:${r[2]}%;height:${r[3]}%`;
+  sheet.appendChild(d);
+}
+function renderDocStrip(){
+  $("#docstrip").innerHTML = Object.entries(DOCS).map(([id,d])=>
+    `<button class="${id===openDoc?"on":""}" onclick="showDoc('${id}')">${d.name}</button>`).join("");
+}
+
+/* evidence drawing */
+function startDraw(){ if(drawing){stopDraw();renderFields();return} drawing=true; $("#viewer").classList.add("drawing"); $("#drawhint").style.display="flex"; renderFields(); }
+function stopDraw(){ drawing=false; $("#viewer").classList.remove("drawing"); $("#drawhint").style.display="none"; }
+
+let dragStart=null;
+const viewer = document.getElementById("viewer");
+viewer.addEventListener("pointerdown",e=>{
+  if(!drawing) return;
+  const sheet=$("#sheet"); if(!sheet) return;
+  const b=sheet.getBoundingClientRect();
+  dragStart=[e.clientX,e.clientY,b];
+  e.preventDefault();
+});
+viewer.addEventListener("pointermove",e=>{
+  if(!drawing||!dragStart) return;
+  const [x0,y0,b]=dragStart;
+  const lr=$("#liverect");
+  const vb=viewer.getBoundingClientRect();
+  lr.style.display="block";
+  lr.style.left=(Math.min(x0,e.clientX)-vb.left+viewer.scrollLeft)+"px";
+  lr.style.top=(Math.min(y0,e.clientY)-vb.top+viewer.scrollTop)+"px";
+  lr.style.width=Math.abs(e.clientX-x0)+"px";
+  lr.style.height=Math.abs(e.clientY-y0)+"px";
+});
+viewer.addEventListener("pointerup",e=>{
+  if(!drawing||!dragStart) return;
+  const [x0,y0,b]=dragStart; dragStart=null;
+  $("#liverect").style.display="none";
+  const w=Math.abs(e.clientX-x0), h=Math.abs(e.clientY-y0);
+  if(w<8||h<8){ return; }   // ignore accidental clicks, stay in draw mode
+  const rect=[
+    (Math.min(x0,e.clientX)-b.left)/b.width*100,
+    (Math.min(y0,e.clientY)-b.top)/b.height*100,
+    w/b.width*100, h/b.height*100
+  ].map(n=>Math.round(n*10)/10);
+  draft.evidence={doc:openDoc, rect};
+  stopDraw();
+  const f=ALLFIELDS.find(x=>x.id===composeId);
+  showDoc(openDoc, f && f.doc===openDoc ? f.region : null);
+  renderFields();
+});
+
+/* ————————————————————— mock documents ————————————————————— */
+const MOCK = {
+aadhaar:()=>`
+  <div class="aad-band"></div>
+  <div class="aad-head"><span class="aad-emb">✷</span><span>भारत सरकार · GOVERNMENT OF INDIA<br><span class="m-xs m-mut">Unique Identification Authority of India</span></span></div>
+  <div class="aad-body">
+    <div class="aad-photo">☺</div>
+    <div>
+      <div class="aad-name">OM KUMAR S/O RAJESH</div>
+      <div class="aad-line">DOB: 14/07/1988 &nbsp;·&nbsp; Male</div>
+      <div class="aad-line">14/2, Gandhi Nagar,<br>Bengaluru, Karnataka — 560032</div>
+    </div>
+  </div>
+  <div class="aad-no">XXXX&nbsp;XXXX&nbsp;4821</div>
+  <div class="aad-foot">आधार — आम आदमी का अधिकार</div>
+  <hr class="mockrule"><div class="m-xs m-mut" style="text-align:center">This is a scanned copy uploaded at filing · page 1 of 1</div>`,
+
+cheque:()=>`
+  <div class="chq">
+    <div class="chq-top">
+      <div><div class="chq-bank">CANARA BANK</div><div class="m-xs m-mut">Jayanagar Branch, Bengaluru — 560041</div></div>
+      <div><div class="m-xs m-mut" style="text-align:right;margin-bottom:3px">DATE</div>
+        <div class="chq-date"><span>1</span><span>2</span><span>0</span><span>3</span><span>2</span><span>0</span><span>2</span><span>6</span></div></div>
+    </div>
+    <div class="chq-line"><span class="l">PAY</span><span class="w">Om Kumar</span></div>
+    <div class="chq-line"><span class="l">RUPEES</span><span class="w">Two Lakh Forty Thousand Only</span>
+      <span class="chq-amt">₹ 2,40,000/-</span></div>
+    <div class="chq-foot">
+      <div class="chq-micr">⑈004512⑈ 560015002⑆ 004512⑈</div>
+      <div class="chq-sig"><div class="s">R. Sharma</div>AUTHORISED SIGNATORY</div>
+    </div>
+  </div>
+  <hr class="mockrule"><div class="m-xs m-mut" style="text-align:center">Cheque (front) · returned unpaid — “funds insufficient”</div>`,
+
+notice:()=>`
+  <div class="let-head"><div class="nm">PRIYA NAIR, ADVOCATE</div>
+    <div class="m-xs m-mut">No. 12, Bar Council Complex, Bengaluru · Enrl. KAR/2231/2014</div></div>
+  <div style="text-align:right;margin-top:14px;font-size:13.5px">Date: 02/04/2026</div>
+  <div class="let-re">To: Sri Rajesh Sharma,</div>
+  <div style="font-size:13.5px">221 MG Road, Bengaluru — 560001</div>
+  <div class="let-re">RE: LEGAL NOTICE UNDER SECTION 138, NEGOTIABLE INSTRUMENTS ACT, 1881</div>
+  <div class="let-para">Under instructions from my client, Sri Om Kumar, I hereby call upon you to make payment of ₹2,40,000/- (Rupees Two Lakh Forty Thousand only) being the amount of cheque no. 004512 dated 12/03/2026 drawn on Canara Bank, Jayanagar Branch, which was returned unpaid for the reason "funds insufficient" as per the return memo dated 28/03/2026.</div>
+  <div class="let-para">You are called upon to pay the said sum within 15 days of receipt of this notice, failing which my client shall initiate proceedings under Section 138 of the Negotiable Instruments Act, 1881, at your risk as to costs and consequences.</div>
+  <div style="margin-top:26px;font-size:13.5px">Sd/-<br><b>Priya Nair, Advocate</b></div>`,
+
+receipt:()=>`
+  <div class="rcp-head">INDIA POST · POSTAL RECEIPT</div>
+  <div class="rcp-row"><span>Service</span><b>Registered Post A.D.</b></div>
+  <div class="rcp-row"><span>Booked on</span><b>03/04/2026 · 11:42</b></div>
+  <div class="rcp-row"><span>To</span><span>Rajesh Sharma, Bengaluru 560001</span></div>
+  <div class="rcp-row"><span>Article no.</span><span>RK4402186731IN</span></div>
+  <div class="rcp-row"><span>Amount</span><span>₹ 45.00</span></div>
+  <div class="rcp-bar"></div>
+  <div class="m-xs m-mut" style="text-align:center;margin-top:8px">Track at indiapost.gov.in</div>`,
+
+rental:()=>`
+  <div class="gen-title">RENTAL AGREEMENT</div>
+  <div class="m-xs m-mut" style="text-align:center;margin-top:2px">e-Stamp KA-BN/2024/118842 · ₹200</div>
+  <div class="let-para" style="margin-top:18px">This agreement is made between <b>Om Kumar</b> (Landlord) and <b>Rajesh Sharma</b> (Tenant) in respect of the premises at 221 MG Road, Bengaluru…</div>
+  <div class="gen-line"></div><div class="gen-line w80"></div><div class="gen-line"></div>
+  <div class="gen-line w60"></div><div class="gen-line"></div><div class="gen-line w80"></div>
+  <div class="gen-line w40"></div>`,
+
+vakalat:()=>`
+  <div class="gen-title">VAKALATNAMA</div>
+  <div class="m-xs m-mut" style="text-align:center;margin-top:2px">In the Court of the Hon'ble Magistrate, Bengaluru</div>
+  <div class="let-para" style="margin-top:18px">I, Om Kumar, do hereby appoint <b>Adv. Priya Nair</b> to appear and act on my behalf in CMP/1043/2026…</div>
+  <div class="gen-line"></div><div class="gen-line w60"></div><div class="gen-line w80"></div>
+  <div class="gen-line"></div><div class="gen-line w40"></div>`,
+};
+
+/* ————————————————————— boot ————————————————————— */
+renderFields();
+showDoc("aadhaar", SECTIONS[0].fields[0].region);
+</script>
+</body>
+</html>
